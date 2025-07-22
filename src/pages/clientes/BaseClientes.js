@@ -11,6 +11,7 @@ class BaseClientes {
         this.clientesFiltrados = [];
         this.terminoBusqueda = '';
         this.clienteSeleccionadoParaEliminar = null;
+        this.clienteEnEdicion = null;
         this.init();
     }
 
@@ -166,6 +167,56 @@ class BaseClientes {
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal Nuevo/Editar Cliente -->
+                <div id="modal-nuevo-cliente" class="modal hidden">
+                    <div class="modal-overlay"></div>
+                    <div class="modal-content modal-small">
+                        <div class="modal-header">
+                            <h3 id="titulo-modal-cliente">
+                                <i class="fas fa-user-plus"></i>
+                                Nuevo Cliente
+                            </h3>
+                            <button class="modal-close" onclick="baseClientes.cerrarModalNuevoCliente()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <form id="form-nuevo-cliente">
+                            <div class="modal-body">
+                                <div class="campo-form">
+                                    <label for="cliente-nombre">Nombre</label>
+                                    <input id="cliente-nombre" type="text" required class="busqueda-input" />
+                                </div>
+                                <div class="campo-form">
+                                    <label for="cliente-telefono">Teléfono</label>
+                                    <input id="cliente-telefono" type="tel" required class="busqueda-input" />
+                                </div>
+                                <div class="campo-form">
+                                    <label for="cliente-documento">Documento</label>
+                                    <input id="cliente-documento" type="text" class="busqueda-input" />
+                                </div>
+                                <div class="campo-form">
+                                    <label for="cliente-email">Email</label>
+                                    <input id="cliente-email" type="email" class="busqueda-input" />
+                                </div>
+                                <div class="campo-form">
+                                    <label for="cliente-direccion">Dirección</label>
+                                    <input id="cliente-direccion" type="text" class="busqueda-input" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="baseClientes.cerrarModalNuevoCliente()">
+                                    <i class="fas fa-times"></i>
+                                    Cancelar
+                                </button>
+                                <button id="btn-guardar-cliente" type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Guardar Cliente
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         `;
     }
@@ -224,6 +275,17 @@ class BaseClientes {
         // Cerrar modal al hacer clic en overlay
         document.querySelector('.modal-overlay')?.addEventListener('click', () => {
             this.cerrarModalEliminar();
+        });
+
+        // Cerrar modal nuevo cliente al hacer clic en overlay
+        document.querySelector('#modal-nuevo-cliente .modal-overlay')?.addEventListener('click', () => {
+            this.cerrarModalNuevoCliente();
+        });
+
+        // Guardar cliente desde el formulario
+        document.getElementById('form-nuevo-cliente')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.guardarClienteDesdeModal();
         });
     }
 
@@ -447,8 +509,24 @@ class BaseClientes {
 
     editarCliente(clienteId) {
         console.log('✏️ Editando cliente ID:', clienteId);
-        // TODO: Implementar funcionalidad de edición
-        this.mostrarNotificacion('Funcionalidad de edición en desarrollo', 'info');
+        const cliente = this.clientes.find(c => c.id == clienteId);
+        if (!cliente) {
+            this.mostrarNotificacion('Cliente no encontrado', 'error');
+            return;
+        }
+
+        this.clienteEnEdicion = cliente;
+
+        // Llenar formulario con datos existentes
+        document.getElementById('titulo-modal-cliente').innerHTML = `<i class="fas fa-user-edit"></i> Editar Cliente`;
+        document.getElementById('cliente-nombre').value = cliente.nombre || '';
+        document.getElementById('cliente-telefono').value = cliente.telefonoWhatsapp || '';
+        document.getElementById('cliente-documento').value = cliente.documentoIdentidad || '';
+        document.getElementById('cliente-email').value = cliente.email || '';
+        const direccion = cliente.direcciones && cliente.direcciones.length ? cliente.direcciones[0] : cliente.direccion || '';
+        document.getElementById('cliente-direccion').value = direccion;
+
+        this.abrirFormularioNuevoCliente();
     }
 
     limpiarBusqueda() {
@@ -501,9 +579,57 @@ class BaseClientes {
     }
 
     abrirFormularioNuevoCliente() {
-        console.log('➕ Abriendo formulario de nuevo cliente');
-        // TODO: Implementar modal de nuevo cliente
-        this.mostrarNotificacion('Formulario de nuevo cliente en desarrollo', 'info');
+        const modal = document.getElementById('modal-nuevo-cliente');
+        if (!modal) return;
+
+        if (!this.clienteEnEdicion) {
+            document.getElementById('titulo-modal-cliente').innerHTML = `<i class="fas fa-user-plus"></i> Nuevo Cliente`;
+            document.getElementById('form-nuevo-cliente').reset();
+        }
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    cerrarModalNuevoCliente() {
+        const modal = document.getElementById('modal-nuevo-cliente');
+        modal?.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        this.clienteEnEdicion = null;
+    }
+
+    async guardarClienteDesdeModal() {
+        try {
+            const datos = {
+                nombre: document.getElementById('cliente-nombre').value.trim(),
+                telefonoWhatsapp: document.getElementById('cliente-telefono').value.trim(),
+                documentoIdentidad: document.getElementById('cliente-documento').value.trim(),
+                email: document.getElementById('cliente-email').value.trim(),
+            };
+            const direccion = document.getElementById('cliente-direccion').value.trim();
+            if (direccion) {
+                datos.direcciones = [direccion];
+            }
+
+            let clienteFinal;
+            if (this.clienteEnEdicion) {
+                clienteFinal = await clientesService.actualizarCliente(this.clienteEnEdicion.id, datos);
+                const index = this.clientes.findIndex(c => c.id == clienteFinal.id);
+                if (index !== -1) this.clientes[index] = clienteFinal;
+            } else {
+                clienteFinal = await clientesService.guardarCliente(datos);
+                this.clientes.push(clienteFinal);
+            }
+
+            this.clientesFiltrados = [...this.clientes];
+            this.renderizarTabla();
+            this.actualizarConteo();
+            this.mostrarNotificacion('Cliente guardado exitosamente', 'success');
+            this.cerrarModalNuevoCliente();
+        } catch (error) {
+            console.error('❌ Error al guardar cliente:', error);
+            this.mostrarNotificacion('Error al guardar cliente', 'error');
+        }
     }
 
     volverAtras() {
