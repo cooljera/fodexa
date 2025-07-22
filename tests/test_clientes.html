@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Gestión de Clientes - FODEXA</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 20px;
+            background: #f5f7fa;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #5a67d8;
+        }
+        .test-result {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🧪 Test de Gestión de Clientes - FODEXA</h1>
+        
+        <div class="test-section">
+            <h3>📋 Estado de LocalStorage</h3>
+            <button class="test-button" onclick="testLocalStorage()">Verificar Datos</button>
+            <button class="test-button" onclick="clearLocalStorage()">Limpiar Datos</button>
+            <button class="test-button" onclick="loadDemoData()">Cargar Datos Demo</button>
+            <div id="storage-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 Test de Búsqueda</h3>
+            <input type="text" id="test-search" placeholder="Buscar cliente..." style="width: 200px; padding: 8px; margin: 5px;">
+            <button class="test-button" onclick="testSearch()">Buscar</button>
+            <div id="search-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>➕ Test de Nuevo Cliente</h3>
+            <button class="test-button" onclick="testCreateClient()">Crear Cliente Test</button>
+            <div id="create-result" class="test-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Estadísticas</h3>
+            <div id="stats-result" class="test-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Funciones de utilidad (copiadas del archivo principal)
+        function getStoredData(key) {
+            try {
+                const data = localStorage.getItem(`fodexa_${key}`);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error(`Error al obtener ${key}:`, error);
+                return null;
+            }
+        }
+
+        function setStoredData(key, data) {
+            try {
+                localStorage.setItem(`fodexa_${key}`, JSON.stringify(data));
+                return true;
+            } catch (error) {
+                console.error(`Error al guardar ${key}:`, error);
+                return false;
+            }
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Tests
+        function testLocalStorage() {
+            const clientes = getStoredData('clientes');
+            const result = document.getElementById('storage-result');
+            
+            if (clientes && clientes.length > 0) {
+                result.innerHTML = `
+                    <span class="status success">✅ Datos encontrados</span><br>
+                    <strong>Total clientes:</strong> ${clientes.length}<br>
+                    <strong>Datos:</strong><br>
+                    ${clientes.map(c => `• ${c.nombre} - ${c.documento} - ${c.telefono}`).join('<br>')}
+                `;
+            } else {
+                result.innerHTML = '<span class="status warning">⚠️ No hay datos de clientes</span>';
+            }
+        }
+
+        function clearLocalStorage() {
+            localStorage.removeItem('fodexa_clientes');
+            document.getElementById('storage-result').innerHTML = '<span class="status warning">🗑️ Datos eliminados</span>';
+        }
+
+        function loadDemoData() {
+            const clientesDemo = [
+                {
+                    id: 1,
+                    nombre: 'María González Pérez',
+                    telefono: '+57 300 123 4567',
+                    documento: '43123456',
+                    email: 'maria@test.com',
+                    direccion: 'Carrera 80 #45-23',
+                    tipo: 'vip'
+                },
+                {
+                    id: 2,
+                    nombre: 'Carlos Rodríguez',
+                    telefono: '+57 301 987 6543',
+                    documento: '52987654',
+                    email: 'carlos@test.com',
+                    direccion: 'Calle 70 #11-42',
+                    tipo: 'regular'
+                }
+            ];
+            
+            setStoredData('clientes', clientesDemo);
+            document.getElementById('storage-result').innerHTML = '<span class="status success">✅ Datos demo cargados</span>';
+            testLocalStorage();
+        }
+
+        function testSearch() {
+            const termino = document.getElementById('test-search').value;
+            const clientes = getStoredData('clientes') || [];
+            const result = document.getElementById('search-result');
+            
+            if (!termino.trim()) {
+                result.innerHTML = '<span class="status warning">⚠️ Ingresa un término de búsqueda</span>';
+                return;
+            }
+            
+            const clientesFiltrados = clientes.filter(cliente =>
+                cliente.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                cliente.telefono.includes(termino) ||
+                cliente.documento.includes(termino) ||
+                (cliente.email && cliente.email.toLowerCase().includes(termino.toLowerCase()))
+            );
+            
+            if (clientesFiltrados.length > 0) {
+                result.innerHTML = `
+                    <span class="status success">✅ ${clientesFiltrados.length} resultado(s)</span><br>
+                    ${clientesFiltrados.map(c => `• <strong>${c.nombre}</strong> - ${c.documento} - ${c.telefono}`).join('<br>')}
+                `;
+            } else {
+                result.innerHTML = '<span class="status error">❌ No se encontraron resultados</span>';
+            }
+        }
+
+        function testCreateClient() {
+            const clientes = getStoredData('clientes') || [];
+            const nuevoCliente = {
+                id: generateId(),
+                nombre: 'Cliente Test ' + Date.now(),
+                telefono: '+57 300 000 0000',
+                documento: '00000000',
+                email: 'test@cliente.com',
+                direccion: 'Dirección Test',
+                tipo: 'nuevo',
+                fecha_registro: new Date().toISOString()
+            };
+            
+            clientes.push(nuevoCliente);
+            setStoredData('clientes', clientes);
+            
+            const result = document.getElementById('create-result');
+            result.innerHTML = `
+                <span class="status success">✅ Cliente creado</span><br>
+                <strong>Nombre:</strong> ${nuevoCliente.nombre}<br>
+                <strong>ID:</strong> ${nuevoCliente.id}<br>
+                <strong>Documento:</strong> ${nuevoCliente.documento}
+            `;
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            const clientes = getStoredData('clientes') || [];
+            const result = document.getElementById('stats-result');
+            
+            const tipoCount = clientes.reduce((acc, cliente) => {
+                acc[cliente.tipo] = (acc[cliente.tipo] || 0) + 1;
+                return acc;
+            }, {});
+            
+            result.innerHTML = `
+                <strong>📊 Estadísticas de Clientes:</strong><br>
+                <strong>Total:</strong> ${clientes.length}<br>
+                ${Object.entries(tipoCount).map(([tipo, count]) => 
+                    `<strong>${tipo}:</strong> ${count}`
+                ).join('<br>')}
+            `;
+        }
+
+        // Inicializar estadísticas
+        window.onload = function() {
+            testLocalStorage();
+            updateStats();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Direcciones Múltiples | FODEXA</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="BaseClientes.css">
+    
+    <style>
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 25%, #312e81 50%, #6366f1 75%, #8b5cf6 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            min-height: 100vh;
+        }
+        
+        .test-header {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .test-header h1 {
+            color: #8b5cf6;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-header p {
+            color: #94a3b8;
+        }
+        
+        .test-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-test {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #8b5cf6;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .btn-test:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+        
+        .test-info {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .test-info h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+        }
+        
+        .test-info ul {
+            color: #94a3b8;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .test-info li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .test-info li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        #app {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🏠 Test - Direcciones Múltiples</h1>
+            <p>Prueba la nueva funcionalidad de direcciones múltiples en la base de datos de clientes</p>
+        </div>
+
+        <div class="test-info">
+            <h3>🔍 Funcionalidades a Probar:</h3>
+            <ul>
+                <li>Columna "Dirección 1" muestra la primera dirección del cliente</li>
+                <li>Columna "Dirección 2" muestra la segunda dirección (si existe)</li>
+                <li>Botón con flecha aparece cuando hay más de 2 direcciones</li>
+                <li>Modal muestra todas las direcciones del cliente</li>
+                <li>Búsqueda funciona en todas las direcciones</li>
+                <li>Ordenamiento por Dirección 1</li>
+            </ul>
+        </div>
+
+        <div class="test-actions">
+            <button class="btn-test" onclick="crearClientesConDireccionesMultiples()">
+                📦 Crear Clientes de Prueba
+            </button>
+            <button class="btn-test" onclick="limpiarDatosTest()">
+                🗑️ Limpiar Datos
+            </button>
+            <button class="btn-test" onclick="mostrarEstadoDatos()">
+                📊 Ver Estado de Datos
+            </button>
+        </div>
+
+        <div id="app">
+            <!-- El contenido se cargará aquí desde BaseClientes.js -->
+        </div>
+    </div>
+
+    <!-- Incluir servicio de clientes sin ES6 modules -->
+    <script src="../../services/clientesService-compatible.js"></script>
+    
+    <!-- Incluir BaseClientes sin ES6 modules -->
+    <script src="BaseClientes-compatible.js"></script>
+    
+    <script>
+        // Funciones específicas para el test
+        function crearClientesConDireccionesMultiples() {
+            console.log('📦 Creando clientes de prueba con direcciones múltiples...');
+            
+            const clientesPrueba = [
+                {
+                    id: 1001,
+                    nombre: 'María González Test',
+                    cedula: '12345678',
+                    telefono: '3001234567',
+                    email: 'maria.test@email.com',
+                    direccion: 'Calle 123 #45-67, Barrio Centro', // Dirección legacy
+                    direcciones: [
+                        'Calle 123 #45-67, Barrio Centro',
+                        'Carrera 80 #25-30, Apto 501'
+                    ],
+                    fechaRegistro: '2024-01-15T10:30:00Z',
+                    activo: true
+                },
+                {
+                    id: 1002,
+                    nombre: 'Carlos Múltiples Direcciones',
+                    cedula: '87654321',
+                    telefono: '3109876543',
+                    email: 'carlos.multiples@email.com',
+                    direcciones: [
+                        'Avenida Primera #100-200, Centro',
+                        'Calle Segunda #50-75, Norte',
+                        'Carrera Tercera #80-90, Sur',
+                        'Diagonal Cuarta #30-40, Oriente'
+                    ],
+                    fechaRegistro: '2024-02-20T14:15:00Z',
+                    activo: true
+                },
+                {
+                    id: 1003,
+                    nombre: 'Ana Una Dirección',
+                    cedula: '11111111',
+                    telefono: '3201111111',
+                    email: 'ana.una@email.com',
+                    direccion: 'Única dirección disponible #123',
+                    direcciones: [
+                        'Única dirección disponible #123'
+                    ],
+                    fechaRegistro: '2024-03-10T09:00:00Z',
+                    activo: true
+                },
+                {
+                    id: 1004,
+                    nombre: 'Luis Sin Direcciones',
+                    cedula: '22222222',
+                    telefono: '3102222222',
+                    email: 'luis.sin@email.com',
+                    fechaRegistro: '2024-04-05T16:30:00Z',
+                    activo: true
+                },
+                {
+                    id: 1005,
+                    nombre: 'Patricia Cinco Direcciones',
+                    cedula: '33333333',
+                    telefono: '3153333333',
+                    email: 'patricia.cinco@email.com',
+                    direcciones: [
+                        'Casa Principal - Calle 1 #10-20',
+                        'Oficina - Carrera 2 #30-40',
+                        'Casa de Campo - Vereda Los Pinos',
+                        'Apartamento - Torre Central #1502',
+                        'Local Comercial - Centro Comercial Plaza'
+                    ],
+                    fechaRegistro: '2024-05-15T11:45:00Z',
+                    activo: true
+                }
+            ];
+
+            // Guardar en localStorage
+            localStorage.setItem('fodexa_clientes', JSON.stringify(clientesPrueba));
+            
+            // También guardar en IndexedDB si está disponible
+            if (window.clientesService) {
+                clientesPrueba.forEach(cliente => {
+                    window.clientesService.guardarCliente(cliente)
+                        .catch(error => console.log('Info: Cliente ya existe en IndexedDB'));
+                });
+            }
+
+            alert('✅ Clientes de prueba creados exitosamente!\n\n' +
+                  '📋 5 clientes creados con diferentes configuraciones de direcciones:\n' +
+                  '• María: 2 direcciones\n' +
+                  '• Carlos: 4 direcciones (botón de navegación)\n' +
+                  '• Ana: 1 dirección\n' +
+                  '• Luis: Sin direcciones\n' +
+                  '• Patricia: 5 direcciones (botón de navegación)');
+
+            // Recargar la vista
+            if (window.baseClientes) {
+                window.baseClientes.cargarClientes();
+            }
+        }
+
+        function limpiarDatosTest() {
+            if (confirm('¿Estás seguro de que quieres limpiar todos los datos de prueba?')) {
+                localStorage.removeItem('fodexa_clientes');
+                
+                // También limpiar IndexedDB
+                if (window.clientesService) {
+                    window.clientesService.limpiarTodos()
+                        .then(() => console.log('IndexedDB limpiado'))
+                        .catch(error => console.log('Error limpiando IndexedDB:', error));
+                }
+                
+                alert('🗑️ Datos de prueba limpiados');
+                
+                // Recargar la vista
+                if (window.baseClientes) {
+                    window.baseClientes.cargarClientes();
+                }
+            }
+        }
+
+        function mostrarEstadoDatos() {
+            const clientes = JSON.parse(localStorage.getItem('fodexa_clientes') || '[]');
+            let reporte = `📊 Estado Actual de Datos:\n\n`;
+            reporte += `Total de clientes: ${clientes.length}\n\n`;
+            
+            clientes.forEach((cliente, index) => {
+                const direcciones = cliente.direcciones || (cliente.direccion ? [cliente.direccion] : []);
+                reporte += `${index + 1}. ${cliente.nombre}\n`;
+                reporte += `   Direcciones: ${direcciones.length}\n`;
+                direcciones.forEach((dir, i) => {
+                    reporte += `   ${i + 1}. ${dir.substring(0, 40)}${dir.length > 40 ? '...' : ''}\n`;
+                });
+                reporte += '\n';
+            });
+            
+            alert(reporte);
+            console.log('📊 Estado de datos:', clientes);
+        }
+
+        // Inicialización automática cuando se carga el DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM cargado, esperando servicios...');
+            
+            // Esperar a que el servicio esté disponible
+            function inicializarCuandoEsteListoElServicio() {
+                if (typeof window.clientesService !== 'undefined') {
+                    console.log('✅ Servicio disponible, inicializando BaseClientes');
+                    window.baseClientes = new BaseClientes();
+                } else {
+                    console.log('⏳ Esperando servicio de clientes...');
+                    setTimeout(inicializarCuandoEsteListoElServicio, 100);
+                }
+            }
+            
+            inicializarCuandoEsteListoElServicio();
+        });
+    </script>
+</body>
+</html>

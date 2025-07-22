@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Búsqueda Clientes - FODEXA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="ventas.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .test-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .test-title {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .debug-info {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">
+            <i class="fas fa-search"></i>
+            Test Búsqueda de Clientes
+        </h1>
+        
+        <!-- Simulamos la sección de cliente exactamente como en ventas.html -->
+        <div class="cliente-section" id="cliente-section">
+            <div class="cliente-header">
+                <h4 class="cliente-titulo">
+                    <i class="fas fa-user"></i>
+                    Cliente
+                </h4>
+            </div>
+            
+            <!-- Selector de cliente (estado inicial) -->
+            <div class="cliente-selector" id="cliente-selector">
+                <div class="search-cliente-container">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="search-cliente" 
+                            class="search-cliente" 
+                            placeholder="Buscar cliente por nombre o teléfono..."
+                        >
+                    </div>
+                    <div class="search-cliente-results hidden" id="search-cliente-results">
+                        <!-- Resultados de búsqueda se mostrarán aquí -->
+                    </div>
+                </div>
+                
+                <button class="btn-nuevo-cliente" onclick="alert('Abrir modal nuevo cliente')">
+                    <i class="fas fa-user-plus"></i>
+                    Nuevo Cliente
+                </button>
+            </div>
+            
+            <!-- Cliente seleccionado -->
+            <div class="cliente-seleccionado hidden" id="cliente-seleccionado">
+                <div class="cliente-card">
+                    <div class="cliente-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="cliente-info">
+                        <h5 class="cliente-nombre" id="cliente-nombre-display">-</h5>
+                        <div class="cliente-detalles">
+                            <p class="cliente-telefono">
+                                <i class="fas fa-phone"></i>
+                                <span id="cliente-telefono-display">-</span>
+                            </p>
+                            <p class="cliente-direccion">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="cliente-direccion-display">Sin dirección</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="cliente-actions">
+                        <button class="btn-cambiar-cliente" onclick="cambiarCliente()" title="Cambiar cliente">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-quitar-cliente" onclick="quitarCliente()" title="Quitar cliente">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="debug-info">
+            <strong>Debug Info:</strong>
+            <div id="debug-output">
+                Escribe en el campo de búsqueda para probar la funcionalidad...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos demo de clientes
+        const clientesDemo = [
+            {
+                id: 1,
+                nombre: 'María González Pérez',
+                telefono: '+57 300 123 4567',
+                direccion: 'Carrera 80 #45-23, Apto 501, Laureles',
+                documento: '43123456',
+                tipo: 'vip',
+                activo: true
+            },
+            {
+                id: 2,
+                nombre: 'Carlos Rodríguez Martín',
+                telefono: '+57 301 987 6543',
+                direccion: 'Calle 70 #11-42, Barrio Chapinero',
+                documento: '52987654',
+                tipo: 'regular',
+                activo: true
+            },
+            {
+                id: 3,
+                nombre: 'Ana Sofía Vargas',
+                telefono: '+57 312 456 7890',
+                direccion: 'Avenida 68 #25-15, Normandía',
+                documento: '39456789',
+                tipo: 'nuevo',
+                activo: true
+            }
+        ];
+        
+        let clienteSeleccionado = null;
+        
+        // Funciones simplificadas para testing
+        function getStoredData(key) {
+            if (key === 'clientes') return clientesDemo;
+            return [];
+        }
+        
+        function showNotification(message, type = 'info') {
+            document.getElementById('debug-output').innerHTML += `<br><strong>[${type.toUpperCase()}]</strong> ${message}`;
+        }
+        
+        // Función de búsqueda (copiada del archivo principal)
+        function buscarClienteCarrito(termino) {
+            const resultsContainer = document.getElementById('search-cliente-results');
+            
+            if (!resultsContainer) {
+                console.error('Contenedor de resultados no encontrado');
+                return;
+            }
+            
+            // Si no hay término de búsqueda, ocultar resultados
+            if (!termino || !termino.trim()) {
+                resultsContainer.classList.add('hidden');
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            // Obtener clientes de localStorage
+            const clientesData = getStoredData('clientes') || [];
+            
+            if (clientesData.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-users"></i>
+                        <p>No hay clientes registrados</p>
+                        <button class="btn-crear-desde-busqueda" onclick="crearClienteDesdeSearch('${termino}')">
+                            <i class="fas fa-user-plus"></i>
+                            Crear primer cliente "${termino}"
+                        </button>
+                    </div>
+                `;
+                resultsContainer.classList.remove('hidden');
+                return;
+            }
+            
+            // Normalizar término de búsqueda
+            const terminoNormalizado = termino.toLowerCase().trim();
+            
+            // Filtrar clientes activos por múltiples campos
+            const clientesFiltrados = clientesData.filter(cliente => {
+                if (!cliente.activo) return false;
+                
+                const nombre = (cliente.nombre || '').toLowerCase();
+                const telefono = (cliente.telefono || '').replace(/\D/g, ''); // Solo números
+                const documento = (cliente.documento || '').replace(/\D/g, '');
+                const terminoNumeros = terminoNormalizado.replace(/\D/g, '');
+                
+                return nombre.includes(terminoNormalizado) ||
+                       telefono.includes(terminoNumeros) ||
+                       documento.includes(terminoNumeros);
+            });
+            
+            if (clientesFiltrados.length > 0) {
+                // Limitar resultados para mejor rendimiento
+                const clientesMostrar = clientesFiltrados.slice(0, 10);
+                
+                resultsContainer.innerHTML = clientesMostrar.map(cliente => `
+                    <div class="cliente-result-item" onclick="seleccionarClienteCarrito(${cliente.id})">
+                        <div class="cliente-result-info">
+                            <div class="cliente-result-nombre">
+                                ${cliente.nombre}
+                                ${cliente.tipo === 'vip' ? '<span class="badge-vip"><i class="fas fa-crown"></i> VIP</span>' : ''}
+                            </div>
+                            <div class="cliente-result-detalles">
+                                <div class="cliente-detalle-linea">
+                                    <i class="fas fa-phone"></i>
+                                    <span>${cliente.telefono || 'Sin teléfono'}</span>
+                                </div>
+                                ${cliente.direccion ? `
+                                    <div class="cliente-detalle-linea">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>${cliente.direccion.length > 35 ? cliente.direccion.substring(0, 35) + '...' : cliente.direccion}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <button class="cliente-result-action" onclick="event.stopPropagation(); seleccionarClienteCarrito(${cliente.id})">
+                            <i class="fas fa-plus"></i>
+                            Agregar
+                        </button>
+                    </div>
+                `).join('');
+                
+                resultsContainer.classList.remove('hidden');
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No se encontraron clientes con "${termino}"</p>
+                        <button class="btn-crear-desde-busqueda" onclick="crearClienteDesdeSearch('${termino}')">
+                            <i class="fas fa-user-plus"></i>
+                            Crear cliente "${termino}"
+                        </button>
+                    </div>
+                `;
+                resultsContainer.classList.remove('hidden');
+            }
+        }
+        
+        function seleccionarClienteCarrito(clienteId) {
+            const clientesData = getStoredData('clientes') || [];
+            const cliente = clientesData.find(c => c.id === clienteId);
+            
+            if (!cliente) {
+                showNotification('Cliente no encontrado', 'error');
+                return;
+            }
+            
+            // Actualizar cliente seleccionado global
+            clienteSeleccionado = cliente;
+            
+            // Actualizar UI
+            mostrarClienteSeleccionado(cliente);
+            
+            // Limpiar y cerrar búsqueda inmediatamente
+            const searchInput = document.getElementById('search-cliente');
+            const resultsContainer = document.getElementById('search-cliente-results');
+            
+            if (searchInput) {
+                searchInput.value = '';
+                searchInput.blur();
+            }
+            
+            if (resultsContainer) {
+                resultsContainer.classList.add('hidden');
+                resultsContainer.innerHTML = '';
+            }
+            
+            showNotification(`Cliente ${cliente.nombre} agregado a la factura`, 'success');
+        }
+        
+        function mostrarClienteSeleccionado(cliente) {
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            if (!selectorDiv || !seleccionadoDiv) {
+                console.error('Elementos de cliente no encontrados');
+                return;
+            }
+            
+            // Ocultar selector y mostrar cliente seleccionado
+            selectorDiv.classList.add('hidden');
+            seleccionadoDiv.classList.remove('hidden');
+            
+            // Actualizar información del cliente
+            const nombreDisplay = document.getElementById('cliente-nombre-display');
+            const telefonoDisplay = document.getElementById('cliente-telefono-display');
+            const direccionDisplay = document.getElementById('cliente-direccion-display');
+            
+            if (nombreDisplay) nombreDisplay.textContent = cliente.nombre;
+            if (telefonoDisplay) telefonoDisplay.textContent = cliente.telefono || 'Sin teléfono';
+            if (direccionDisplay) direccionDisplay.textContent = cliente.direccion || 'Sin dirección';
+            
+            // Agregar indicador visual si es cliente VIP
+            if (cliente.tipo === 'vip') {
+                nombreDisplay.innerHTML += ' <span class="badge-vip"><i class="fas fa-crown"></i> VIP</span>';
+            }
+        }
+        
+        function cambiarCliente() {
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            if (!selectorDiv || !seleccionadoDiv) return;
+            
+            // Mostrar selector y ocultar cliente seleccionado
+            selectorDiv.classList.remove('hidden');
+            seleccionadoDiv.classList.add('hidden');
+            
+            // Limpiar cliente seleccionado
+            clienteSeleccionado = null;
+            
+            showNotification('Selecciona un cliente', 'info');
+        }
+        
+        function quitarCliente() {
+            if (confirm('¿Estás seguro de que quieres quitar el cliente de esta venta?')) {
+                cambiarCliente();
+                showNotification('Cliente removido de la venta', 'info');
+            }
+        }
+        
+        function crearClienteDesdeSearch(termino) {
+            showNotification(`Crear nuevo cliente con nombre: ${termino}`, 'info');
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-cliente');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function(e) {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => buscarClienteCarrito(e.target.value), 300);
+                });
+            }
+            
+            // Cerrar resultados al hacer clic fuera
+            document.addEventListener('click', function(e) {
+                const searchContainer = document.querySelector('.search-cliente-container');
+                const resultsContainer = document.getElementById('search-cliente-results');
+                
+                if (searchContainer && resultsContainer && !searchContainer.contains(e.target)) {
+                    resultsContainer.classList.add('hidden');
+                    resultsContainer.innerHTML = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

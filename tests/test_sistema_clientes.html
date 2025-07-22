@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema de Clientes - FODEXA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .test-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .test-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+        
+        .result {
+            background: white;
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Test Sistema de Clientes</h1>
+            <p>Panel de pruebas para verificar la funcionalidad completa del sistema de clientes</p>
+        </div>
+        
+        <div class="content">
+            <!-- Estado de la Base de Datos -->
+            <div class="test-section">
+                <h3><i class="fas fa-database"></i> Estado de la Base de Datos</h3>
+                <button class="btn" onclick="verificarEstado()">
+                    <i class="fas fa-search"></i> Verificar Estado
+                </button>
+                <button class="btn btn-warning" onclick="crearDatosDemo()">
+                    <i class="fas fa-plus"></i> Crear Datos Demo
+                </button>
+                <button class="btn btn-danger" onclick="limpiarBaseDatos()">
+                    <i class="fas fa-trash"></i> Limpiar Base de Datos
+                </button>
+                <div id="estadoResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Pruebas de Búsqueda -->
+            <div class="test-section">
+                <h3><i class="fas fa-search"></i> Pruebas de Búsqueda</h3>
+                <input type="text" id="termino-busqueda" placeholder="Ingresa término de búsqueda..." 
+                       style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 300px; margin-right: 10px;">
+                <button class="btn" onclick="probarBusqueda()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                <div id="busquedaResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Creación de Cliente -->
+            <div class="test-section">
+                <h3><i class="fas fa-user-plus"></i> Crear Cliente de Prueba</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <input type="text" id="test-nombre" placeholder="Nombre completo" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="text" id="test-telefono" placeholder="Teléfono" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="text" id="test-documento" placeholder="Documento" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="email" id="test-email" placeholder="Email (opcional)" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <textarea id="test-direccion" placeholder="Dirección (opcional)" 
+                          style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 15px; resize: vertical;"></textarea>
+                <button class="btn" onclick="crearClientePrueba()">
+                    <i class="fas fa-user-plus"></i> Crear Cliente de Prueba
+                </button>
+                <button class="btn" onclick="generarClienteAleatorio()">
+                    <i class="fas fa-random"></i> Generar Cliente Aleatorio
+                </button>
+                <div id="creacionResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Operaciones Masivas -->
+            <div class="test-section">
+                <h3><i class="fas fa-tasks"></i> Operaciones Masivas</h3>
+                <button class="btn" onclick="exportarDatos()">
+                    <i class="fas fa-download"></i> Exportar Clientes
+                </button>
+                <button class="btn btn-warning" onclick="crearClientesMasivos()">
+                    <i class="fas fa-users"></i> Crear 10 Clientes de Prueba
+                </button>
+                <div id="masivosResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- Console Log -->
+            <div class="test-section">
+                <h3><i class="fas fa-terminal"></i> Console Log</h3>
+                <div id="consoleLog" class="result" style="display: block; height: 200px;">
+                    <p style="color: #666; font-style: italic;">Los logs aparecerán aquí...</p>
+                </div>
+                <button class="btn" onclick="limpiarConsole()">
+                    <i class="fas fa-eraser"></i> Limpiar Log
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simular funciones de localStorage
+        function getStoredData(key) {
+            try {
+                const data = localStorage.getItem(`fodexa_${key}`);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error(`Error al obtener ${key}:`, error);
+                return null;
+            }
+        }
+
+        function setStoredData(key, data) {
+            try {
+                localStorage.setItem(`fodexa_${key}`, JSON.stringify(data));
+                return true;
+            } catch (error) {
+                console.error(`Error al guardar ${key}:`, error);
+                return false;
+            }
+        }
+
+        // Función para log personalizado
+        function log(message, type = 'info') {
+            const consoleLog = document.getElementById('consoleLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> ${message}`;
+            
+            if (type === 'error') logEntry.style.color = '#dc3545';
+            else if (type === 'success') logEntry.style.color = '#28a745';
+            else if (type === 'warning') logEntry.style.color = '#ffc107';
+            
+            consoleLog.appendChild(logEntry);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        function verificarEstado() {
+            const clientesData = getStoredData('clientes') || [];
+            const result = document.getElementById('estadoResult');
+            
+            let html = `
+                <div class="status ${clientesData.length > 0 ? 'success' : 'error'}">
+                    ${clientesData.length > 0 ? '✅' : '❌'} Total de clientes: ${clientesData.length}
+                </div>
+            `;
+            
+            if (clientesData.length > 0) {
+                html += '<h4>Clientes registrados:</h4><ul>';
+                clientesData.forEach((cliente, index) => {
+                    html += `<li>${index + 1}. ${cliente.nombre} - ${cliente.telefono} (Doc: ${cliente.documento})</li>`;
+                });
+                html += '</ul>';
+            }
+            
+            result.innerHTML = html;
+            result.style.display = 'block';
+            log(`Verificación completada: ${clientesData.length} clientes encontrados`, 'info');
+        }
+
+        function crearDatosDemo() {
+            const clientesDemo = [
+                {
+                    id: Date.now() + 1,
+                    nombre: 'María González Pérez',
+                    telefono: '+57 300 123 4567',
+                    whatsapp: '+57 300 123 4567',
+                    email: 'maria.gonzalez@email.com',
+                    direccion: 'Carrera 80 #45-23, Apto 501, Laureles',
+                    ciudad: 'Medellín',
+                    documento: '43123456',
+                    tipo: 'vip',
+                    descuento: 10,
+                    activo: true,
+                    fecha_registro: new Date().toISOString(),
+                    total_pedidos: 45,
+                    total_gastado: 850000,
+                    requiere_domicilio: true,
+                    notas: 'Cliente frecuente, prefiere pizza sin cebolla'
+                },
+                {
+                    id: Date.now() + 2,
+                    nombre: 'Carlos Rodríguez Martín',
+                    telefono: '+57 301 987 6543',
+                    whatsapp: '+57 301 987 6543',
+                    email: 'carlos.rodriguez@email.com',
+                    direccion: 'Calle 70 #11-42, Barrio Chapinero',
+                    ciudad: 'Bogotá',
+                    documento: '52987654',
+                    tipo: 'regular',
+                    descuento: 0,
+                    activo: true,
+                    fecha_registro: new Date().toISOString(),
+                    total_pedidos: 23,
+                    total_gastado: 456000,
+                    requiere_domicilio: false,
+                    notas: 'Siempre pide para recoger en tienda'
+                }
+            ];
+            
+            setStoredData('clientes', clientesDemo);
+            log('Datos demo creados exitosamente', 'success');
+            verificarEstado();
+        }
+
+        function limpiarBaseDatos() {
+            if (confirm('¿Estás seguro de eliminar todos los clientes?')) {
+                localStorage.removeItem('fodexa_clientes');
+                log('Base de datos limpiada', 'warning');
+                verificarEstado();
+            }
+        }
+
+        function probarBusqueda() {
+            const termino = document.getElementById('termino-busqueda').value;
+            const clientesData = getStoredData('clientes') || [];
+            const result = document.getElementById('busquedaResult');
+            
+            if (!termino.trim()) {
+                result.innerHTML = '<div class="status error">Ingresa un término de búsqueda</div>';
+                result.style.display = 'block';
+                return;
+            }
+            
+            const terminoNormalizado = termino.toLowerCase().trim();
+            const clientesFiltrados = clientesData.filter(cliente => {
+                const nombre = (cliente.nombre || '').toLowerCase();
+                const telefono = (cliente.telefono || '').replace(/\\D/g, '');
+                const documento = (cliente.documento || '').replace(/\\D/g, '');
+                const email = (cliente.email || '').toLowerCase();
+                const terminoNumeros = terminoNormalizado.replace(/\\D/g, '');
+                
+                return nombre.includes(terminoNormalizado) ||
+                       telefono.includes(terminoNumeros) ||
+                       documento.includes(terminoNumeros) ||
+                       email.includes(terminoNormalizado);
+            });
+            
+            let html = `
+                <div class="status ${clientesFiltrados.length > 0 ? 'success' : 'info'}">
+                    ${clientesFiltrados.length > 0 ? '✅' : 'ℹ️'} Se encontraron ${clientesFiltrados.length} resultados para "${termino}"
+                </div>
+            `;
+            
+            if (clientesFiltrados.length > 0) {
+                html += '<h4>Resultados:</h4><ul>';
+                clientesFiltrados.forEach(cliente => {
+                    html += `<li><strong>${cliente.nombre}</strong> - ${cliente.telefono} (Doc: ${cliente.documento})</li>`;
+                });
+                html += '</ul>';
+            }
+            
+            result.innerHTML = html;
+            result.style.display = 'block';
+            log(`Búsqueda realizada: "${termino}" - ${clientesFiltrados.length} resultados`, 'info');
+        }
+
+        function crearClientePrueba() {
+            const nombre = document.getElementById('test-nombre').value.trim();
+            const telefono = document.getElementById('test-telefono').value.trim();
+            const documento = document.getElementById('test-documento').value.trim();
+            const email = document.getElementById('test-email').value.trim();
+            const direccion = document.getElementById('test-direccion').value.trim();
+            const result = document.getElementById('creacionResult');
+            
+            if (!nombre || !telefono || !documento) {
+                result.innerHTML = '<div class="status error">❌ Completa al menos nombre, teléfono y documento</div>';
+                result.style.display = 'block';
+                return;
+            }
+            
+            const clientesData = getStoredData('clientes') || [];
+            const clienteExistente = clientesData.find(c => c.documento === documento);
+            
+            if (clienteExistente) {
+                result.innerHTML = '<div class="status error">❌ Ya existe un cliente con ese documento</div>';
+                result.style.display = 'block';
+                return;
+            }
+            
+            const nuevoCliente = {
+                id: Date.now(),
+                nombre: nombre,
+                telefono: telefono,
+                whatsapp: telefono,
+                documento: documento,
+                email: email || '',
+                direccion: direccion || '',
+                tipo: 'nuevo',
+                descuento: 0,
+                activo: true,
+                fecha_registro: new Date().toISOString(),
+                total_pedidos: 0,
+                total_gastado: 0,
+                ciudad: 'Bogotá',
+                requiere_domicilio: false,
+                notas: 'Cliente creado desde panel de pruebas'
+            };
+            
+            clientesData.push(nuevoCliente);
+            setStoredData('clientes', clientesData);
+            
+            result.innerHTML = `
+                <div class="status success">✅ Cliente creado exitosamente</div>
+                <strong>ID:</strong> ${nuevoCliente.id}<br>
+                <strong>Nombre:</strong> ${nuevoCliente.nombre}<br>
+                <strong>Teléfono:</strong> ${nuevoCliente.telefono}<br>
+                <strong>Documento:</strong> ${nuevoCliente.documento}
+            `;
+            result.style.display = 'block';
+            
+            // Limpiar formulario
+            document.getElementById('test-nombre').value = '';
+            document.getElementById('test-telefono').value = '';
+            document.getElementById('test-documento').value = '';
+            document.getElementById('test-email').value = '';
+            document.getElementById('test-direccion').value = '';
+            
+            log(`Cliente creado: ${nombre} (Doc: ${documento})`, 'success');
+        }
+
+        function generarClienteAleatorio() {
+            const nombres = ['Ana Sofía Vargas', 'Luis Fernando Castro', 'Patricia Morales', 'Diego Andrés López', 'Carmen Elena Ruiz'];
+            const telefonos = ['3001234567', '3109876543', '3156789012', '3123456789', '3187654321'];
+            const documentos = ['12345678', '87654321', '11223344', '44332211', '98765432'];
+            
+            const nombre = nombres[Math.floor(Math.random() * nombres.length)];
+            const telefono = telefonos[Math.floor(Math.random() * telefonos.length)];
+            const documento = documentos[Math.floor(Math.random() * documentos.length)] + Math.floor(Math.random() * 100);
+            
+            document.getElementById('test-nombre').value = nombre;
+            document.getElementById('test-telefono').value = telefono;
+            document.getElementById('test-documento').value = documento;
+            document.getElementById('test-email').value = `${nombre.toLowerCase().replace(/\\s+/g, '.')}@email.com`;
+            document.getElementById('test-direccion').value = `Calle ${Math.floor(Math.random() * 100)} #${Math.floor(Math.random() * 50)}-${Math.floor(Math.random() * 99)}`;
+            
+            log('Datos aleatorios generados', 'info');
+        }
+
+        function crearClientesMasivos() {
+            const result = document.getElementById('masivosResult');
+            const clientesData = getStoredData('clientes') || [];
+            
+            for (let i = 1; i <= 10; i++) {
+                const nuevoCliente = {
+                    id: Date.now() + i,
+                    nombre: `Cliente Prueba ${i}`,
+                    telefono: `+57 30${Math.floor(Math.random() * 10)} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 9000) + 1000}`,
+                    whatsapp: `+57 30${Math.floor(Math.random() * 10)} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 9000) + 1000}`,
+                    documento: `${Math.floor(Math.random() * 90000000) + 10000000}`,
+                    email: `cliente${i}@test.com`,
+                    direccion: `Dirección de prueba ${i}`,
+                    tipo: i <= 2 ? 'vip' : i <= 5 ? 'frecuente' : 'nuevo',
+                    descuento: i <= 2 ? 15 : i <= 5 ? 5 : 0,
+                    activo: true,
+                    fecha_registro: new Date().toISOString(),
+                    total_pedidos: Math.floor(Math.random() * 50),
+                    total_gastado: Math.floor(Math.random() * 500000),
+                    ciudad: 'Bogotá',
+                    requiere_domicilio: Math.random() > 0.5,
+                    notas: `Cliente de prueba número ${i}`
+                };
+                
+                clientesData.push(nuevoCliente);
+            }
+            
+            setStoredData('clientes', clientesData);
+            
+            result.innerHTML = '<div class="status success">✅ 10 clientes de prueba creados exitosamente</div>';
+            result.style.display = 'block';
+            
+            log('10 clientes de prueba creados', 'success');
+        }
+
+        function exportarDatos() {
+            const clientesData = getStoredData('clientes') || [];
+            const dataStr = JSON.stringify(clientesData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `fodexa-clientes-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            const result = document.getElementById('masivosResult');
+            result.innerHTML = `<div class="status success">✅ ${clientesData.length} clientes exportados</div>`;
+            result.style.display = 'block';
+            
+            log(`${clientesData.length} clientes exportados`, 'success');
+        }
+
+        function limpiarConsole() {
+            document.getElementById('consoleLog').innerHTML = '<p style="color: #666; font-style: italic;">Los logs aparecerán aquí...</p>';
+        }
+
+        // Inicializar
+        window.addEventListener('load', function() {
+            log('Panel de pruebas iniciado', 'success');
+            verificarEstado();
+        });
+    </script>
+</body>
+</html>

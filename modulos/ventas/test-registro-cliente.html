@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Registro de Cliente | FODEXA</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="ventas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="test-header">
+            <h1>🧪 Test - Registro de Cliente</h1>
+            <p>Prueba el registro de nuevos clientes con todos los campos</p>
+        </header>
+
+        <main class="test-main">
+            <!-- Test Form Modal -->
+            <section class="test-section">
+                <h2>📝 Formulario Modal</h2>
+                <button class="btn btn-primary" onclick="mostrarModalNuevoCliente()">
+                    <i class="fas fa-user-plus"></i>
+                    Abrir Modal de Nuevo Cliente
+                </button>
+            </section>
+
+            <!-- Test Form Insertado -->
+            <section class="test-section">
+                <h2>📋 Formulario Insertado</h2>
+                <div id="nuevo-cliente-form-container" class="nuevo-cliente-form-container">
+                    <div class="form-header">
+                        <h4 class="form-titulo">
+                            <i class="fas fa-user-plus"></i>
+                            Agregar Nuevo Cliente
+                        </h4>
+                        <button type="button" class="btn-cerrar-form" onclick="cerrarFormularioNuevoCliente()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <form id="form-nuevo-cliente-insertado" class="form-insertado" onsubmit="event.preventDefault(); guardarNuevoCliente();">
+                        <!-- Campos Obligatorios -->
+                        <div class="seccion-campos">
+                            <h5 class="seccion-titulo">
+                                <i class="fas fa-star"></i>
+                                Información Obligatoria
+                            </h5>
+                            
+                            <div class="campo-grupo">
+                                <label for="nuevo-nombre" class="campo-label">
+                                    <i class="fas fa-user"></i>
+                                    Nombre Completo *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="nuevo-nombre" 
+                                    name="nombre" 
+                                    class="campo-input" 
+                                    placeholder="Ej: María González"
+                                    required
+                                >
+                            </div>
+                            
+                            <div class="campo-grupo">
+                                <label for="nuevo-whatsapp" class="campo-label">
+                                    <i class="fab fa-whatsapp"></i>
+                                    WhatsApp *
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    id="nuevo-whatsapp" 
+                                    name="whatsapp" 
+                                    class="campo-input" 
+                                    placeholder="3XX XXX XXXX"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <!-- Campos Opcionales -->
+                        <div class="seccion-campos">
+                            <h5 class="seccion-titulo">
+                                <i class="fas fa-info-circle"></i>
+                                Información Adicional (Opcional)
+                            </h5>
+                            
+                            <div class="campos-fila">
+                                <div class="campo-grupo">
+                                    <label for="nuevo-documento" class="campo-label">
+                                        <i class="fas fa-id-card"></i>
+                                        Documento de Identidad
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="nuevo-documento" 
+                                        name="documento" 
+                                        class="campo-input" 
+                                        placeholder="Ej: 12345678"
+                                    >
+                                </div>
+                                
+                                <div class="campo-grupo">
+                                    <label for="nuevo-telefono" class="campo-label">
+                                        <i class="fas fa-phone"></i>
+                                        Número de Llamada
+                                    </label>
+                                    <input 
+                                        type="tel" 
+                                        id="nuevo-telefono" 
+                                        name="telefono" 
+                                        class="campo-input" 
+                                        placeholder="Ej: 321 XXX XXXX"
+                                    >
+                                </div>
+                            </div>
+                            
+                            <div class="campo-grupo">
+                                <label for="nuevo-fecha-nacimiento" class="campo-label">
+                                    <i class="fas fa-birthday-cake"></i>
+                                    Fecha de Nacimiento
+                                </label>
+                                <input 
+                                    type="date" 
+                                    id="nuevo-fecha-nacimiento" 
+                                    name="fechaNacimiento" 
+                                    class="campo-input"
+                                >
+                            </div>
+                            
+                            <!-- Campo de Direcciones -->
+                            <div class="campo-grupo-direcciones">
+                                <div class="direccion-header">
+                                    <label class="campo-label">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Direcciones
+                                    </label>
+                                    <button type="button" class="btn-agregar-direccion" onclick="agregarNuevaDireccion()">
+                                        <i class="fas fa-plus"></i>
+                                        Agregar
+                                    </button>
+                                </div>
+                                <div id="direcciones-container" class="direcciones-container">
+                                    <div class="direccion-item">
+                                        <input 
+                                            type="text" 
+                                            name="direccion" 
+                                            class="campo-input direccion-input" 
+                                            placeholder="Ej: Calle 123 #45-67, Barrio Centro"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Campo de Notas -->
+                            <div class="campo-grupo">
+                                <label for="nuevo-notas" class="campo-label">
+                                    <i class="fas fa-sticky-note"></i>
+                                    Notas
+                                </label>
+                                <textarea 
+                                    id="nuevo-notas" 
+                                    name="notas" 
+                                    class="campo-input campo-textarea" 
+                                    placeholder="Observaciones, preferencias del cliente, etc..."
+                                    rows="3"
+                                ></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancelar" onclick="cerrarFormularioNuevoCliente()">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn-guardar">
+                                <i class="fas fa-save"></i>
+                                Guardar Cliente
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Debug Information -->
+            <section class="test-section">
+                <h2>🐛 Debug Info</h2>
+                <div id="debug-info" class="debug-info">
+                    <p>Abrir consola del navegador (F12) para ver los logs de debug</p>
+                </div>
+                
+                <div class="debug-actions">
+                    <button class="btn btn-outline" onclick="mostrarEstadoLocalStorage()">
+                        📦 Ver localStorage
+                    </button>
+                    <button class="btn btn-outline" onclick="mostrarEstadoIndexedDB()">
+                        🗄️ Ver IndexedDB
+                    </button>
+                    <button class="btn btn-outline" onclick="limpiarDatos()">
+                        🗑️ Limpiar Datos
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Nuevo Cliente -->
+    <div id="modal-nuevo-cliente" class="modal hidden">
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-user-plus"></i>
+                    Nuevo Cliente
+                </h3>
+                <button class="modal-close" onclick="cerrarModal('modal-nuevo-cliente')" title="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="form-nuevo-cliente">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nuevo-cliente-nombre">
+                                <i class="fas fa-user"></i>
+                                Nombre Completo *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="nuevo-cliente-nombre" 
+                                name="nombre" 
+                                class="form-control" 
+                                placeholder="Nombre completo del cliente"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nuevo-cliente-whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp *
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="nuevo-cliente-whatsapp" 
+                                name="telefonoWhatsapp" 
+                                class="form-control" 
+                                placeholder="3XX XXX XXXX"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nuevo-cliente-telefono">
+                                <i class="fas fa-phone"></i>
+                                Teléfono de Llamada
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="nuevo-cliente-telefono" 
+                                name="telefonoLlamada" 
+                                class="form-control" 
+                                placeholder="Teléfono fijo o celular (opcional)"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nuevo-cliente-documento">
+                                <i class="fas fa-id-card"></i>
+                                Documento de Identidad
+                            </label>
+                            <input 
+                                type="text" 
+                                id="nuevo-cliente-documento" 
+                                name="documentoIdentidad" 
+                                class="form-control" 
+                                placeholder="Cédula, pasaporte, etc. (opcional)"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nuevo-cliente-fecha-nacimiento">
+                                <i class="fas fa-birthday-cake"></i>
+                                Fecha de Nacimiento
+                            </label>
+                            <input 
+                                type="date" 
+                                id="nuevo-cliente-fecha-nacimiento" 
+                                name="fechaNacimiento" 
+                                class="form-control"
+                            >
+                        </div>
+                        
+                        <div class="form-group form-group-full">
+                            <div class="direcciones-group">
+                                <label for="nuevo-cliente-direccion">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Direcciones
+                                </label>
+                                
+                                <!-- Container para las direcciones -->
+                                <div class="direcciones-container" id="direcciones-container-modal">
+                                    <div class="direccion-item" data-direccion-index="1">
+                                        <div class="direccion-header">
+                                            <span class="direccion-numero">Dirección 1</span>
+                                        </div>
+                                        <textarea 
+                                            id="nuevo-cliente-direccion" 
+                                            name="direccion[]" 
+                                            class="form-control direccion-input" 
+                                            placeholder="Dirección completa del cliente (opcional)"
+                                            rows="2"
+                                        ></textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- Botón para agregar más direcciones -->
+                                <div class="direcciones-actions">
+                                    <button 
+                                        type="button" 
+                                        class="btn-agregar-direccion-modal" 
+                                        id="btn-agregar-direccion-modal"
+                                        onclick="agregarDireccionModal()"
+                                        title="Agregar otra dirección"
+                                    >
+                                        ➕ Agregar otra dirección
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group form-group-full">
+                            <label for="nuevo-cliente-notas">
+                                <i class="fas fa-sticky-note"></i>
+                                Notas Adicionales
+                            </label>
+                            <textarea 
+                                id="nuevo-cliente-notas" 
+                                name="notas" 
+                                class="form-control" 
+                                placeholder="Información adicional sobre el cliente (opcional)"
+                                rows="2"
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="cerrarModal('modal-nuevo-cliente')">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/main.js"></script>
+    <script src="ventas.js"></script>
+    <script>
+        // Funciones de debug específicas para el test
+        function mostrarEstadoLocalStorage() {
+            const clientes = JSON.parse(localStorage.getItem('fodexa_clientes') || '[]');
+            console.log('📦 Clientes en localStorage:', clientes);
+            alert(`Clientes en localStorage: ${clientes.length}\nRevisa la consola para ver detalles`);
+        }
+
+        async function mostrarEstadoIndexedDB() {
+            try {
+                const clientes = await obtenerTodosLosClientes();
+                console.log('🗄️ Clientes en IndexedDB:', clientes);
+                alert(`Clientes en IndexedDB: ${clientes.length}\nRevisa la consola para ver detalles`);
+            } catch (error) {
+                console.error('Error obteniendo clientes de IndexedDB:', error);
+                alert('Error accediendo a IndexedDB');
+            }
+        }
+
+        function limpiarDatos() {
+            if (confirm('¿Estás seguro de que quieres limpiar todos los datos de clientes?')) {
+                localStorage.removeItem('fodexa_clientes');
+                // También limpiar IndexedDB si está disponible
+                if (db) {
+                    const transaction = db.transaction(['clientes'], 'readwrite');
+                    const store = transaction.objectStore('clientes');
+                    store.clear();
+                }
+                alert('Datos limpiados');
+                console.log('🗑️ Datos de clientes limpiados');
+            }
+        }
+
+        // Auto-llenar formulario para testing
+        function llenarFormularioTest() {
+            // Llenar modal
+            document.getElementById('nuevo-cliente-nombre').value = 'Test Cliente Modal';
+            document.getElementById('nuevo-cliente-whatsapp').value = '300123456';
+            document.getElementById('nuevo-cliente-telefono').value = '601234567';
+            document.getElementById('nuevo-cliente-documento').value = '12345678';
+            document.getElementById('nuevo-cliente-fecha-nacimiento').value = '1990-01-01';
+            document.getElementById('nuevo-cliente-direccion').value = 'Calle Test #123-45';
+            document.getElementById('nuevo-cliente-notas').value = 'Cliente de prueba desde modal';
+
+            // Llenar formulario insertado
+            document.getElementById('nuevo-nombre').value = 'Test Cliente Insertado';
+            document.getElementById('nuevo-whatsapp').value = '310987654';
+            document.getElementById('nuevo-telefono').value = '607654321';
+            document.getElementById('nuevo-documento').value = '87654321';
+            document.getElementById('nuevo-fecha-nacimiento').value = '1985-05-15';
+            document.querySelector('#direcciones-container .direccion-input').value = 'Avenida Test #987-65';
+            document.getElementById('nuevo-notas').value = 'Cliente de prueba desde formulario insertado';
+        }
+
+        // Agregar botón de auto-llenado
+        document.addEventListener('DOMContentLoaded', function() {
+            const testSection = document.querySelector('.test-section:first-child');
+            const fillButton = document.createElement('button');
+            fillButton.className = 'btn btn-outline';
+            fillButton.innerHTML = '<i class="fas fa-magic"></i> Auto-llenar formularios';
+            fillButton.onclick = llenarFormularioTest;
+            testSection.appendChild(fillButton);
+        });
+    </script>
+</body>
+</html>

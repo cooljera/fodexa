@@ -1,0 +1,48 @@
+/* Compacta aún más la tarjeta de cliente en ventas */
+.cliente-card-minimalista, .cliente-card-minimalista.compacta-fodexa {
+    border-radius: 8px !important;
+    padding: 4px 6px 4px 8px !important;
+    gap: 4px !important;
+    margin-bottom: 4px !important;
+}
+.cliente-info-compacta {
+    gap: 8px !important;
+}
+.cliente-nombre-minimalista {
+    font-size: 0.93rem !important;
+    font-weight: 600 !important;
+    margin: 0 0 1px 0 !important;
+    line-height: 1.1 !important;
+}
+.cliente-doc-minimalista {
+    font-size: 0.82rem !important;
+    line-height: 1.1 !important;
+}
+.btn-cambiar-cliente {
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    margin-left: 4px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.cliente-dato-hline {
+    gap: 4px !important;
+    font-size: 11px !important;
+    margin-bottom: 1px !important;
+}
+.mini-icon {
+    font-size: 0.95em !important;
+    width: 14px !important;
+    height: 14px !important;
+    margin-right: 1px !important;
+    vertical-align: middle !important;
+}
+.direccion-dropdown-minimal {
+    margin-left: 3px !important;
+    font-size: 0.82rem !important;
+}

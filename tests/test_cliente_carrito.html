@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Cliente en Carrito</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="modulos/ventas/ventas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Simulación exacta del carrito */
+        .pos-carrito {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cliente-section {
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            background: #f8fafc;
+        }
+        
+        .cliente-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .cliente-titulo {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">
+            <i class="fas fa-shopping-cart"></i>
+            Test Cliente en Carrito
+        </h1>
+        
+        <div class="btn-test" onclick="testClienteVIP()">
+            <i class="fas fa-crown"></i> Seleccionar Cliente VIP
+        </div>
+        <div class="btn-test" onclick="testClienteRegular()">
+            <i class="fas fa-user"></i> Seleccionar Cliente Regular
+        </div>
+        <div class="btn-test" onclick="testClienteSinDatos()">
+            <i class="fas fa-user-slash"></i> Cliente Sin Datos
+        </div>
+        <div class="btn-test" onclick="volverBuscador()">
+            <i class="fas fa-search"></i> Volver al Buscador
+        </div>
+        
+        <!-- Simulación EXACTA del carrito de ventas -->
+        <div class="pos-carrito">
+            <!-- Sección de Cliente -->
+            <div class="cliente-section">
+                <div class="cliente-header">
+                    <h4 class="cliente-titulo">
+                        <i class="fas fa-user"></i>
+                        Cliente
+                    </h4>
+                </div>
+                
+                <!-- Sección de Cliente -->
+                <div class="cliente-section" id="cliente-section">
+                    <!-- Selector de cliente (estado inicial) -->
+                    <div class="cliente-selector" id="cliente-selector">
+                        <div class="search-cliente-container">
+                            <div class="search-input-wrapper">
+                                <i class="fas fa-search search-icon"></i>
+                                <input 
+                                    type="text" 
+                                    id="search-cliente" 
+                                    class="search-cliente" 
+                                    placeholder="Buscar cliente por nombre o teléfono..."
+                                    oninput="buscarClienteCarrito(this.value)"
+                                >
+                            </div>
+                            <button class="btn-nuevo-cliente" onclick="mostrarModalNuevoCliente()">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Nuevo</span>
+                            </button>
+                            <div class="search-cliente-results" id="search-cliente-results">
+                                <!-- Resultados de búsqueda se mostrarán aquí -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cliente seleccionado -->
+                    <div class="cliente-seleccionado hidden" id="cliente-seleccionado">
+                        <!-- El contenido se genera dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de prueba exactos
+        const clientesPrueba = {
+            vip: {
+                id: 1,
+                nombre: 'Patricia Morales Díaz',
+                telefono: '+57 320 654 3210',
+                whatsapp: '+57 320 654 3210',
+                direccion: 'Calle 45 #23-67, El Poblado, Medellín',
+                tipo: 'vip',
+                descuento: 15
+            },
+            regular: {
+                id: 2,
+                nombre: 'Ana Sofía Vargas López',
+                telefono: '+57 312 456 7890',
+                direccion: 'Avenida 68 #25-15, Normandía, Medellín',
+                tipo: 'regular',
+                descuento: 0
+            },
+            sinDatos: {
+                id: 3,
+                nombre: 'Cliente Sin Datos Completos',
+                telefono: null,
+                direccion: null,
+                tipo: 'nuevo',
+                descuento: 0
+            }
+        };
+
+        // Función EXACTA del sistema principal
+        function mostrarClienteSeleccionado(cliente) {
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            if (!selectorDiv || !seleccionadoDiv) {
+                console.error('Elementos de cliente no encontrados');
+                return;
+            }
+            
+            console.log('🔄 Ocultando buscador y mostrando cliente:', cliente.nombre);
+            
+            // Ocultar selector y mostrar cliente seleccionado
+            selectorDiv.classList.add('hidden');
+            seleccionadoDiv.classList.remove('hidden');
+            
+            // Crear la visualización completa del cliente con toda su información
+            const clienteCard = `
+                <div class="cliente-card-completa">
+                    <div class="cliente-info-completa">
+                        <div class="cliente-nombre-principal">
+                            ${cliente.nombre}
+                            ${cliente.tipo === 'vip' ? '<span class="badge-vip"><i class="fas fa-crown"></i> VIP</span>' : ''}
+                            ${cliente.tipo === 'frecuente' ? '<span class="badge-frecuente"><i class="fas fa-star"></i> Frecuente</span>' : ''}
+                        </div>
+                        <div class="cliente-detalles-grid">
+                            <div class="cliente-detalle-item">
+                                <i class="fas fa-phone"></i>
+                                <span class="detalle-label">Celular:</span>
+                                <span class="detalle-valor">${cliente.telefono || cliente.whatsapp || 'No registrado'}</span>
+                            </div>
+                            <div class="cliente-detalle-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="detalle-label">Dirección:</span>
+                                <span class="detalle-valor">${cliente.direccion || 'No registrada'}</span>
+                            </div>
+                            ${cliente.descuento > 0 ? `
+                                <div class="cliente-detalle-item descuento-info">
+                                    <i class="fas fa-percentage"></i>
+                                    <span class="detalle-label">Descuento:</span>
+                                    <span class="detalle-valor descuento-valor">${cliente.descuento}%</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="cliente-actions-completa">
+                        <button class="btn-cambiar-cliente" onclick="cambiarCliente()" title="Cambiar cliente">
+                            <i class="fas fa-edit"></i>
+                            <span>Cambiar</span>
+                        </button>
+                        <button class="btn-quitar-cliente" onclick="quitarCliente()" title="Quitar cliente">
+                            <i class="fas fa-times"></i>
+                            <span>Quitar</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Actualizar el contenido del div de cliente seleccionado
+            seleccionadoDiv.innerHTML = clienteCard;
+            
+            console.log('✅ Cliente mostrado exitosamente');
+        }
+
+        // Funciones de prueba
+        function testClienteVIP() {
+            console.log('🧪 Probando cliente VIP...');
+            mostrarClienteSeleccionado(clientesPrueba.vip);
+        }
+
+        function testClienteRegular() {
+            console.log('🧪 Probando cliente regular...');
+            mostrarClienteSeleccionado(clientesPrueba.regular);
+        }
+
+        function testClienteSinDatos() {
+            console.log('🧪 Probando cliente sin datos...');
+            mostrarClienteSeleccionado(clientesPrueba.sinDatos);
+        }
+
+        function volverBuscador() {
+            console.log('🔄 Volviendo al buscador...');
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            if (selectorDiv) selectorDiv.classList.remove('hidden');
+            if (seleccionadoDiv) seleccionadoDiv.classList.add('hidden');
+            
+            // Limpiar campo de búsqueda
+            const searchInput = document.getElementById('search-cliente');
+            if (searchInput) searchInput.value = '';
+            
+            console.log('✅ Buscador restaurado');
+        }
+
+        // Funciones simuladas para los botones
+        function cambiarCliente() {
+            console.log('🔄 Función cambiarCliente() ejecutada');
+            volverBuscador();
+        }
+
+        function quitarCliente() {
+            if (confirm('¿Confirmar quitar cliente de la venta?')) {
+                console.log('❌ Cliente quitado de la venta');
+                volverBuscador();
+            }
+        }
+
+        function buscarClienteCarrito(termino) {
+            console.log('🔍 Búsqueda simulada:', termino);
+        }
+
+        function mostrarModalNuevoCliente() {
+            alert('📝 Modal de nuevo cliente (simulado)');
+        }
+
+        // Estado inicial
+        console.log('🚀 Test de cliente en carrito inicializado');
+        console.log('📋 Instrucciones:');
+        console.log('1. Usar botones para seleccionar clientes');
+        console.log('2. Verificar que se oculta el buscador');
+        console.log('3. Verificar que aparecen los datos del cliente');
+        console.log('4. Probar botones Cambiar/Quitar');
+    </script>
+</body>
+</html>

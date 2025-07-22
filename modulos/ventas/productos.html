@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos - FODEXA</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="productos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <h1 class="logo">FODEXA</h1>
+                <span class="tagline">Gestión de Productos</span>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+      <div class="fodexa-wrapper">
+        <aside class="sidebar sidebar-productos sidebar-vertical">
+          <div class="sidebar-logo">
+            <h2>FODEXA</h2>
+            <span>Productos</span>
+          </div>
+          <nav class="sidebar-menu">
+            <ul>
+              <li><button class="menu-btn-prod active" data-section="categorias"><i class="fas fa-tags"></i> Categorías</button></li>
+              <li><button class="menu-btn-prod" data-section="productos"><i class="fas fa-box"></i> Productos</button></li>
+              <li><button class="menu-btn-prod" data-section="configuracion"><i class="fas fa-cogs"></i> Configuración</button></li>
+            </ul>
+          </nav>
+          <button class="btn btn-retroceder-menu" id="btn-retroceder-menu" type="button"><i class="fas fa-arrow-left"></i> Volver al menú principal</button>
+        </aside>
+        <main class="main-panel main-panel-productos">
+          <!-- Sección: Categorías -->
+          <section id="seccion-categorias" class="seccion-prod visible">
+            <h2 class="seccion-titulo"><i class="fas fa-tags"></i> Gestión de Categorías</h2>
+            <div class="seccion-barra">
+              <input type="text" class="campo-input buscador-seccion" placeholder="Buscar categoría...">
+              <button class="btn btn-primary btn-agregar" id="btn-agregar-categoria"><i class="fas fa-plus"></i> Agregar categoría</button>
+            </div>
+            <div id="contenedor-tarjetas-categorias" class="grid-tarjetas"></div>
+          </section>
+          <!-- Sección: Productos -->
+          <section id="seccion-productos" class="seccion-prod hidden">
+            <h2 class="seccion-titulo"><i class="fas fa-box"></i> Gestión de Productos</h2>
+            <div class="seccion-barra">
+              <input type="text" class="campo-input buscador-seccion" placeholder="Buscar producto...">
+              <button class="btn btn-primary btn-agregar" id="btn-agregar-producto"><i class="fas fa-plus"></i> Agregar producto</button>
+            </div>
+            <div id="contenedor-tarjetas-productos" class="grid-tarjetas"></div>
+          </section>
+          <!-- Sección: Configuración -->
+          <section id="seccion-configuracion" class="seccion-prod hidden">
+            <h2 class="seccion-titulo"><i class="fas fa-cogs"></i> Configuración de Productos</h2>
+            <div class="seccion-barra">
+              <input type="text" class="campo-input buscador-seccion" placeholder="Buscar configuración...">
+              <button class="btn btn-primary btn-agregar" id="btn-agregar-config"><i class="fas fa-plus"></i> Nueva configuración</button>
+            </div>
+            <div id="contenedor-tarjetas-configuracion" class="grid-tarjetas"></div>
+          </section>
+        </main>
+      </div>
+    </main>
+    <script>
+    // Navegación modular para Gestión de Productos
+    (function() {
+      var btns = document.querySelectorAll('.menu-btn-prod');
+      var secciones = [
+        document.getElementById('seccion-categorias'),
+        document.getElementById('seccion-productos'),
+        document.getElementById('seccion-configuracion')
+      ];
+      btns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          btns.forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          var section = btn.getAttribute('data-section');
+          secciones.forEach(function(sec) {
+            if (sec.id === 'seccion-' + section) {
+              sec.classList.remove('hidden'); sec.classList.add('visible');
+            } else {
+              sec.classList.remove('visible'); sec.classList.add('hidden');
+            }
+          });
+        });
+      });
+      // Retroceder al menú principal
+      document.getElementById('btn-retroceder-menu').onclick = function() {
+        window.location.href = '../../index.html';
+      };
+    })();
+    </script>
+    <!-- Modales y otros elementos dinámicos los genera productos.js -->
+    <script src="productos.js"></script>
+</body>
+</html>

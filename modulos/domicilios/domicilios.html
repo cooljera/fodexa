@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FODEXA - Gestión de Domicilios</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/modulos.css">
+    <link rel="stylesheet" href="domicilios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header del módulo -->
+    <header class="module-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="btn-back" onclick="volverDashboard()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="module-info">
+                        <h1 class="module-title">
+                            <i class="fas fa-motorcycle"></i>
+                            Gestión de Domicilios
+                        </h1>
+                        <p class="module-subtitle">Sistema de delivery y pedidos a domicilio</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-success" onclick="nuevoPedido()">
+                        <i class="fas fa-plus"></i>
+                        Nuevo Pedido
+                    </button>
+                    <button class="btn btn-outline" onclick="mostrarModalConfiguracion()">
+                        <i class="fas fa-cog"></i>
+                        Configuración
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Panel de estadísticas rápidas -->
+            <section class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-icon stat-pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pedidos-pendientes">0</h3>
+                        <p>Pendientes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-in-route">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pedidos-en-ruta">0</h3>
+                        <p>En Ruta</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-delivered">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pedidos-entregados">0</h3>
+                        <p>Entregados Hoy</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-revenue">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="ingresos-domicilios">$0</h3>
+                        <p>Ingresos Hoy</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filtros y búsqueda -->
+            <section class="filters-section">
+                <div class="filters-row">
+                    <div class="search-group">
+                        <input type="text" id="search-pedidos" placeholder="Buscar por cliente, teléfono o dirección..." class="search-input">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <div class="filter-group">
+                        <select id="filter-estado" class="filter-select">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="preparando">Preparando</option>
+                            <option value="en-ruta">En Ruta</option>
+                            <option value="entregado">Entregado</option>
+                            <option value="cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select id="filter-domiciliario" class="filter-select">
+                            <option value="">Todos los domiciliarios</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <input type="date" id="filter-fecha" class="filter-input">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lista de pedidos -->
+            <section class="pedidos-section">
+                <div class="section-header">
+                    <h2>Pedidos Activos</h2>
+                    <div class="view-controls">
+                        <button class="btn-view active" data-view="card" onclick="cambiarVista('card')">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="btn-view" data-view="table" onclick="cambiarVista('table')">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vista de tarjetas -->
+                <div id="pedidos-cards" class="pedidos-grid">
+                    <!-- Los pedidos se cargan dinámicamente -->
+                </div>
+
+                <!-- Vista de tabla -->
+                <div id="pedidos-table" class="table-container hidden">
+                    <table class="pedidos-table">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Dirección</th>
+                                <th>Domiciliario</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Tiempo</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidos-table-body">
+                            <!-- Filas se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal: Nuevo Pedido -->
+    <div id="modal-nuevo-pedido" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Nuevo Pedido a Domicilio</h3>
+                <button class="modal-close" onclick="cerrarModal('modal-nuevo-pedido')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-nuevo-pedido">
+                    <!-- Paso 1: Información del cliente -->
+                    <div class="step-section active" data-step="1">
+                        <h4><i class="fas fa-user"></i> Información del Cliente</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="cliente-nombre">Nombre Completo *</label>
+                                <input type="text" id="cliente-nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cliente-telefono">Teléfono *</label>
+                                <input type="tel" id="cliente-telefono" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="cliente-direccion">Dirección Completa *</label>
+                                <textarea id="cliente-direccion" rows="2" required placeholder="Incluir barrio, referencias, etc."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="cliente-barrio">Barrio/Zona</label>
+                                <select id="cliente-barrio">
+                                    <option value="">Seleccionar barrio...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cliente-referencias">Referencias</label>
+                                <input type="text" id="cliente-referencias" placeholder="Casa blanca, portón negro, etc.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: Productos del pedido -->
+                    <div class="step-section" data-step="2">
+                        <h4><i class="fas fa-shopping-cart"></i> Productos del Pedido</h4>
+                        <div class="productos-selector">
+                            <div class="productos-search">
+                                <input type="text" id="buscar-productos-pedido" placeholder="Buscar productos...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="productos-grid" id="productos-disponibles">
+                                <!-- Productos se cargan dinámicamente -->
+                            </div>
+                        </div>
+                        <div class="pedido-resumen">
+                            <h5>Resumen del Pedido</h5>
+                            <div id="items-pedido" class="items-list">
+                                <!-- Items del pedido -->
+                            </div>
+                            <div class="totales-pedido">
+                                <div class="total-line">
+                                    <span>Subtotal:</span>
+                                    <span id="subtotal-pedido">$0</span>
+                                </div>
+                                <div class="total-line">
+                                    <span>Domicilio:</span>
+                                    <span id="costo-domicilio">$0</span>
+                                </div>
+                                <div class="total-line total-final">
+                                    <span>Total:</span>
+                                    <span id="total-pedido">$0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3: Detalles del domicilio -->
+                    <div class="step-section" data-step="3">
+                        <h4><i class="fas fa-motorcycle"></i> Detalles del Domicilio</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="domiciliario-asignado">Domiciliario</label>
+                                <select id="domiciliario-asignado">
+                                    <option value="">Asignar automáticamente</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tiempo-estimado">Tiempo Estimado</label>
+                                <select id="tiempo-estimado">
+                                    <option value="30">30 minutos</option>
+                                    <option value="45">45 minutos</option>
+                                    <option value="60">60 minutos</option>
+                                    <option value="90">90 minutos</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="metodo-pago-domicilio">Método de Pago</label>
+                                <select id="metodo-pago-domicilio" required>
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="tarjeta">Tarjeta (Datafono)</option>
+                                    <option value="transferencia">Transferencia</option>
+                                    <option value="pagado">Ya Pagado</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="notas-pedido">Notas Especiales</label>
+                                <textarea id="notas-pedido" rows="3" placeholder="Instrucciones especiales, alergias, etc."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navegación de pasos -->
+                    <div class="step-navigation">
+                        <button type="button" id="btn-prev-step" class="btn btn-outline" onclick="anteriorPaso()" disabled>
+                            <i class="fas fa-arrow-left"></i> Anterior
+                        </button>
+                        <div class="step-indicators">
+                            <span class="step-indicator active" data-step="1">1</span>
+                            <span class="step-indicator" data-step="2">2</span>
+                            <span class="step-indicator" data-step="3">3</span>
+                        </div>
+                        <button type="button" id="btn-next-step" class="btn btn-primary" onclick="siguientePaso()">
+                            Siguiente <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" id="btn-crear-pedido" class="btn btn-success hidden">
+                            <i class="fas fa-check"></i> Crear Pedido
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalles del Pedido -->
+    <div id="modal-detalle-pedido" class="modal hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Detalles del Pedido <span id="pedido-numero"></span></h3>
+                <button class="modal-close" onclick="cerrarModal('modal-detalle-pedido')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detalle-pedido-content">
+                    <!-- Contenido se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Seguimiento de Pedido -->
+    <div id="modal-seguimiento" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Seguimiento del Pedido</h3>
+                <button class="modal-close" onclick="cerrarModal('modal-seguimiento')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="timeline" id="timeline-pedido">
+                    <!-- Timeline se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Configuración -->
+    <div id="modal-configuracion-domicilios" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configuración de Domicilios</h3>
+                <button class="modal-close" onclick="cerrarModal('modal-configuracion-domicilios')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-config-domicilios">
+                    <div class="form-group">
+                        <label for="costo-domicilio-config">Costo del Domicilio</label>
+                        <input type="number" id="costo-domicilio-config" min="0" step="500">
+                    </div>
+                    <div class="form-group">
+                        <label for="tiempo-default">Tiempo de Entrega por Defecto (minutos)</label>
+                        <input type="number" id="tiempo-default" min="15" max="120" value="45">
+                    </div>
+                    <div class="form-group">
+                        <label for="radio-cobertura">Radio de Cobertura (km)</label>
+                        <input type="number" id="radio-cobertura" min="1" max="50" step="0.5" value="5">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="cerrarModal('modal-configuracion-domicilios')">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Guardar Configuración
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de carga -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Procesando pedido...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/main.js"></script>
+    <script src="domicilios.js"></script>
+    <script src="pedidos.js"></script>
+    <script src="domiciliarios.js"></script>
+</body>
+</html>

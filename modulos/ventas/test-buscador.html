@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Buscador Clientes - FODEXA</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="ventas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .test-container { max-width: 500px; margin: 0 auto; }
+        .test-title { color: white; text-align: center; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🔍 Test Buscador de Clientes</h1>
+        
+        <!-- Estructura del buscador -->
+        <div class="cliente-section">
+            <div class="search-cliente-container">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        id="search-cliente" 
+                        class="search-cliente" 
+                        placeholder="Buscar cliente por nombre o teléfono..."
+                        oninput="buscarClienteCarritoWrapper(this.value)"
+                    >
+                </div>
+                <button class="btn-nuevo-cliente" onclick="alert('Crear nuevo cliente')">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Nuevo</span>
+                </button>
+                <div class="search-cliente-results hidden" id="search-cliente-results">
+                    <!-- Resultados aparecerán aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Datos de prueba
+        const clientesPrueba = [
+            { id: 1, nombre: 'María González Pérez', telefono: '+57 300 123 4567', email: 'maria@email.com', tipo: 'vip' },
+            { id: 2, nombre: 'Carlos Rodríguez', telefono: '+57 301 987 6543', email: 'carlos@email.com', tipo: 'regular' },
+            { id: 3, nombre: 'Ana Sofía Vargas', telefono: '+57 312 456 7890', email: 'ana@email.com', tipo: 'nuevo' }
+        ];
+        
+        // Funciones simplificadas para prueba
+        function getStoredData() { return clientesPrueba; }
+        async function obtenerTodosLosClientes() { return []; }
+        function showNotification(msg, type) { alert(`${type}: ${msg}`); }
+        function showLoading() { console.log('Loading...'); }
+        function hideLoading() { console.log('Loading complete'); }
+        function mostrarModalNuevoCliente() { alert('Abrir modal nuevo cliente'); }
+        
+        // Cargar el script principal
+    </script>
+    <script src="ventas.js"></script>
+</body>
+</html>

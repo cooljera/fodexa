@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes Mensuales - FODEXA</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../modulos/inventario.css">
+    <link rel="stylesheet" href="../../assets/css/ventas.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Exportación PDF y Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        .reportes-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .filtros-reportes { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+        .chart-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 1.5rem; }
+        .chart-card h3 { margin-bottom: 1rem; font-size: 1.1rem; color: #6366f1; }
+    </style>
+</head>
+<body>
+    <div class="reportes-container">
+        <div class="reportes-header">
+            <h1 class="reportes-title">Reportes Mensuales</h1>
+            <div class="export-buttons">
+                <button id="btn-export-pdf" title="Exportar a PDF" class="btn-export-pdf">
+                    <span class="export-icon">📄</span> Exportar a PDF
+                </button>
+                <button id="btn-export-excel" title="Exportar a Excel" class="btn-export-excel">
+                    <span class="export-icon">📊</span> Exportar a Excel
+                </button>
+            </div>
+        </div>
+        <div class="filtros-reportes">
+            <label>Mes:
+                <select id="filtro-mes"></select>
+            </label>
+            <label>Año:
+                <select id="filtro-anio"></select>
+            </label>
+            <label>Tipo:
+                <select id="filtro-tipo"></select>
+            </label>
+        </div>
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Ventas por Mes</h3>
+                <canvas id="chart-ventas-mes" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Top Productos Vendidos</h3>
+                <canvas id="chart-top-productos" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Clientes Frecuentes</h3>
+                <canvas id="chart-clientes-frecuentes" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Gastos por Categoría</h3>
+                <canvas id="chart-gastos-categoria" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Margen de Ganancia por Producto</h3>
+                <canvas id="chart-margen-ganancia" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="../../pages/reportes.js"></script>
+</body>
+</html>

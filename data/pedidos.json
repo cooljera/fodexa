@@ -1,0 +1,304 @@
+{
+  "pedidos": [
+    {
+      "id": "ped_001",
+      "numero": "2024070001",
+      "fechaCreacion": "2024-07-10T12:30:00Z",
+      "fechaEntrega": "2024-07-10T13:15:00Z",
+      "estado": "entregado",
+      "tipoEntrega": "domicilio",
+      "prioridad": "normal",
+      "cliente": {
+        "id": "cli_001",
+        "nombre": "María González Pérez",
+        "telefono": "+57 300 123 4567",
+        "direccion": "Carrera 80 #45-23, Apto 501",
+        "barrio": "Laureles"
+      },
+      "productos": [
+        {
+          "id": "prod_002",
+          "nombre": "Pizza Margherita",
+          "cantidad": 1,
+          "precio": 28000,
+          "observaciones": "Sin cebolla por favor"
+        },
+        {
+          "id": "prod_010",
+          "nombre": "Smoothie Tropical",
+          "cantidad": 2,
+          "precio": 8500,
+          "observaciones": ""
+        }
+      ],
+      "subtotal": 45000,
+      "descuento": 4500,
+      "costoDelivery": 3000,
+      "total": 43500,
+      "metodoPago": "tarjeta",
+      "estadoPago": "pagado",
+      "domiciliario": {
+        "id": "dom_001",
+        "nombre": "Juan Carlos Vélez",
+        "telefono": "+57 310 123 4567",
+        "vehiculo": "moto",
+        "placa": "ABC123"
+      },
+      "tracking": {
+        "recibido": "2024-07-10T12:30:00Z",
+        "confirmado": "2024-07-10T12:32:00Z",
+        "preparando": "2024-07-10T12:35:00Z",
+        "listo": "2024-07-10T12:55:00Z",
+        "despachado": "2024-07-10T13:00:00Z",
+        "entregado": "2024-07-10T13:15:00Z"
+      },
+      "tiempoEstimado": 45,
+      "tiempoReal": 45,
+      "distancia": 2.8,
+      "calificacion": {
+        "comida": 5,
+        "servicio": 5,
+        "delivery": 4,
+        "comentario": "Excelente como siempre, la pizza llegó caliente"
+      },
+      "observaciones": "Cliente frecuente, apartamento 501 quinto piso",
+      "zona": "laureles"
+    },
+    {
+      "id": "ped_002",
+      "numero": "2024070002",
+      "fechaCreacion": "2024-07-10T13:45:00Z",
+      "fechaEntrega": null,
+      "estado": "preparando",
+      "tipoEntrega": "domicilio",
+      "prioridad": "alta",
+      "cliente": {
+        "id": "cli_002",
+        "nombre": "Carlos Andrés Ruiz",
+        "telefono": "+57 301 987 6543",
+        "direccion": "Calle 70 #52-18",
+        "barrio": "La Candelaria"
+      },
+      "productos": [
+        {
+          "id": "prod_006",
+          "nombre": "Salmón Teriyaki",
+          "cantidad": 1,
+          "precio": 35000,
+          "observaciones": "Término medio"
+        }
+      ],
+      "subtotal": 35000,
+      "descuento": 1750,
+      "costoDelivery": 4000,
+      "total": 37250,
+      "metodoPago": "efectivo",
+      "estadoPago": "pendiente",
+      "domiciliario": {
+        "id": "dom_002",
+        "nombre": "Andrea Salazar Moreno",
+        "telefono": "+57 311 987 6543",
+        "vehiculo": "bicicleta",
+        "placa": ""
+      },
+      "tracking": {
+        "recibido": "2024-07-10T13:45:00Z",
+        "confirmado": "2024-07-10T13:47:00Z",
+        "preparando": "2024-07-10T13:50:00Z",
+        "listo": null,
+        "despachado": null,
+        "entregado": null
+      },
+      "tiempoEstimado": 30,
+      "tiempoReal": null,
+      "distancia": 3.2,
+      "calificacion": null,
+      "observaciones": "Cliente ejecutivo, llamar antes de llegar",
+      "zona": "centro"
+    },
+    {
+      "id": "ped_003",
+      "numero": "2024070003",
+      "fechaCreacion": "2024-07-10T14:20:00Z",
+      "fechaEntrega": null,
+      "estado": "confirmado",
+      "tipoEntrega": "recogida",
+      "prioridad": "normal",
+      "cliente": {
+        "id": "cli_003",
+        "nombre": "Ana Sofía Martínez",
+        "telefono": "+57 302 555 1234",
+        "direccion": "Recogida en restaurante",
+        "barrio": ""
+      },
+      "productos": [
+        {
+          "id": "prod_003",
+          "nombre": "Ensalada César",
+          "cantidad": 1,
+          "precio": 16500,
+          "observaciones": "Sin crutones"
+        },
+        {
+          "id": "prod_008",
+          "nombre": "Wrap de Pollo",
+          "cantidad": 1,
+          "precio": 15500,
+          "observaciones": "Extra salsa ranch"
+        }
+      ],
+      "subtotal": 32000,
+      "descuento": 0,
+      "costoDelivery": 0,
+      "total": 32000,
+      "metodoPago": "transferencia",
+      "estadoPago": "pagado",
+      "domiciliario": null,
+      "tracking": {
+        "recibido": "2024-07-10T14:20:00Z",
+        "confirmado": "2024-07-10T14:22:00Z",
+        "preparando": null,
+        "listo": null,
+        "despachado": null,
+        "entregado": null
+      },
+      "tiempoEstimado": 20,
+      "tiempoReal": null,
+      "distancia": 0,
+      "calificacion": null,
+      "observaciones": "Cliente estudiantil, viene a recoger personalmente",
+      "zona": "centro"
+    },
+    {
+      "id": "ped_004",
+      "numero": "2024070004",
+      "fechaCreacion": "2024-07-10T15:10:00Z",
+      "fechaEntrega": null,
+      "estado": "cancelado",
+      "tipoEntrega": "domicilio",
+      "prioridad": "normal",
+      "cliente": {
+        "id": "cli_004",
+        "nombre": "Roberto Silva Castañeda",
+        "telefono": "+57 304 777 8888",
+        "direccion": "Carrera 65 #48-92",
+        "barrio": "Robledo"
+      },
+      "productos": [
+        {
+          "id": "prod_011",
+          "nombre": "Bandeja Paisa",
+          "cantidad": 2,
+          "precio": 32000,
+          "observaciones": "Sin chicharrón en una"
+        }
+      ],
+      "subtotal": 64000,
+      "descuento": 0,
+      "costoDelivery": 5000,
+      "total": 69000,
+      "metodoPago": "efectivo",
+      "estadoPago": "cancelado",
+      "domiciliario": null,
+      "tracking": {
+        "recibido": "2024-07-10T15:10:00Z",
+        "confirmado": "2024-07-10T15:12:00Z",
+        "preparando": null,
+        "listo": null,
+        "despachado": null,
+        "entregado": null,
+        "cancelado": "2024-07-10T15:15:00Z"
+      },
+      "tiempoEstimado": 40,
+      "tiempoReal": null,
+      "distancia": 8.5,
+      "calificacion": null,
+      "observaciones": "Cliente canceló por demora, ofrecer descuento en próximo pedido",
+      "zona": "norte",
+      "motivoCancelacion": "Cliente canceló - demora en confirmación"
+    },
+    {
+      "id": "ped_005",
+      "numero": "2024070005",
+      "fechaCreacion": "2024-07-10T16:30:00Z",
+      "fechaEntrega": null,
+      "estado": "listo",
+      "tipoEntrega": "domicilio",
+      "prioridad": "normal",
+      "cliente": {
+        "id": "cli_005",
+        "nombre": "Valentina Torres López",
+        "telefono": "+57 305 444 5555",
+        "direccion": "Calle 33 #70-15, Casa 12",
+        "barrio": "Belén"
+      },
+      "productos": [
+        {
+          "id": "prod_012",
+          "nombre": "Sushi Variado",
+          "cantidad": 1,
+          "precio": 45000,
+          "observaciones": "Extra wasabi y jengibre"
+        }
+      ],
+      "subtotal": 45000,
+      "descuento": 3600,
+      "costoDelivery": 4500,
+      "total": 45900,
+      "metodoPago": "tarjeta",
+      "estadoPago": "pagado",
+      "domiciliario": {
+        "id": "dom_006",
+        "nombre": "Laura Patricia Muñoz",
+        "telefono": "+57 315 444 5555",
+        "vehiculo": "moto",
+        "placa": "GHI321"
+      },
+      "tracking": {
+        "recibido": "2024-07-10T16:30:00Z",
+        "confirmado": "2024-07-10T16:32:00Z",
+        "preparando": "2024-07-10T16:35:00Z",
+        "listo": "2024-07-10T16:55:00Z",
+        "despachado": null,
+        "entregado": null
+      },
+      "tiempoEstimado": 35,
+      "tiempoReal": null,
+      "distancia": 5.2,
+      "calificacion": null,
+      "observaciones": "Cliente frecuente de sushi, casa con portón verde",
+      "zona": "sur"
+    }
+  ],
+  "estadisticas": {
+    "resumenDia": {
+      "fecha": "2024-07-10",
+      "totalPedidos": 5,
+      "pedidosCompletados": 1,
+      "pedidosEnProceso": 3,
+      "pedidosCancelados": 1,
+      "ventasTotales": 43500,
+      "tiempoPromedioEntrega": 45,
+      "calificacionPromedio": 4.7
+    },
+    "porEstado": {
+      "recibido": 0,
+      "confirmado": 1,
+      "preparando": 1,
+      "listo": 1,
+      "despachado": 0,
+      "entregado": 1,
+      "cancelado": 1
+    },
+    "porZona": {
+      "centro": 2,
+      "laureles": 1,
+      "norte": 1,
+      "sur": 1
+    },
+    "porTipoEntrega": {
+      "domicilio": 4,
+      "recogida": 1
+    }
+  }
+}

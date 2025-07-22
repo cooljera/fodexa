@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Nueva Tarjeta de Cliente | FODEXA Ventas</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/ventas.css">
+    <link rel="stylesheet" href="ventas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+        .demo-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        .demo-title {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .demo-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        .demo-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn-demo {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .btn-demo.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-demo.secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">✨ Nueva Tarjeta de Cliente</h1>
+        <p class="demo-subtitle">
+            Demostración de la mejora implementada en el módulo de ventas de FODEXA
+        </p>
+
+        <!-- Sección de Cliente (igual a la del módulo de ventas) -->
+        <div class="cliente-section" id="cliente-section">
+            <!-- Selector de cliente (estado inicial) -->
+            <div class="cliente-selector" id="cliente-selector">
+                <div class="search-cliente-container">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="search-cliente" 
+                            class="search-cliente" 
+                            placeholder="Buscar cliente..."
+                            oninput="buscarClienteDemo(this.value)"
+                        >
+                    </div>
+                    <button class="btn-nuevo-cliente" onclick="mostrarClienteDemo()">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Nuevo</span>
+                    </button>
+                    <div class="search-cliente-results" id="search-cliente-results">
+                        <!-- Resultados de búsqueda -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cliente seleccionado - Nueva Implementación -->
+            <div class="cliente-seleccionado hidden" id="cliente-seleccionado">
+                <div class="cliente-card-moderna">
+                    <!-- Header con avatar y nombre -->
+                    <div class="cliente-header">
+                        <div class="cliente-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="cliente-info-principal">
+                            <h4 class="cliente-nombre" id="cliente-nombre-display">-</h4>
+                            <div class="cliente-badges" id="cliente-badges"></div>
+                        </div>
+                        <div class="cliente-actions">
+                            <button class="btn-action btn-cambiar" onclick="cambiarClienteDemo()" title="Cambiar cliente">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                            <button class="btn-action btn-quitar" onclick="quitarClienteDemo()" title="Quitar cliente">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Información de contacto -->
+                    <div class="cliente-contacto">
+                        <div class="contacto-item">
+                            <i class="fas fa-phone"></i>
+                            <span class="contacto-label">Teléfono:</span>
+                            <span class="contacto-valor" id="cliente-telefono-display">-</span>
+                        </div>
+                        <div class="contacto-item" id="cliente-documento-item" style="display: none;">
+                            <i class="fas fa-id-card"></i>
+                            <span class="contacto-label">Documento:</span>
+                            <span class="contacto-valor" id="cliente-documento-display">-</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Dirección -->
+                    <div class="cliente-direccion" id="cliente-direccion-container" style="display: none;">
+                        <div class="direccion-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="direccion-label">Dirección:</span>
+                            <p class="direccion-valor" id="cliente-direccion-display">-</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Información adicional (descuentos, etc.) -->
+                    <div class="cliente-extras" id="cliente-extras-container" style="display: none;">
+                        <div class="extra-item descuento-info" id="cliente-descuento-item" style="display: none;">
+                            <i class="fas fa-percentage"></i>
+                            <span class="extra-label">Descuento aplicado:</span>
+                            <span class="extra-valor descuento-valor" id="cliente-descuento-display">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-actions">
+            <button class="btn-demo secondary" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+            <button class="btn-demo primary" onclick="window.open('ventas.html', '_blank')">
+                <i class="fas fa-external-link-alt"></i> Ventas
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Clientes demo para la demostración
+        const clientesDemo = [
+            {
+                id: 1,
+                nombre: 'María González Pérez',
+                telefono: '+57 300 123 4567',
+                documento: '43.123.456',
+                direccion: 'Carrera 80 #45-23, Apto 501, Laureles, Medellín',
+                tipo: 'vip',
+                descuento: 15
+            },
+            {
+                id: 2,
+                nombre: 'Carlos Rodríguez López',
+                telefono: '+57 310 987 6543',
+                documento: '1.024.678.901',
+                direccion: 'Calle 100 #15-45, Zona Rosa, Bogotá',
+                tipo: 'frecuente',
+                descuento: 5
+            },
+            {
+                id: 3,
+                nombre: 'Ana Martínez',
+                telefono: '+57 320 555 1234',
+                documento: '52.987.654',
+                direccion: 'Avenida El Poblado #12-34, El Poblado, Medellín',
+                tipo: 'nuevo',
+                descuento: 0
+            }
+        ];
+
+        function buscarClienteDemo(termino) {
+            const resultsContainer = document.getElementById('search-cliente-results');
+            
+            if (!termino || !termino.trim()) {
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+
+            const clientesFiltrados = clientesDemo.filter(cliente => 
+                cliente.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                cliente.telefono.includes(termino)
+            );
+
+            if (clientesFiltrados.length > 0) {
+                resultsContainer.innerHTML = clientesFiltrados.map(cliente => `
+                    <div class="cliente-result-item" onclick="seleccionarClienteDemo(${cliente.id})">
+                        <div class="cliente-result-info">
+                            <div class="cliente-result-nombre">
+                                ${cliente.nombre}
+                                ${cliente.tipo === 'vip' ? '<span class="badge-vip"><i class="fas fa-crown"></i> VIP</span>' : ''}
+                                ${cliente.tipo === 'frecuente' ? '<span class="badge-frecuente"><i class="fas fa-star"></i> Frecuente</span>' : ''}
+                            </div>
+                            <div class="cliente-result-detalles">
+                                <div class="cliente-detalle-linea">
+                                    <i class="fas fa-phone"></i>
+                                    <span>${cliente.telefono}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="cliente-result-action" onclick="event.stopPropagation(); seleccionarClienteDemo(${cliente.id})">
+                            <i class="fas fa-plus"></i>
+                            Seleccionar
+                        </button>
+                    </div>
+                `).join('');
+                
+                resultsContainer.classList.remove('hidden');
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <p>No se encontraron clientes con "${termino}"</p>
+                    </div>
+                `;
+                resultsContainer.classList.remove('hidden');
+            }
+        }
+
+        function seleccionarClienteDemo(clienteId) {
+            const cliente = clientesDemo.find(c => c.id === clienteId);
+            if (!cliente) return;
+
+            mostrarClienteSeleccionadoDemo(cliente);
+            cerrarBuscadorDemo();
+        }
+
+        function mostrarClienteSeleccionadoDemo(cliente) {
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            // Ocultar buscador y mostrar tarjeta
+            selectorDiv.classList.add('hidden');
+            seleccionadoDiv.classList.remove('hidden');
+            
+            // Actualizar información del cliente
+            document.getElementById('cliente-nombre-display').textContent = cliente.nombre;
+            
+            // Badges
+            const badgesContainer = document.getElementById('cliente-badges');
+            let badgesHTML = '';
+            if (cliente.tipo === 'vip') {
+                badgesHTML += '<span class="badge-vip"><i class="fas fa-crown"></i> VIP</span>';
+            } else if (cliente.tipo === 'frecuente') {
+                badgesHTML += '<span class="badge-frecuente"><i class="fas fa-star"></i> Frecuente</span>';
+            }
+            badgesContainer.innerHTML = badgesHTML;
+            
+            // Contacto
+            document.getElementById('cliente-telefono-display').textContent = cliente.telefono;
+            
+            // Documento
+            const documentoItem = document.getElementById('cliente-documento-item');
+            const documentoDisplay = document.getElementById('cliente-documento-display');
+            if (cliente.documento) {
+                documentoDisplay.textContent = cliente.documento;
+                documentoItem.style.display = 'flex';
+            } else {
+                documentoItem.style.display = 'none';
+            }
+            
+            // Dirección
+            const direccionContainer = document.getElementById('cliente-direccion-container');
+            const direccionDisplay = document.getElementById('cliente-direccion-display');
+            if (cliente.direccion) {
+                direccionDisplay.textContent = cliente.direccion;
+                direccionContainer.style.display = 'block';
+            } else {
+                direccionContainer.style.display = 'none';
+            }
+            
+            // Descuento
+            const extrasContainer = document.getElementById('cliente-extras-container');
+            const descuentoItem = document.getElementById('cliente-descuento-item');
+            const descuentoDisplay = document.getElementById('cliente-descuento-display');
+            
+            if (cliente.descuento && cliente.descuento > 0) {
+                descuentoDisplay.textContent = cliente.descuento + '%';
+                descuentoItem.style.display = 'flex';
+                extrasContainer.style.display = 'block';
+            } else {
+                descuentoItem.style.display = 'none';
+                extrasContainer.style.display = 'none';
+            }
+        }
+
+        function cambiarClienteDemo() {
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            selectorDiv.classList.remove('hidden');
+            seleccionadoDiv.classList.add('hidden');
+            
+            // Limpiar búsqueda
+            const searchInput = document.getElementById('search-cliente');
+            const resultsContainer = document.getElementById('search-cliente-results');
+            
+            searchInput.value = '';
+            resultsContainer.classList.add('hidden');
+            
+            setTimeout(() => searchInput.focus(), 100);
+        }
+
+        function quitarClienteDemo() {
+            if (confirm('¿Estás seguro de que quieres quitar el cliente?')) {
+                cambiarClienteDemo();
+            }
+        }
+
+        function cerrarBuscadorDemo() {
+            const searchInput = document.getElementById('search-cliente');
+            const resultsContainer = document.getElementById('search-cliente-results');
+            
+            searchInput.value = '';
+            searchInput.blur();
+            resultsContainer.classList.add('hidden');
+            resultsContainer.innerHTML = '';
+        }
+
+        function mostrarClienteDemo() {
+            // Simular selección de cliente VIP para demo
+            seleccionarClienteDemo(1);
+        }
+
+        // Inicializar demo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('💫 Demo de Nueva Tarjeta de Cliente cargada');
+            console.log('🎯 Características implementadas:');
+            console.log('  ✅ Tarjeta visual moderna y limpia');
+            console.log('  ✅ Avatar y información organizada');
+            console.log('  ✅ Badges para tipo de cliente (VIP, Frecuente)');
+            console.log('  ✅ Información completa: teléfono, documento, dirección');
+            console.log('  ✅ Descuentos destacados visualmente');
+            console.log('  ✅ Botones de acción (cambiar/quitar cliente)');
+            console.log('  ✅ Ocultación automática del buscador');
+            console.log('  ✅ Responsive y accesible');
+        });
+    </script>
+</body>
+</html>

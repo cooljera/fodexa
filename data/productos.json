@@ -1,0 +1,232 @@
+{
+  "productos": [
+    {
+      "id": "prod_001",
+      "nombre": "Hamburguesa Clásica",
+      "descripcion": "Hamburguesa de carne de res con lechuga, tomate, cebolla y papas fritas",
+      "precio": 18500,
+      "categoria": "hamburguesas",
+      "imagen": "assets/images/productos/hamburguesa-clasica.jpg",
+      "disponible": true,
+      "ingredientes": ["Carne de res", "Pan brioche", "Lechuga", "Tomate", "Cebolla", "Papas fritas"],
+      "tiempo_preparacion": 15,
+      "calorias": 650,
+      "tags": ["popular", "clasico"]
+    },
+    {
+      "id": "prod_002",
+      "nombre": "Pizza Margherita",
+      "descripcion": "Pizza tradicional con salsa de tomate, mozzarella y albahaca fresca",
+      "precio": 28000,
+      "categoria": "pizzas",
+      "imagen": "assets/images/productos/pizza-margherita.jpg",
+      "disponible": true,
+      "ingredientes": ["Masa artesanal", "Salsa de tomate", "Mozzarella", "Albahaca"],
+      "tiempo_preparacion": 20,
+      "calorias": 890,
+      "tags": ["vegetariano", "popular"]
+    },
+    {
+      "id": "prod_003",
+      "nombre": "Ensalada César",
+      "descripcion": "Lechuga romana, pollo a la plancha, crutones y aderezo césar",
+      "precio": 16500,
+      "categoria": "ensaladas",
+      "imagen": "assets/images/productos/ensalada-cesar.jpg",
+      "disponible": true,
+      "ingredientes": ["Lechuga romana", "Pollo", "Crutones", "Queso parmesano", "Aderezo césar"],
+      "tiempo_preparacion": 10,
+      "calorias": 420,
+      "tags": ["saludable", "proteinas"]
+    },
+    {
+      "id": "prod_004",
+      "nombre": "Pasta Carbonara",
+      "descripcion": "Pasta fettuccine con salsa carbonara, tocineta y queso parmesano",
+      "precio": 22000,
+      "categoria": "pastas",
+      "imagen": "assets/images/productos/pasta-carbonara.jpg",
+      "disponible": true,
+      "ingredientes": ["Fettuccine", "Tocineta", "Huevos", "Queso parmesano", "Pimienta negra"],
+      "tiempo_preparacion": 18,
+      "calorias": 780,
+      "tags": ["cremoso", "popular"]
+    },
+    {
+      "id": "prod_005",
+      "nombre": "Tacos Mexicanos",
+      "descripcion": "Tres tacos con carne de res, guacamole, pico de gallo y crema",
+      "precio": 19500,
+      "categoria": "mexicana",
+      "imagen": "assets/images/productos/tacos-mexicanos.jpg",
+      "disponible": true,
+      "ingredientes": ["Tortillas de maíz", "Carne de res", "Guacamole", "Pico de gallo", "Crema"],
+      "tiempo_preparacion": 12,
+      "calorias": 580,
+      "tags": ["picante", "tradicional"]
+    },
+    {
+      "id": "prod_006",
+      "nombre": "Salmón Teriyaki",
+      "descripcion": "Filete de salmón glaseado con salsa teriyaki, arroz y verduras",
+      "precio": 35000,
+      "categoria": "pescados",
+      "imagen": "assets/images/productos/salmon-teriyaki.jpg",
+      "disponible": true,
+      "ingredientes": ["Salmón fresco", "Salsa teriyaki", "Arroz jazmín", "Brócoli", "Zanahoria"],
+      "tiempo_preparacion": 25,
+      "calorias": 520,
+      "tags": ["gourmet", "saludable", "proteinas"]
+    },
+    {
+      "id": "prod_007",
+      "nombre": "Arepa Rellena",
+      "descripcion": "Arepa de maíz rellena con pollo desmechado, aguacate y queso",
+      "precio": 14000,
+      "categoria": "colombiana",
+      "imagen": "assets/images/productos/arepa-rellena.jpg",
+      "disponible": true,
+      "ingredientes": ["Arepa de maíz", "Pollo desmechado", "Aguacate", "Queso costeño"],
+      "tiempo_preparacion": 8,
+      "calorias": 380,
+      "tags": ["tradicional", "economico"]
+    },
+    {
+      "id": "prod_008",
+      "nombre": "Wrap de Pollo",
+      "descripcion": "Tortilla de trigo con pollo a la plancha, vegetales y salsa ranch",
+      "precio": 15500,
+      "categoria": "wraps",
+      "imagen": "assets/images/productos/wrap-pollo.jpg",
+      "disponible": true,
+      "ingredientes": ["Tortilla de trigo", "Pollo", "Lechuga", "Tomate", "Cebolla", "Salsa ranch"],
+      "tiempo_preparacion": 10,
+      "calorias": 450,
+      "tags": ["saludable", "practico"]
+    },
+    {
+      "id": "prod_009",
+      "nombre": "Lasaña de Carne",
+      "descripcion": "Lasaña tradicional con carne molida, bechamel y queso gratinado",
+      "precio": 26000,
+      "categoria": "pastas",
+      "imagen": "assets/images/productos/lasana-carne.jpg",
+      "disponible": true,
+      "ingredientes": ["Pasta lasaña", "Carne molida", "Salsa bechamel", "Queso mozzarella", "Tomate"],
+      "tiempo_preparacion": 30,
+      "calorias": 920,
+      "tags": ["familiar", "abundante"]
+    },
+    {
+      "id": "prod_010",
+      "nombre": "Smoothie Tropical",
+      "descripcion": "Batido de mango, piña, maracuyá y yogurt natural",
+      "precio": 8500,
+      "categoria": "bebidas",
+      "imagen": "assets/images/productos/smoothie-tropical.jpg",
+      "disponible": true,
+      "ingredientes": ["Mango", "Piña", "Maracuyá", "Yogurt natural", "Hielo"],
+      "tiempo_preparacion": 5,
+      "calorias": 180,
+      "tags": ["saludable", "refrescante", "natural"]
+    },
+    {
+      "id": "prod_011",
+      "nombre": "Bandeja Paisa",
+      "descripcion": "Plato típico colombiano con frijoles, arroz, carne, chicharrón y más",
+      "precio": 32000,
+      "categoria": "colombiana",
+      "imagen": "assets/images/productos/bandeja-paisa.jpg",
+      "disponible": true,
+      "ingredientes": ["Frijoles", "Arroz", "Carne molida", "Chicharrón", "Chorizo", "Huevo", "Patacón", "Aguacate"],
+      "tiempo_preparacion": 35,
+      "calorias": 1200,
+      "tags": ["tradicional", "abundante", "tipico"]
+    },
+    {
+      "id": "prod_012",
+      "nombre": "Sushi Variado",
+      "descripcion": "Selección de 12 piezas de sushi: maki, nigiri y sashimi",
+      "precio": 45000,
+      "categoria": "japonesa",
+      "imagen": "assets/images/productos/sushi-variado.jpg",
+      "disponible": true,
+      "ingredientes": ["Arroz de sushi", "Salmón", "Atún", "Aguacate", "Nori", "Wasabi", "Jengibre"],
+      "tiempo_preparacion": 20,
+      "calorias": 480,
+      "tags": ["gourmet", "fresco", "premium"]
+    }
+  ],
+  "categorias": [
+    {
+      "id": "hamburguesas",
+      "nombre": "Hamburguesas",
+      "descripcion": "Deliciosas hamburguesas artesanales",
+      "icono": "fas fa-hamburger",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "pizzas",
+      "nombre": "Pizzas",
+      "descripcion": "Pizzas artesanales con ingredientes frescos",
+      "icono": "fas fa-pizza-slice",
+      "color": "#ef4444"
+    },
+    {
+      "id": "ensaladas",
+      "nombre": "Ensaladas",
+      "descripcion": "Ensaladas frescas y saludables",
+      "icono": "fas fa-leaf",
+      "color": "#10b981"
+    },
+    {
+      "id": "pastas",
+      "nombre": "Pastas",
+      "descripcion": "Pastas tradicionales italianas",
+      "icono": "fas fa-utensils",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "mexicana",
+      "nombre": "Comida Mexicana",
+      "descripcion": "Auténticos sabores mexicanos",
+      "icono": "fas fa-pepper-hot",
+      "color": "#f97316"
+    },
+    {
+      "id": "pescados",
+      "nombre": "Pescados y Mariscos",
+      "descripcion": "Frescos del mar para tu mesa",
+      "icono": "fas fa-fish",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "colombiana",
+      "nombre": "Comida Colombiana",
+      "descripcion": "Sabores tradicionales de Colombia",
+      "icono": "fas fa-flag",
+      "color": "#fbbf24"
+    },
+    {
+      "id": "wraps",
+      "nombre": "Wraps",
+      "descripcion": "Wraps saludables y prácticos",
+      "icono": "fas fa-bread-slice",
+      "color": "#84cc16"
+    },
+    {
+      "id": "bebidas",
+      "nombre": "Bebidas",
+      "descripcion": "Bebidas refrescantes y naturales",
+      "icono": "fas fa-glass-cheers",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "japonesa",
+      "nombre": "Comida Japonesa",
+      "descripcion": "Auténtica cocina japonesa",
+      "icono": "fas fa-yin-yang",
+      "color": "#ec4899"
+    }
+  ]
+}

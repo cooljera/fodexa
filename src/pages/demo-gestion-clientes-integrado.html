@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Clientes - FODEXA</title>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS del sistema -->
+    <link rel="stylesheet" href="../components/clientes/GestionClientes.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            background: #F8FAFC;
+            color: #1F2937;
+        }
+        
+        #app {
+            min-height: 100vh;
+        }
+        
+        /* Personalización específica para la demo */
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        
+        .demo-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .demo-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .demo-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header de demo -->
+    <div class="demo-header">
+        <h1>
+            <i class="fas fa-database"></i>
+            Sistema de Gestión de Clientes FODEXA
+        </h1>
+        <p>Interfaz conectada con base de datos IndexedDB</p>
+        <span class="demo-badge">
+            <i class="fas fa-plug"></i>
+            Base de datos integrada
+        </span>
+    </div>
+
+    <!-- Contenedor principal de la aplicación -->
+    <div id="app"></div>
+
+    <!-- Scripts del sistema -->
+    <script type="module">
+        // Importar e inicializar la gestión de clientes
+        import GestionClientes from './GestionClientes.js';
+        
+        // Función para mostrar estado de carga inicial
+        function mostrarCargaInicial() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <div style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 60vh;
+                    flex-direction: column;
+                    gap: 1rem;
+                    color: #6B7280;
+                ">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #667eea;"></i>
+                    <p style="margin: 0; font-size: 1.1rem; font-weight: 500;">Inicializando sistema de clientes...</p>
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.7;">Conectando con la base de datos IndexedDB</p>
+                </div>
+            `;
+        }
+
+        // Función principal de inicialización
+        async function initApp() {
+            try {
+                console.log('🚀 Iniciando aplicación de gestión de clientes...');
+                
+                // Mostrar indicador de carga
+                mostrarCargaInicial();
+                
+                // Pequeña pausa para mostrar la carga
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Crear instancia de gestión de clientes
+                window.gestionClientes = new GestionClientes();
+                
+                console.log('✅ Aplicación iniciada exitosamente');
+                
+            } catch (error) {
+                console.error('❌ Error al inicializar la aplicación:', error);
+                
+                // Mostrar error en la interfaz
+                const app = document.getElementById('app');
+                app.innerHTML = `
+                    <div style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 60vh;
+                        flex-direction: column;
+                        gap: 1rem;
+                        color: #EF4444;
+                        text-align: center;
+                        padding: 2rem;
+                    ">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem;"></i>
+                        <h2 style="margin: 0; color: #991B1B;">Error al cargar la aplicación</h2>
+                        <p style="margin: 0; color: #6B7280; max-width: 500px;">
+                            Hubo un problema al inicializar el sistema de gestión de clientes. 
+                            Por favor, recarga la página o contacta con soporte técnico.
+                        </p>
+                        <button onclick="window.location.reload()" style="
+                            background: #667eea;
+                            color: white;
+                            border: none;
+                            padding: 0.75rem 1.5rem;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-weight: 500;
+                            margin-top: 1rem;
+                        ">
+                            <i class="fas fa-redo"></i>
+                            Recargar Página
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Inicializar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+
+        // Función de utilidad para debugging
+        window.debugClientes = async function() {
+            if (window.gestionClientes && window.gestionClientes.clientesService) {
+                const stats = await window.gestionClientes.clientesService.verificarEstado();
+                console.table(stats);
+            } else {
+                console.log('Sistema no inicializado');
+            }
+        };
+
+        // Información para desarrolladores
+        console.log(`
+🎯 Sistema FODEXA - Gestión de Clientes
+📊 Para ver estadísticas de la base de datos: debugClientes()
+🔧 Versión: 1.0.0 con integración IndexedDB
+📅 ${new Date().toLocaleDateString('es-ES')}
+        `);
+    </script>
+</body>
+</html>

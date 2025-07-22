@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes - FODEXA POS</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos de la gestión de clientes -->
+    <link rel="stylesheet" href="../components/clientes/GestionClientes.css">
+    
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1a202c;
+            line-height: 1.6;
+        }
+        
+        /* Contenedor principal */
+        #app {
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        /* Navbar temporal (para demostración) */
+        .navbar-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-demo .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .navbar-demo .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .navbar-demo .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        
+        .navbar-demo .nav-links a:hover,
+        .navbar-demo .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Notificación demo */
+        .notification-demo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification-demo.show {
+            transform: translateX(0);
+        }
+        
+        /* Responsive navbar */
+        @media (max-width: 768px) {
+            .navbar-demo {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .navbar-demo .nav-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar de demostración -->
+    <nav class="navbar-demo">
+        <div class="logo">
+            <i class="fas fa-utensils"></i>
+            FODEXA POS
+        </div>
+        <ul class="nav-links">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#ventas">Ventas</a></li>
+            <li><a href="#productos">Productos</a></li>
+            <li><a href="#clientes" class="active">Clientes</a></li>
+            <li><a href="#reportes">Reportes</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenedor principal de la aplicación -->
+    <div id="app">
+        <!-- La interfaz de gestión de clientes se carga aquí -->
+    </div>
+
+    <!-- Notificación de demostración -->
+    <div id="notification-demo" class="notification-demo">
+        <i class="fas fa-check-circle"></i>
+        Interfaz cargada exitosamente
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        // Importar y inicializar el componente
+        import GestionClientes from './GestionClientes.js';
+        import FilaCliente from '../components/clientes/FilaCliente.js';
+        
+        // Función para mostrar notificaciones demo
+        window.showNotification = function(message, type = 'success', duration = 3000) {
+            const notification = document.getElementById('notification-demo');
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                    type === 'error' ? 'exclamation-circle' : 
+                                    type === 'warning' ? 'exclamation-triangle' : 
+                                    'info-circle'}"></i>
+                ${message}
+            `;
+            
+            notification.style.background = type === 'success' ? '#10b981' :
+                                          type === 'error' ? '#ef4444' :
+                                          type === 'warning' ? '#f59e0b' :
+                                          '#3b82f6';
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        };
+        
+        // Inicializar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar notificación de bienvenida
+            setTimeout(() => {
+                showNotification('Sistema de Gestión de Clientes cargado', 'success');
+            }, 500);
+            
+            // Inicializar gestión de clientes
+            const gestionClientes = new GestionClientes();
+            
+            console.log('🎉 Sistema de Gestión de Clientes inicializado');
+            console.log('📋 Funcionalidades disponibles:');
+            console.log('   • Búsqueda en tiempo real');
+            console.log('   • Tabla responsiva con acciones');
+            console.log('   • Estados vacíos y de carga');
+            console.log('   • Modales de confirmación');
+            console.log('   • Ordenamiento de columnas');
+            console.log('   • Acciones por fila (editar, eliminar, más)');
+        });
+        
+        // Función global para copiar teléfono (usada en FilaCliente)
+        window.copiarTelefono = function(telefono) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(telefono).then(() => {
+                    showNotification(`Teléfono ${telefono} copiado al portapapeles`, 'success');
+                });
+            } else {
+                showNotification('No se pudo copiar el teléfono', 'error');
+            }
+        };
+        
+        // Función para manejar errores de módulos
+        window.addEventListener('error', function(e) {
+            if (e.message.includes('Failed to resolve module')) {
+                console.warn('⚠️ Módulos ES6 no soportados en este entorno');
+                console.log('💡 Para producción, usar un bundler como Vite, Webpack o Rollup');
+                
+                // Cargar versión compatible sin módulos ES6
+                loadCompatibleVersion();
+            }
+        });
+        
+        function loadCompatibleVersion() {
+            // Versión compatible sin módulos ES6
+            console.log('🔄 Cargando versión compatible...');
+            
+            // Eliminar el contenido actual
+            document.getElementById('app').innerHTML = '';
+            
+            // Cargar script compatible
+            const script = document.createElement('script');
+            script.src = './GestionClientes-compatible.js';
+            document.head.appendChild(script);
+        }
+    </script>
+    
+    <!-- Script de fallback para navegadores sin soporte de módulos -->
+    <script nomodule>
+        console.log('🔄 Módulos ES6 no soportados, cargando versión compatible...');
+        
+        // Crear script compatible
+        const script = document.createElement('script');
+        script.src = './GestionClientes-compatible.js';
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

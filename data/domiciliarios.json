@@ -1,0 +1,230 @@
+{
+  "domiciliarios": [
+    {
+      "id": "dom_001",
+      "nombre": "Juan Carlos Vélez",
+      "telefono": "+57 310 123 4567",
+      "email": "juan.velez@fodexa.com",
+      "documento": "1234567890",
+      "vehiculo": "moto",
+      "placa": "ABC123",
+      "estado": "disponible",
+      "pedidosAsignados": 0,
+      "calificacion": 4.8,
+      "totalCalificaciones": 156,
+      "fechaIngreso": "2024-01-15T08:00:00Z",
+      "zona": "centro",
+      "horaInicio": "2024-07-10T06:00:00Z",
+      "horaFin": null,
+      "ubicacionActual": {
+        "lat": 6.2442,
+        "lng": -75.5812,
+        "direccion": "Centro de Medellín"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 245,
+        "pedidosCancelados": 8,
+        "tiempoPromedioEntrega": 28.5,
+        "distanciaRecorrida": 4500,
+        "ingresosTotales": 1200000,
+        "calificacionPromedio": 4.8
+      },
+      "activo": true
+    },
+    {
+      "id": "dom_002",
+      "nombre": "Andrea Salazar Moreno",
+      "telefono": "+57 311 987 6543",
+      "email": "andrea.salazar@fodexa.com",
+      "documento": "9876543210",
+      "vehiculo": "bicicleta",
+      "placa": "",
+      "estado": "ocupado",
+      "pedidosAsignados": 1,
+      "calificacion": 4.9,
+      "totalCalificaciones": 89,
+      "fechaIngreso": "2024-02-20T08:00:00Z",
+      "zona": "poblado",
+      "horaInicio": "2024-07-10T07:00:00Z",
+      "horaFin": null,
+      "ubicacionActual": {
+        "lat": 6.2086,
+        "lng": -75.5636,
+        "direccion": "El Poblado"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 132,
+        "pedidosCancelados": 3,
+        "tiempoPromedioEntrega": 22.8,
+        "distanciaRecorrida": 2800,
+        "ingresosTotales": 650000,
+        "calificacionPromedio": 4.9
+      },
+      "activo": true
+    },
+    {
+      "id": "dom_003",
+      "nombre": "Miguel Ángel Ramírez",
+      "telefono": "+57 312 555 7890",
+      "email": "miguel.ramirez@fodexa.com",
+      "documento": "5555666777",
+      "vehiculo": "moto",
+      "placa": "XYZ789",
+      "estado": "descanso",
+      "pedidosAsignados": 0,
+      "calificacion": 4.6,
+      "totalCalificaciones": 203,
+      "fechaIngreso": "2023-11-10T08:00:00Z",
+      "zona": "general",
+      "horaInicio": "2024-07-10T06:30:00Z",
+      "horaFin": null,
+      "ubicacionActual": {
+        "lat": 6.2518,
+        "lng": -75.5636,
+        "direccion": "Laureles"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 298,
+        "pedidosCancelados": 12,
+        "tiempoPromedioEntrega": 31.2,
+        "distanciaRecorrida": 5200,
+        "ingresosTotales": 1450000,
+        "calificacionPromedio": 4.6
+      },
+      "activo": true
+    },
+    {
+      "id": "dom_004",
+      "nombre": "Camila Restrepo García",
+      "telefono": "+57 313 222 3333",
+      "email": "camila.restrepo@fodexa.com",
+      "documento": "1111222333",
+      "vehiculo": "carro",
+      "placa": "DEF456",
+      "estado": "disponible",
+      "pedidosAsignados": 0,
+      "calificacion": 4.7,
+      "totalCalificaciones": 67,
+      "fechaIngreso": "2024-04-05T08:00:00Z",
+      "zona": "norte",
+      "horaInicio": "2024-07-10T08:00:00Z",
+      "horaFin": null,
+      "ubicacionActual": {
+        "lat": 6.2998,
+        "lng": -75.5735,
+        "direccion": "Zona Norte"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 87,
+        "pedidosCancelados": 2,
+        "tiempoPromedioEntrega": 26.5,
+        "distanciaRecorrida": 1800,
+        "ingresosTotales": 420000,
+        "calificacionPromedio": 4.7
+      },
+      "activo": true
+    },
+    {
+      "id": "dom_005",
+      "nombre": "David González Herrera",
+      "telefono": "+57 314 888 9999",
+      "email": "",
+      "documento": "7777888999",
+      "vehiculo": "a-pie",
+      "placa": "",
+      "estado": "offline",
+      "pedidosAsignados": 0,
+      "calificacion": 4.4,
+      "totalCalificaciones": 28,
+      "fechaIngreso": "2024-06-15T08:00:00Z",
+      "zona": "centro",
+      "horaInicio": null,
+      "horaFin": "2024-07-09T18:00:00Z",
+      "ubicacionActual": null,
+      "estadisticas": {
+        "pedidosCompletados": 35,
+        "pedidosCancelados": 1,
+        "tiempoPromedioEntrega": 18.5,
+        "distanciaRecorrida": 150,
+        "ingresosTotales": 180000,
+        "calificacionPromedio": 4.4
+      },
+      "activo": true
+    },
+    {
+      "id": "dom_006",
+      "nombre": "Laura Patricia Muñoz",
+      "telefono": "+57 315 444 5555",
+      "email": "laura.munoz@fodexa.com",
+      "documento": "4444555666",
+      "vehiculo": "moto",
+      "placa": "GHI321",
+      "estado": "ocupado",
+      "pedidosAsignados": 2,
+      "calificacion": 4.9,
+      "totalCalificaciones": 124,
+      "fechaIngreso": "2024-03-12T08:00:00Z",
+      "zona": "sur",
+      "horaInicio": "2024-07-10T07:30:00Z",
+      "horaFin": null,
+      "ubicacionActual": {
+        "lat": 6.1701,
+        "lng": -75.5863,
+        "direccion": "Zona Sur"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 178,
+        "pedidosCancelados": 4,
+        "tiempoPromedioEntrega": 25.8,
+        "distanciaRecorrida": 3200,
+        "ingresosTotales": 890000,
+        "calificacionPromedio": 4.9
+      },
+      "activo": true
+    }
+  ],
+  "zonas": [
+    {
+      "id": "centro",
+      "nombre": "Centro",
+      "descripcion": "Centro de Medellín y alrededores",
+      "color": "#f59e0b",
+      "activa": true
+    },
+    {
+      "id": "poblado",
+      "nombre": "El Poblado",
+      "descripcion": "El Poblado y zona rosa",
+      "color": "#10b981",
+      "activa": true
+    },
+    {
+      "id": "laureles",
+      "nombre": "Laureles",
+      "descripcion": "Laureles y La América",
+      "color": "#3b82f6",
+      "activa": true
+    },
+    {
+      "id": "norte",
+      "nombre": "Zona Norte",
+      "descripcion": "Aranjuez, Manrique, Popular",
+      "color": "#8b5cf6",
+      "activa": true
+    },
+    {
+      "id": "sur",
+      "nombre": "Zona Sur",
+      "descripcion": "Envigado, Itagüí, La Estrella",
+      "color": "#ef4444",
+      "activa": true
+    },
+    {
+      "id": "general",
+      "nombre": "General",
+      "descripcion": "Cobertura general de toda la ciudad",
+      "color": "#6b7280",
+      "activa": true
+    }
+  ]
+}

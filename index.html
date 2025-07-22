@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FODEXA - Sistema de Gestión para Restaurantes</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Fondo animado -->
+    <div class="bg-animated"></div>
+    
+    <!-- Header/Navegación -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <h1 class="logo">FODEXA</h1>
+                <span class="tagline">Sistema Inteligente para Restaurantes</span>
+            </div>
+            <nav class="nav-menu">
+                <button id="logout-btn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Principal -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Mensaje de bienvenida -->
+            <section class="welcome-section">
+                <div class="welcome-card">
+                    <h1 class="welcome-title">
+                        ¡Bienvenido de vuelta, <span id="username-display">Usuario</span>!
+                    </h1>
+                    <p class="welcome-subtitle">
+                        Gestiona tu restaurante de forma inteligente y eficiente
+                    </p>
+                </div>
+            </section>
+
+            <!-- Tarjetas de Módulos Principales -->
+            <section class="modules-grid">
+                <div class="module-card" data-module="ventas">
+                    <div class="module-icon">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                    <h3 class="module-title">Ventas</h3>
+                    <p class="module-description">Gestiona productos, facturación y punto de venta</p>
+                    <button class="btn btn-primary" onclick="navegarModulo('ventas')">
+                        Acceder <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="module-card" data-module="domicilios">
+                    <div class="module-icon">
+                        <i class="fas fa-motorcycle"></i>
+                    </div>
+                    <h3 class="module-title">Domicilios</h3>
+                    <p class="module-description">Registro y gestión de pedidos a domicilio</p>
+                    <button class="btn btn-primary" onclick="navegarModulo('domicilios')">
+                        Acceder <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="module-card" data-module="clientes">
+                    <div class="module-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="module-title">Clientes</h3>
+                    <p class="module-description">Base de datos de clientes y historial</p>
+                    <button class="btn btn-primary" onclick="navegarBaseDatosClientes()">
+                        Base de Datos <i class="fas fa-database"></i>
+                    </button>
+                </div>
+
+                <div class="module-card" data-module="productos" id="modulo-productos">
+                    <div class="module-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3 class="module-title">Gestion de Productos</h3>
+                    <p class="module-description">Gestión y catálogo de productos</p>
+                    <button class="btn btn-primary" onclick="window.location.href='modulos/ventas/productos.html'">
+                        Gestionar <i class="fas fa-cubes"></i>
+                    </button>
+                </div>
+            <!-- Contenedor de vista de productos -->
+            <section id="vista-productos" style="display:none; margin-top:32px;">
+                <div class="productos-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+                    <div style="flex:1;max-width:400px;">
+                        <input id="buscador-productos" type="text" class="campo-input" placeholder="Buscar producto por nombre..." style="width:100%;padding:10px 14px;border-radius:8px;border:1px solid #cfd8dc;box-shadow:0 1px 4px rgba(0,0,0,0.03);font-size:16px;">
+                    </div>
+                    <button id="btn-crear-producto" onclick="abrirModalCrearProducto()" style="margin-left:18px;background:#2563eb;color:#fff;border:none;border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(37,99,235,0.12);font-size:28px;cursor:pointer;transition:background 0.2s;" title="Crear nuevo producto">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div id="contenedor-tarjetas-productos" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;"></div>
+
+                <!-- Modal de estadísticas de producto -->
+                <div id="modal-estadisticas-producto" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.18);z-index:1000;align-items:center;justify-content:center;">
+                    <div style="background:#fff;border-radius:18px;box-shadow:0 4px 24px rgba(0,0,0,0.13);padding:32px 28px 24px 28px;max-width:540px;width:96vw;position:relative;">
+                        <button onclick="cerrarModalEstadisticasProducto()" style="position:absolute;top:16px;right:16px;background:transparent;border:none;font-size:22px;color:#e74c3c;cursor:pointer;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h2 id="titulo-estadisticas-producto" style="color:#2563eb;font-weight:700;margin-bottom:18px;font-size:1.4rem;">Estadísticas de Producto</h2>
+                        <div id="resumen-estadisticas-producto" style="margin-bottom:18px;"></div>
+                        <div id="grafica-estadisticas-producto" style="margin-bottom:18px;"></div>
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;">
+                                <thead>
+                                    <tr style="background:#f8fbff;color:#2563eb;">
+                                        <th style="padding:8px 6px;text-align:left;">Fecha</th>
+                                        <th style="padding:8px 6px;text-align:left;">Cantidad</th>
+                                        <th style="padding:8px 6px;text-align:left;">Total</th>
+                                        <th style="padding:8px 6px;text-align:left;">Cliente</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-historial-ventas-producto"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+                <!-- Módulos en construcción -->
+                <div class="module-card" data-module="inventario">
+                    <div class="module-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3 class="module-title">Gestion de Inventario</h3>
+                    <p class="module-description">Control de stock e ingredientes</p>
+                    <button class="btn btn-primary" onclick="window.location.href='modulos/inventario/inventario.html'">
+                        Gestionar <i class="fas fa-warehouse"></i>
+                    </button>
+                </div>
+
+                <div class="module-card module-disabled" data-module="reportes">
+                    <div class="module-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="module-title">gestion de Reportes</h3>
+                    <p class="module-description">Análisis y estadísticas de ventas</p>
+                    <button class="btn btn-disabled" disabled>
+                        Próximamente
+                    </button>
+                </div>
+            </section>
+
+            <!-- Resumen rápido -->
+            <section class="quick-stats">
+                <h2 class="section-title">Resumen de Hoy</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 class="stat-number" id="ventas-hoy">$0</h4>
+                            <p class="stat-label">Ventas de Hoy</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 class="stat-number" id="domicilios-hoy">0</h4>
+                            <p class="stat-label">Domicilios</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 class="stat-number" id="clientes-total">0</h4>
+                            <p class="stat-label">Clientes Registrados</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 FODEXA - Sistema de Gestión para Restaurantes</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/rutas.js"></script>
+    <script src="modulos/ventas/productos.js"></script>
+</body>
+</html>

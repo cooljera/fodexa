@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Visualización Completa de Cliente</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="modulos/ventas/ventas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+        }
+        
+        .test-subtitle {
+            font-size: 16px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Simulación del entorno de ventas */
+        .cliente-section {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">
+            <i class="fas fa-user-check"></i>
+            Test de Visualización de Cliente
+        </h1>
+        
+        <div class="test-section">
+            <h2 class="test-subtitle">Simulación de Clientes</h2>
+            <button class="btn-test" onclick="testClienteVIP()">
+                <i class="fas fa-crown"></i> Probar Cliente VIP
+            </button>
+            <button class="btn-test" onclick="testClienteFrecuente()">
+                <i class="fas fa-star"></i> Probar Cliente Frecuente
+            </button>
+            <button class="btn-test" onclick="testClienteRegular()">
+                <i class="fas fa-user"></i> Probar Cliente Regular
+            </button>
+            <button class="btn-test" onclick="testClienteSinDatos()">
+                <i class="fas fa-user-slash"></i> Cliente Sin Datos
+            </button>
+            <button class="btn-test" onclick="limpiarCliente()">
+                <i class="fas fa-trash"></i> Limpiar
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-subtitle">Resultado de Visualización</h2>
+            
+            <!-- Simulación del entorno de ventas -->
+            <div class="cliente-section" id="cliente-section">
+                <!-- Selector de cliente (estado inicial) -->
+                <div class="cliente-selector" id="cliente-selector">
+                    <p><i class="fas fa-search"></i> Búsqueda de cliente (simulado)</p>
+                </div>
+                
+                <!-- Cliente seleccionado -->
+                <div class="cliente-seleccionado hidden" id="cliente-seleccionado">
+                    <!-- Aquí se generará dinámicamente el contenido -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de prueba de clientes
+        const clientesPrueba = {
+            vip: {
+                id: 1,
+                nombre: 'Patricia Morales Díaz',
+                telefono: '+57 320 654 3210',
+                whatsapp: '+57 320 654 3210',
+                direccion: 'Calle 45 #23-67, El Poblado, Medellín',
+                tipo: 'vip',
+                descuento: 15
+            },
+            frecuente: {
+                id: 2,
+                nombre: 'Luis Fernando Castro',
+                telefono: '+57 315 789 0123',
+                direccion: 'Carrera 15 #85-30, Zona Rosa, Bogotá',
+                tipo: 'frecuente',
+                descuento: 5
+            },
+            regular: {
+                id: 3,
+                nombre: 'Ana Sofía Vargas López',
+                telefono: '+57 312 456 7890',
+                direccion: 'Avenida 68 #25-15, Normandía, Medellín',
+                tipo: 'regular',
+                descuento: 0
+            },
+            sinDatos: {
+                id: 4,
+                nombre: 'Cliente Sin Datos Completos',
+                telefono: null,
+                direccion: null,
+                tipo: 'nuevo',
+                descuento: 0
+            }
+        };
+
+        // Función para mostrar cliente (copiada del sistema principal)
+        function mostrarClienteSeleccionado(cliente) {
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            if (!selectorDiv || !seleccionadoDiv) {
+                console.error('Elementos de cliente no encontrados');
+                return;
+            }
+            
+            // Ocultar selector y mostrar cliente seleccionado
+            selectorDiv.classList.add('hidden');
+            seleccionadoDiv.classList.remove('hidden');
+            
+            // Crear la visualización completa del cliente con toda su información
+            const clienteCard = `
+                <div class="cliente-card-completa">
+                    <div class="cliente-info-completa">
+                        <div class="cliente-nombre-principal">
+                            ${cliente.nombre}
+                            ${cliente.tipo === 'vip' ? '<span class="badge-vip"><i class="fas fa-crown"></i> VIP</span>' : ''}
+                            ${cliente.tipo === 'frecuente' ? '<span class="badge-frecuente"><i class="fas fa-star"></i> Frecuente</span>' : ''}
+                        </div>
+                        <div class="cliente-detalles-grid">
+                            <div class="cliente-detalle-item">
+                                <i class="fas fa-phone"></i>
+                                <span class="detalle-label">Celular:</span>
+                                <span class="detalle-valor">${cliente.telefono || cliente.whatsapp || 'No registrado'}</span>
+                            </div>
+                            <div class="cliente-detalle-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="detalle-label">Dirección:</span>
+                                <span class="detalle-valor">${cliente.direccion || 'No registrada'}</span>
+                            </div>
+                            ${cliente.descuento > 0 ? `
+                                <div class="cliente-detalle-item descuento-info">
+                                    <i class="fas fa-percentage"></i>
+                                    <span class="detalle-label">Descuento:</span>
+                                    <span class="detalle-valor descuento-valor">${cliente.descuento}%</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="cliente-actions-completa">
+                        <button class="btn-cambiar-cliente" onclick="cambiarCliente()" title="Cambiar cliente">
+                            <i class="fas fa-edit"></i>
+                            <span>Cambiar</span>
+                        </button>
+                        <button class="btn-quitar-cliente" onclick="quitarCliente()" title="Quitar cliente">
+                            <i class="fas fa-times"></i>
+                            <span>Quitar</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Actualizar el contenido del div de cliente seleccionado
+            seleccionadoDiv.innerHTML = clienteCard;
+        }
+
+        // Funciones de prueba
+        function testClienteVIP() {
+            mostrarClienteSeleccionado(clientesPrueba.vip);
+        }
+
+        function testClienteFrecuente() {
+            mostrarClienteSeleccionado(clientesPrueba.frecuente);
+        }
+
+        function testClienteRegular() {
+            mostrarClienteSeleccionado(clientesPrueba.regular);
+        }
+
+        function testClienteSinDatos() {
+            mostrarClienteSeleccionado(clientesPrueba.sinDatos);
+        }
+
+        function limpiarCliente() {
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            selectorDiv.classList.remove('hidden');
+            seleccionadoDiv.classList.add('hidden');
+        }
+
+        // Funciones simuladas para los botones
+        function cambiarCliente() {
+            alert('Función cambiarCliente() ejecutada - Cliente listo para cambio');
+            limpiarCliente();
+        }
+
+        function quitarCliente() {
+            if (confirm('¿Confirmar quitar cliente de la venta?')) {
+                alert('Cliente quitado de la venta');
+                limpiarCliente();
+            }
+        }
+
+        // Mostrar cliente VIP por defecto al cargar
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testClienteVIP();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

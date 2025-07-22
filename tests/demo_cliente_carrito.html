@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demostración - Cliente en Carrito de Ventas</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="modulos/ventas/ventas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .demo-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .step-indicator {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Estilos específicos para la demostración */
+        .carrito-demo {
+            border: 3px solid #667eea;
+            border-radius: 16px;
+            padding: 20px;
+            background: #f8fafc;
+            position: relative;
+        }
+        
+        .carrito-demo::before {
+            content: 'CARRITO DE VENTA';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .cliente-section {
+            margin-bottom: 20px;
+        }
+        
+        .estado-actual {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .log-area {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+        
+        .log-success { color: #10b981; }
+        .log-info { color: #3b82f6; }
+        .log-warning { color: #f59e0b; }
+        .log-error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Panel de Control -->
+        <div class="demo-panel">
+            <h1 class="demo-title">
+                <i class="fas fa-gamepad"></i>
+                Panel de Control
+            </h1>
+            
+            <div class="step-indicator" id="step-indicator">
+                Paso 1: Estado inicial - Buscador visible
+            </div>
+            
+            <div class="btn-demo" onclick="paso1_mostrarBuscador()">
+                <i class="fas fa-search"></i> Paso 1: Mostrar Buscador
+            </div>
+            
+            <div class="btn-demo" onclick="paso2_seleccionarVIP()">
+                <i class="fas fa-crown"></i> Paso 2: Seleccionar Cliente VIP
+            </div>
+            
+            <div class="btn-demo" onclick="paso3_seleccionarRegular()">
+                <i class="fas fa-user"></i> Paso 3: Seleccionar Cliente Regular
+            </div>
+            
+            <div class="btn-demo" onclick="paso4_cambiarCliente()">
+                <i class="fas fa-edit"></i> Paso 4: Cambiar Cliente
+            </div>
+            
+            <div class="btn-demo" onclick="paso5_quitarCliente()">
+                <i class="fas fa-times"></i> Paso 5: Quitar Cliente
+            </div>
+            
+            <div class="btn-demo" onclick="limpiarLog()">
+                <i class="fas fa-broom"></i> Limpiar Log
+            </div>
+            
+            <!-- Área de Log -->
+            <div class="log-area" id="log-area">
+                <div class="log-entry log-info">🚀 Sistema de demostración iniciado</div>
+                <div class="log-entry log-info">📋 Mostrando estado inicial del carrito</div>
+            </div>
+        </div>
+        
+        <!-- Panel de Carrito -->
+        <div class="demo-panel">
+            <h1 class="demo-title">
+                <i class="fas fa-shopping-cart"></i>
+                Carrito de Ventas
+            </h1>
+            
+            <div class="estado-actual" id="estado-actual">
+                🔍 BUSCADOR VISIBLE - Esperando selección de cliente
+            </div>
+            
+            <!-- Simulación EXACTA del carrito -->
+            <div class="carrito-demo">
+                <!-- Sección de Cliente -->
+                <div class="cliente-section">
+                    <div class="cliente-header">
+                        <h4 class="cliente-titulo">
+                            <i class="fas fa-user"></i>
+                            Cliente
+                        </h4>
+                    </div>
+                    
+                    <!-- Sección de Cliente -->
+                    <div class="cliente-section" id="cliente-section">
+                        <!-- Selector de cliente (estado inicial) -->
+                        <div class="cliente-selector" id="cliente-selector">
+                            <div class="search-cliente-container">
+                                <div class="search-input-wrapper">
+                                    <i class="fas fa-search search-icon"></i>
+                                    <input 
+                                        type="text" 
+                                        id="search-cliente" 
+                                        class="search-cliente" 
+                                        placeholder="Buscar cliente por nombre o teléfono..."
+                                        disabled
+                                        value="(Simulación)"
+                                    >
+                                </div>
+                                <button class="btn-nuevo-cliente" disabled>
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Nuevo</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Cliente seleccionado -->
+                        <div class="cliente-seleccionado hidden" id="cliente-seleccionado">
+                            <!-- El contenido se genera dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Simulación de productos en carrito -->
+                <div style="margin-top: 20px; padding: 15px; background: #e5e7eb; border-radius: 8px;">
+                    <h5 style="margin: 0 0 10px 0; color: #374151;">
+                        <i class="fas fa-utensils"></i> Productos en carrito (simulado)
+                    </h5>
+                    <div style="font-size: 14px; color: #6b7280;">
+                        • Pizza Margherita × 2<br>
+                        • Coca Cola × 1<br>
+                        • Papas Fritas × 1
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de prueba
+        const clientesPrueba = {
+            vip: {
+                id: 1,
+                nombre: 'Patricia Morales Díaz',
+                telefono: '+57 320 654 3210',
+                whatsapp: '+57 320 654 3210',
+                direccion: 'Calle 45 #23-67, El Poblado, Medellín, Antioquia',
+                tipo: 'vip',
+                descuento: 15
+            },
+            regular: {
+                id: 2,
+                nombre: 'Carlos Alberto Rodriguez Martinez',
+                telefono: '+57 312 456 7890',
+                direccion: 'Carrera 13 #85-32, Chapinero, Bogotá D.C.',
+                tipo: 'regular',
+                descuento: 0
+            }
+        };
+
+        // Funciones de log
+        function addLog(message, type = 'info') {
+            const logArea = document.getElementById('log-area');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            logArea.appendChild(entry);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function updateStep(stepText, estado) {
+            document.getElementById('step-indicator').textContent = stepText;
+            document.getElementById('estado-actual').innerHTML = estado;
+        }
+
+        // Función EXACTA del sistema principal
+        function mostrarClienteSeleccionado(cliente) {
+            addLog(`🔄 Iniciando mostrarClienteSeleccionado para: ${cliente.nombre}`, 'info');
+            
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            if (!selectorDiv || !seleccionadoDiv) {
+                addLog('❌ Elementos de cliente no encontrados', 'error');
+                return;
+            }
+            
+            addLog('✅ Elementos encontrados, procediendo con la visualización', 'success');
+            
+            // Ocultar selector (buscador) y mostrar cliente seleccionado
+            selectorDiv.classList.add('hidden');
+            seleccionadoDiv.classList.remove('hidden');
+            
+            addLog('🔄 Buscador ocultado, generando tarjeta de cliente...', 'info');
+            
+            // Crear la visualización completa del cliente
+            const clienteCard = `
+                <div class="cliente-card-completa">
+                    <div class="cliente-info-completa">
+                        <div class="cliente-nombre-principal">
+                            ${cliente.nombre}
+                            ${cliente.tipo === 'vip' ? '<span class="badge-vip"><i class="fas fa-crown"></i> VIP</span>' : ''}
+                            ${cliente.tipo === 'frecuente' ? '<span class="badge-frecuente"><i class="fas fa-star"></i> Frecuente</span>' : ''}
+                        </div>
+                        <div class="cliente-detalles-grid">
+                            <div class="cliente-detalle-item">
+                                <i class="fas fa-phone"></i>
+                                <span class="detalle-label">Celular:</span>
+                                <span class="detalle-valor">${cliente.telefono || cliente.whatsapp || 'No registrado'}</span>
+                            </div>
+                            <div class="cliente-detalle-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span class="detalle-label">Dirección:</span>
+                                <span class="detalle-valor">${cliente.direccion || 'No registrada'}</span>
+                            </div>
+                            ${cliente.descuento > 0 ? `
+                                <div class="cliente-detalle-item descuento-info">
+                                    <i class="fas fa-percentage"></i>
+                                    <span class="detalle-label">Descuento:</span>
+                                    <span class="detalle-valor descuento-valor">${cliente.descuento}%</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="cliente-actions-completa">
+                        <button class="btn-cambiar-cliente" onclick="paso4_cambiarCliente()" title="Cambiar cliente">
+                            <i class="fas fa-edit"></i>
+                            <span>Cambiar</span>
+                        </button>
+                        <button class="btn-quitar-cliente" onclick="paso5_quitarCliente()" title="Quitar cliente">
+                            <i class="fas fa-times"></i>
+                            <span>Quitar</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Actualizar el contenido
+            seleccionadoDiv.innerHTML = clienteCard;
+            
+            addLog('✅ Cliente mostrado exitosamente en el carrito', 'success');
+            addLog(`📊 Datos mostrados: ${cliente.nombre} - ${cliente.telefono || 'Sin tel'} - ${cliente.direccion || 'Sin dir'}`, 'info');
+        }
+
+        function restaurarBuscador() {
+            addLog('🔄 Restaurando buscador de cliente...', 'info');
+            
+            const selectorDiv = document.getElementById('cliente-selector');
+            const seleccionadoDiv = document.getElementById('cliente-seleccionado');
+            
+            if (selectorDiv) selectorDiv.classList.remove('hidden');
+            if (seleccionadoDiv) seleccionadoDiv.classList.add('hidden');
+            
+            addLog('✅ Buscador restaurado exitosamente', 'success');
+        }
+
+        // Pasos de la demostración
+        function paso1_mostrarBuscador() {
+            addLog('🔄 Ejecutando Paso 1: Mostrar Buscador', 'info');
+            restaurarBuscador();
+            updateStep('Paso 1: Estado inicial - Buscador visible', '🔍 BUSCADOR VISIBLE - Esperando selección de cliente');
+        }
+
+        function paso2_seleccionarVIP() {
+            addLog('🔄 Ejecutando Paso 2: Seleccionar Cliente VIP', 'info');
+            mostrarClienteSeleccionado(clientesPrueba.vip);
+            updateStep('Paso 2: Cliente VIP seleccionado', '👑 CLIENTE VIP MOSTRADO - Buscador oculto, datos visibles');
+        }
+
+        function paso3_seleccionarRegular() {
+            addLog('🔄 Ejecutando Paso 3: Seleccionar Cliente Regular', 'info');
+            mostrarClienteSeleccionado(clientesPrueba.regular);
+            updateStep('Paso 3: Cliente Regular seleccionado', '👤 CLIENTE REGULAR MOSTRADO - Buscador oculto, datos visibles');
+        }
+
+        function paso4_cambiarCliente() {
+            addLog('🔄 Ejecutando Paso 4: Cambiar Cliente', 'info');
+            restaurarBuscador();
+            updateStep('Paso 4: Cambio de cliente ejecutado', '🔄 CLIENTE CAMBIADO - Volvió al buscador');
+        }
+
+        function paso5_quitarCliente() {
+            addLog('🔄 Ejecutando Paso 5: Quitar Cliente', 'info');
+            restaurarBuscador();
+            updateStep('Paso 5: Cliente quitado', '❌ CLIENTE QUITADO - Volvió al buscador');
+        }
+
+        function limpiarLog() {
+            document.getElementById('log-area').innerHTML = '<div class="log-entry log-info">🧹 Log limpiado</div>';
+        }
+
+        // Inicialización
+        addLog('🚀 Demostración inicializada', 'success');
+        addLog('📋 Usa los botones del panel izquierdo para ver cada paso', 'info');
+    </script>
+</body>
+</html>

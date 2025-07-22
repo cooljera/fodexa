@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Integración Completa - Cliente y Venta</title>
+    <link rel="stylesheet" href="ventas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+        .productos-test, .carrito-test {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .test-title {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .producto-simple {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .producto-simple:hover {
+            border-color: #667eea;
+            background: #f1f5f9;
+        }
+        .producto-simple h4 {
+            margin: 0 0 5px 0;
+            color: #1e293b;
+        }
+        .producto-simple p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .debug-info {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #64748b;
+            grid-column: span 2;
+        }
+        .test-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            grid-column: span 2;
+        }
+        .test-btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .test-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+        .test-btn.success {
+            background: #10b981;
+            color: white;
+        }
+        .test-btn.warning {
+            background: #f59e0b;
+            color: white;
+        }
+        .test-btn.danger {
+            background: #ef4444;
+            color: white;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .carrito-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .carrito-titulo {
+            margin: 0;
+            font-size: 16px;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <!-- Sección de Productos -->
+        <div class="productos-test">
+            <h2 class="test-title">🛍️ Productos de Prueba</h2>
+            
+            <div class="producto-simple" onclick="agregarProductoPrueba(1)">
+                <h4>Hamburguesa Clásica</h4>
+                <p><strong>$15.000</strong> - Stock: 50</p>
+            </div>
+            
+            <div class="producto-simple" onclick="agregarProductoPrueba(2)">
+                <h4>Pizza Margarita</h4>
+                <p><strong>$25.000</strong> - Stock: 30</p>
+            </div>
+            
+            <div class="producto-simple" onclick="agregarProductoPrueba(3)">
+                <h4>Coca Cola</h4>
+                <p><strong>$3.000</strong> - Stock: 100</p>
+            </div>
+        </div>
+
+        <!-- Sección de Carrito -->
+        <div class="carrito-test">
+            <div class="carrito-header">
+                <h3 class="carrito-titulo">
+                    <i class="fas fa-shopping-cart"></i>
+                    Carrito de Venta
+                </h3>
+            </div>
+
+            <!-- Sección de Cliente Optimizada -->
+            <div class="cliente-section" id="cliente-section">
+                <!-- Selector de cliente (estado inicial) -->
+                <div class="cliente-selector" id="cliente-selector">
+                    <div class="search-cliente-container">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input 
+                                type="text" 
+                                id="search-cliente" 
+                                class="search-cliente" 
+                                placeholder="Buscar cliente por nombre o teléfono..."
+                                oninput="buscarClienteCarrito(this.value)"
+                            >
+                        </div>
+                        <button class="btn-nuevo-cliente" onclick="crearClienteDemo()">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Nuevo</span>
+                        </button>
+                        <div class="search-cliente-results hidden" id="search-cliente-results">
+                            <!-- Resultados de búsqueda se mostrarán aquí -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cliente seleccionado compacto -->
+                <div class="cliente-seleccionado hidden" id="cliente-seleccionado">
+                    <div class="cliente-card-compact">
+                        <div class="cliente-info-compact">
+                            <div class="cliente-nombre-compact" id="cliente-nombre-display">-</div>
+                            <div class="cliente-detalles-compact">
+                                <span class="cliente-telefono-compact" id="cliente-telefono-display">-</span>
+                            </div>
+                        </div>
+                        <div class="cliente-actions-compact">
+                            <button class="btn-cambiar-cliente-compact" onclick="cambiarCliente()" title="Cambiar cliente">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-quitar-cliente-compact" onclick="quitarCliente()" title="Quitar cliente">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items del carrito -->
+            <div class="carrito-items" id="carrito-items">
+                <div class="carrito-vacio">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Agrega productos para comenzar la venta</p>
+                </div>
+            </div>
+
+            <!-- Resumen del carrito -->
+            <div class="carrito-resumen" id="carrito-resumen">
+                <div class="resumen-linea subtotal">
+                    <span>Subtotal:</span>
+                    <span id="subtotal-amount">$0</span>
+                </div>
+                <div class="resumen-linea impuestos">
+                    <span>IVA (19%):</span>
+                    <span id="tax-amount">$0</span>
+                </div>
+                <div class="resumen-linea total">
+                    <span>Total:</span>
+                    <span id="total-amount">$0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="debug-info">
+            <strong>🎯 Funcionalidades Implementadas:</strong><br>
+            ✅ <strong>Búsqueda de clientes</strong> - Busca por nombre, teléfono, documento<br>
+            ✅ <strong>Selección automática</strong> - Al hacer clic en "Agregar" se asigna inmediatamente<br>
+            ✅ <strong>Cierre automático</strong> - El buscador se cierra tras seleccionar<br>
+            ✅ <strong>Integración a venta</strong> - Cliente se asocia automáticamente al carrito<br>
+            ✅ <strong>Descuentos automáticos</strong> - VIP: 15%, Frecuente: 5%<br>
+            ✅ <strong>Indicadores visuales</strong> - Badges, indicadores de estado<br>
+            ✅ <strong>Cálculos automáticos</strong> - Subtotal, descuentos, IVA, total<br>
+            ✅ <strong>Gestión de estado</strong> - Persistencia durante la venta
+        </div>
+
+        <div class="test-actions">
+            <button class="test-btn primary" onclick="testSeleccionClienteVIP()">
+                <i class="fas fa-crown"></i> Test Cliente VIP
+            </button>
+            <button class="test-btn success" onclick="testVentaCompleta()">
+                <i class="fas fa-check-circle"></i> Test Venta Completa
+            </button>
+            <button class="test-btn warning" onclick="testCambiarCliente()">
+                <i class="fas fa-exchange-alt"></i> Test Cambio Cliente
+            </button>
+            <button class="test-btn danger" onclick="testLimpiarTodo()">
+                <i class="fas fa-trash"></i> Limpiar Todo
+            </button>
+        </div>
+    </div>
+
+    <script src="ventas.js"></script>
+    <script>
+        // Datos de prueba mejorados
+        const clientesDemo = [
+            {
+                id: 1,
+                nombre: 'María González Pérez',
+                telefono: '+57 300 123 4567',
+                tipo: 'vip',
+                descuento: 15,
+                activo: true
+            },
+            {
+                id: 2,
+                nombre: 'Carlos Rodríguez Martín',
+                telefono: '+57 301 987 6543',
+                tipo: 'frecuente',
+                descuento: 5,
+                activo: true
+            },
+            {
+                id: 3,
+                nombre: 'Ana Sofía Vargas',
+                telefono: '+57 312 456 7890',
+                direccion: 'Avenida 68 #25-15, Normandía',
+                tipo: 'nuevo',
+                descuento: 0,
+                activo: true
+            },
+            {
+                id: 4,
+                nombre: 'Luis Fernando Castro',
+                telefono: '+57 315 789 0123',
+                tipo: 'regular',
+                descuento: 0,
+                activo: true
+            },
+            {
+                id: 5,
+                nombre: 'Patricia Morales Díaz',
+                telefono: '+57 320 654 3210',
+                direccion: 'Calle 45 #23-67, El Poblado',
+                tipo: 'vip',
+                descuento: 15,
+                activo: true
+            }
+        ];
+
+        const productosDemo = [
+            { id: 1, nombre: 'Hamburguesa Clásica', precio: 15000, stock: 50 },
+            { id: 2, nombre: 'Pizza Margarita', precio: 25000, stock: 30 },
+            { id: 3, nombre: 'Coca Cola', precio: 3000, stock: 100 }
+        ];
+
+        // Inicializar datos en localStorage
+        localStorage.setItem('fodexa_clientes', JSON.stringify(clientesDemo));
+        localStorage.setItem('fodexa_productos', JSON.stringify(productosDemo));
+
+        // Inicializar variables globales
+        let carrito = [];
+        let clienteSeleccionado = null;
+        let productos = productosDemo;
+
+        // Función para agregar productos de prueba
+        function agregarProductoPrueba(id) {
+            const producto = productos.find(p => p.id === id);
+            if (!producto) return;
+
+            const itemExistente = carrito.find(item => item.id === id);
+            
+            if (itemExistente) {
+                itemExistente.cantidad++;
+            } else {
+                carrito.push({
+                    id: producto.id,
+                    nombre: producto.nombre,
+                    precio: producto.precio,
+                    cantidad: 1,
+                    stock: producto.stock
+                });
+            }
+            
+            actualizarCarritoUI();
+            showNotification(`${producto.nombre} agregado al carrito`, 'success', 1500);
+        }
+
+        // Función para crear cliente demo
+        function crearClienteDemo() {
+            const nombres = ['Roberto Gómez', 'Sandra López', 'Miguel Torres'];
+            const nombre = nombres[Math.floor(Math.random() * nombres.length)];
+            
+            const nuevoCliente = {
+                id: Date.now(),
+                nombre: nombre,
+                telefono: `+57 300 ${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`,
+                tipo: 'nuevo',
+                descuento: 0,
+                activo: true
+            };
+            
+            clientesDemo.push(nuevoCliente);
+            localStorage.setItem('fodexa_clientes', JSON.stringify(clientesDemo));
+            
+            showNotification(`Cliente ${nombre} creado exitosamente`, 'success');
+            
+            // Auto-seleccionar el nuevo cliente
+            setTimeout(() => {
+                seleccionarClienteCarrito(nuevoCliente.id);
+            }, 500);
+        }
+
+        // Funciones de prueba
+        function testSeleccionClienteVIP() {
+            // Seleccionar María González (VIP)
+            seleccionarClienteCarrito(1);
+        }
+
+        function testVentaCompleta() {
+            // Agregar productos
+            agregarProductoPrueba(1);
+            agregarProductoPrueba(2);
+            
+            // Seleccionar cliente VIP
+            setTimeout(() => {
+                seleccionarClienteCarrito(5);
+            }, 500);
+            
+            showNotification('Venta completa simulada: 2 productos + Cliente VIP', 'info', 3000);
+        }
+
+        function testCambiarCliente() {
+            if (clienteSeleccionado) {
+                cambiarCliente();
+            } else {
+                showNotification('Primero selecciona un cliente', 'warning');
+            }
+        }
+
+        function testLimpiarTodo() {
+            carrito = [];
+            if (clienteSeleccionado) {
+                quitarClienteCompleto();
+            }
+            actualizarCarritoUI();
+            showNotification('Todo limpiado', 'info');
+        }
+
+        // Función de notificación simple
+        function showNotification(message, type = 'info', duration = 3000) {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            // Crear notificación visual simple
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-size: 14px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                animation: slideInDown 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, duration);
+        }
+
+        // Función de formato de moneda
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Agregar estilos de animación
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInDown {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Ventas Component</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Componente ClienteCard
+        const ClienteCard = ({ cliente, onCambiarCliente }) => {
+          if (!cliente) {
+            console.warn('ClienteCard: No se recibió cliente');
+            return null;
+          }
+          
+          if (!cliente.nombreCompleto || !cliente.telefono || !cliente.direccion) {
+            console.error('ClienteCard: Cliente con datos incompletos:', cliente);
+            return (
+              <div style={{ color: 'red', padding: '16px' }}>
+                Error: Datos del cliente incompletos
+              </div>
+            );
+          }
+
+          return (
+            <div style={{
+              borderRadius: '16px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+              background: '#fff',
+              padding: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '24px',
+              maxWidth: '400px',
+              margin: '16px 0',
+              border: '2px solid #1976d2'
+            }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#1976d2' }}>
+                  {cliente.nombreCompleto}
+                </div>
+                <div style={{ color: '#ff9800', margin: '8px 0 0 0' }}>
+                  {cliente.telefono}
+                </div>
+                <div style={{ color: '#333', marginTop: 4 }}>
+                  {cliente.direccion}
+                </div>
+              </div>
+              <button
+                onClick={onCambiarCliente}
+                style={{
+                  background: '#ff9800',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                Cambiar cliente
+              </button>
+            </div>
+          );
+        };
+
+        // Componente BuscadorClientes
+        const BuscadorClientes = ({ onSeleccionarCliente }) => {
+          console.log('BuscadorClientes: onSeleccionarCliente recibido:', typeof onSeleccionarCliente);
+          
+          const clientesEjemplo = [
+            { id: 1, nombreCompleto: 'Juan Pérez', telefono: '555-1234', direccion: 'Calle 1' },
+            { id: 2, nombreCompleto: 'Ana Gómez', telefono: '555-5678', direccion: 'Calle 2' },
+          ];
+          
+          const [clientes] = React.useState(clientesEjemplo);
+          const [form, setForm] = React.useState({ nombre: '', apellido: '', telefono: '', direccion: '' });
+
+          const seleccionarCliente = (cliente) => {
+            if (typeof onSeleccionarCliente !== 'function') {
+              console.error('ERROR: onSeleccionarCliente no es una función:', onSeleccionarCliente);
+              alert('Error: La función onSeleccionarCliente no está definida correctamente');
+              return;
+            }
+
+            if (!cliente || !cliente.nombreCompleto || !cliente.telefono || !cliente.direccion) {
+              console.error('Error: Cliente incompleto', cliente);
+              alert('Error: Los datos del cliente están incompletos');
+              return;
+            }
+            
+            console.log('Cliente válido seleccionado:', cliente);
+            
+            try {
+              onSeleccionarCliente(cliente);
+              console.log('onSeleccionarCliente ejecutado exitosamente');
+            } catch (error) {
+              console.error('Error al ejecutar onSeleccionarCliente:', error);
+              alert('Error: No se pudo seleccionar el cliente. Ver consola para detalles.');
+            }
+          };
+
+          const crearNuevoCliente = (e) => {
+            e.preventDefault();
+            
+            if (!form.nombre.trim() || !form.apellido.trim() || !form.telefono.trim() || !form.direccion.trim()) {
+              alert('Error: Todos los campos son obligatorios');
+              return;
+            }
+            
+            const nuevoCliente = {
+              id: Date.now(),
+              nombreCompleto: `${form.nombre.trim()} ${form.apellido.trim()}`,
+              telefono: form.telefono.trim(),
+              direccion: form.direccion.trim(),
+            };
+            
+            console.log('Creando nuevo cliente:', nuevoCliente);
+            seleccionarCliente(nuevoCliente);
+            setForm({ nombre: '', apellido: '', telefono: '', direccion: '' });
+          };
+
+          return (
+            <div>
+              <h4>Selecciona un cliente existente:</h4>
+              <ul>
+                {clientes.map((cliente) => (
+                  <li key={cliente.id}>
+                    {cliente.nombreCompleto} - {cliente.telefono}
+                    <button 
+                      onClick={() => {
+                        console.log('Seleccionando cliente existente:', cliente);
+                        seleccionarCliente(cliente);
+                      }} 
+                      style={{ marginLeft: 8 }}
+                    >
+                      Seleccionar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              <h4>O crea un nuevo cliente:</h4>
+              <form onSubmit={crearNuevoCliente} style={{ marginTop: 12 }}>
+                <input
+                  type="text"
+                  placeholder="Nombre"
+                  value={form.nombre}
+                  onChange={e => setForm({ ...form, nombre: e.target.value })}
+                  required
+                  style={{ margin: '4px', padding: '8px' }}
+                />
+                <input
+                  type="text"
+                  placeholder="Apellido"
+                  value={form.apellido}
+                  onChange={e => setForm({ ...form, apellido: e.target.value })}
+                  required
+                  style={{ margin: '4px', padding: '8px' }}
+                />
+                <input
+                  type="text"
+                  placeholder="Teléfono"
+                  value={form.telefono}
+                  onChange={e => setForm({ ...form, telefono: e.target.value })}
+                  required
+                  style={{ margin: '4px', padding: '8px' }}
+                />
+                <input
+                  type="text"
+                  placeholder="Dirección"
+                  value={form.direccion}
+                  onChange={e => setForm({ ...form, direccion: e.target.value })}
+                  required
+                  style={{ margin: '4px', padding: '8px' }}
+                />
+                <button type="submit" style={{ marginLeft: 8, padding: '8px 16px' }}>
+                  Crear y seleccionar
+                </button>
+              </form>
+            </div>
+          );
+        };
+
+        // Componente Ventas
+        const Ventas = () => {
+          const [clienteSeleccionado, setClienteSeleccionado] = React.useState(null);
+
+          const handleSeleccionarCliente = (cliente) => {
+            console.log('Ventas: Recibiendo cliente:', cliente);
+            
+            if (!cliente || !cliente.nombreCompleto || !cliente.telefono || !cliente.direccion) {
+              console.error('Ventas: Cliente inválido recibido:', cliente);
+              alert('Error: No se pudo seleccionar el cliente. Datos incompletos.');
+              return;
+            }
+            
+            setClienteSeleccionado(cliente);
+            console.log('Ventas: Cliente seleccionado exitosamente:', cliente);
+          };
+
+          const handleCambiarCliente = () => {
+            setClienteSeleccionado(null);
+          };
+
+          return (
+            <div style={{ padding: '20px' }}>
+              <h2>Sistema de Ventas - Test</h2>
+              
+              {!clienteSeleccionado && (
+                <BuscadorClientes onSeleccionarCliente={handleSeleccionarCliente} />
+              )}
+
+              {clienteSeleccionado && (
+                <ClienteCard
+                  cliente={clienteSeleccionado}
+                  onCambiarCliente={handleCambiarCliente}
+                />
+              )}
+            </div>
+          );
+        };
+
+        // Renderizar la aplicación
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Ventas />);
+    </script>
+</body>
+</html>

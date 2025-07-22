@@ -1,0 +1,611 @@
+body {
+  background: linear-gradient(-45deg, #1a1a40, #4b0082, #1a1a40);
+  background-size: 400% 400%;
+  animation: fondoFodexa 12s ease infinite;
+  color: #fff;
+  min-height: 100vh;
+/* Barra lateral vertical igual a inventario */
+.fodexa-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+.sidebar.sidebar-productos.sidebar-vertical {
+  width: 220px;
+  background: #111827;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  min-height: 100vh;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.10);
+  z-index: 10;
+}
+.sidebar-logo {
+  text-align: center;
+  margin-bottom: 2.2rem;
+}
+.sidebar-logo h2 {
+  font-size: 2rem;
+  color: #ffb347;
+  margin-bottom: 0.2rem;
+  font-family: 'Inter', sans-serif;
+}
+.sidebar-logo span {
+  font-size: 1.1rem;
+  color: #fff;
+  font-weight: 500;
+}
+.sidebar-menu {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.menu-btn-prod {
+  width: 100%;
+  background: #23263a;
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.8rem 1.2rem;
+  font-size: 1.05rem;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+.menu-btn-prod.active, .menu-btn-prod:focus {
+  background: linear-gradient(90deg,#ffb347 0%,#ffcc80 100%);
+  color: #181c2a;
+}
+.menu-btn-prod i {
+  font-size: 1.1rem;
+}
+.btn-retroceder-menu {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  background: #23263a;
+  color: #ffb347;
+  border: 1.5px solid #ffb347;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-retroceder-menu:hover {
+  background: #ffb347;
+  color: #181c2a;
+}
+}
+
+@keyframes fondoFodexa {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.main-content {
+  background: none !important;
+  min-height: 100vh;
+}
+
+.fodexa-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: none !important;
+}
+.sidebar-productos {
+  background: #181c2a;
+  min-width: 220px;
+  max-width: 240px;
+  padding: 32px 0 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 2px 0 12px #6366f122;
+  border-radius: 0 18px 18px 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+/* Sidebar FODEXA productos - idéntico a inventario */
+.fodexa-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: none;
+}
+.sidebar-productos {
+  background: #181c2a;
+  min-width: 220px;
+  max-width: 240px;
+  padding: 32px 0 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 2px 0 12px #6366f122;
+  border-radius: 0 18px 18px 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+.sidebar-logo {
+  margin-bottom: 18px;
+  text-align: center;
+}
+.sidebar-logo h2 {
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 1px;
+}
+.sidebar-logo span {
+  font-size: 1.05rem;
+  color: #a5b4fc;
+  font-weight: 500;
+}
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.menu-btn-prod {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start;
+  transition: background 0.18s, color 0.18s;
+  text-align: left;
+  padding-left: 28px;
+  font-family: 'Inter', sans-serif;
+}
+.menu-btn-prod.active,
+.menu-btn-prod:focus {
+  background: linear-gradient(90deg,#6366f1,#3b82f6);
+  color: #fff;
+}
+.menu-btn-prod i {
+  font-size: 1.1em;
+}
+/* --- Sidebar FODEXA estilo inventario para productos --- */
+.fodexa-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: none;
+}
+.sidebar-productos {
+  background: #181c2a;
+  min-width: 220px;
+  max-width: 240px;
+  padding: 32px 0 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 2px 0 12px #6366f122;
+  border-radius: 0 18px 18px 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+.sidebar-logo {
+  margin-bottom: 18px;
+  text-align: center;
+}
+.sidebar-logo h2 {
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 1px;
+}
+.sidebar-logo span {
+  font-size: 1.05rem;
+  color: #a5b4fc;
+  font-weight: 500;
+}
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.menu-btn-prod {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start;
+  transition: background 0.18s, color 0.18s;
+  text-align: left;
+  padding-left: 28px;
+}
+.menu-btn-prod.active,
+.menu-btn-prod:focus {
+  background: linear-gradient(90deg,#6366f1,#3b82f6);
+  color: #fff;
+}
+.menu-btn-prod i {
+  font-size: 1.1em;
+}
+/* --- FODEXA: Estructura modular para productos (estilo inventario) --- */
+.fodexa-wrapper {
+  display: flex;
+  min-height: 340px;
+  background: #f8fafc;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #2563eb11;
+  overflow: hidden;
+  margin-top: 32px;
+}
+.sidebar-productos {
+  background: #fff;
+  min-width: 210px;
+  max-width: 230px;
+  padding: 28px 0 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 2px 0 12px #2563eb0a;
+}
+.sidebar-logo {
+  margin-bottom: 18px;
+  text-align: center;
+}
+.sidebar-logo h2 {
+  font-size: 1.15rem;
+  color: #2563eb;
+  font-weight: 800;
+  margin: 0;
+}
+.sidebar-logo span {
+  font-size: 0.97rem;
+  color: #64748b;
+  font-weight: 500;
+}
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.menu-btn-prod {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2563eb;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  transition: background 0.18s;
+}
+.menu-btn-prod.active,
+.menu-btn-prod:focus {
+  background: rgba(37,99,235,0.08);
+}
+.main-panel-productos {
+  flex: 1;
+  padding: 32px 28px 24px 28px;
+}
+.seccion-prod {
+  display: none;
+}
+.seccion-prod.visible {
+  display: block;
+}
+.seccion-prod.hidden {
+  display: none;
+}
+/* Estilos para productos.html (migrados de inline y visuales) */
+.titulo-productos {
+    margin-bottom: 1.5rem;
+    color: #2563eb;
+}
+.grid-tarjetas-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+}
+.productos-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+.productos-buscador {
+    flex: 1;
+    max-width: 400px;
+}
+.btn-crear-producto {
+    margin-left: 18px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.12);
+    font-size: 28px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-crear-producto:hover {
+    background: #1746a2;
+}
+.modal-estadisticas-producto {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.modal-estadisticas-content {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    padding: 32px 28px 24px 28px;
+    max-width: 540px;
+    width: 96vw;
+    position: relative;
+}
+.btn-cerrar-modal-estadisticas {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    color: #e74c3c;
+    cursor: pointer;
+}
+.estadisticas-overflow {
+    overflow-x: auto;
+}
+.estadisticas-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.estadisticas-table-header {
+    background: #f8fbff;
+    color: #2563eb;
+}
+.estadisticas-th {
+    padding: 8px 6px;
+    text-align: left;
+}
+/* Estilos para productos.html (migrados de inline) */
+.titulo-productos {
+    margin-bottom: 1.5rem;
+    color: #2563eb;
+}
+.grid-tarjetas-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+}
+/* FODEXA - Estilos para la pestaña de Insumos en edición de producto */
+
+/* Modal general */
+.modal-producto {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(36, 41, 46, 0.25);
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.modal-producto .modal-content {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+  padding: 32px 28px 24px 28px;
+  min-width: 340px;
+  max-width: 98vw;
+  min-height: 120px;
+  position: relative;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.tab-btn {
+  background: #f5f6fa;
+  color: #2563eb;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 8px 22px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.tab-btn.active {
+  background: #2563eb;
+  color: #fff;
+}
+.tab-content {
+  display: none;
+  padding: 0 0 12px 0;
+}
+.tab-content.active {
+  display: block;
+}
+
+/* Tabla de insumos */
+#tab-insumos-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 10px;
+}
+#tab-insumos-content th, #tab-insumos-content td {
+  border: 1px solid #e5e7eb;
+  padding: 7px 10px;
+  font-size: 15px;
+  text-align: left;
+}
+#tab-insumos-content th {
+  background: #f5f6fa;
+  color: #2563eb;
+  font-weight: 700;
+}
+#tab-insumos-content tr:nth-child(even) {
+  background: #f9fafb;
+}
+#tab-insumos-content input[type='text'] {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 15px;
+  width: 60px;
+}
+#tab-insumos-content button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 4px;
+  transition: background 0.2s;
+}
+#tab-insumos-content button:hover {
+  background: #1d4ed8;
+}
+
+/* Autocomplete y acciones */
+#tab-insumos-content > div[style*='display:flex'] input {
+  margin-right: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 15px;
+}
+#tab-insumos-content > div[style*='display:flex'] button {
+  margin-right: 0;
+}
+
+/* Datalist de autocomplete */
+#autocomplete-list-insumos {
+  max-height: 180px;
+  overflow-y: auto;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+#autocomplete-list-insumos div {
+  font-size: 15px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .modal-producto .modal-content {
+    min-width: 90vw;
+    padding: 18px 6vw 18px 6vw;
+  }
+}
+
+/* Utilidades para limpieza de estilos inline de ventas.html */
+.display-none { display: none !important; }
+.pos-relative { position: relative !important; }
+.mt-10 { margin-top: 10px !important; }
+.form-row-gap { gap: 12px !important; }
+.form-group-flex-180 { flex: 1 1 0; min-width: 180px !important; }
+.form-group-flex-140 { flex: 1 1 0; min-width: 140px !important; }
+.form-group-flex-120 { flex: 1 1 0; min-width: 120px !important; }
+
+/* Botón cerrar circular (modal) */
+.btn-cerrar-circular {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #f5f6fa;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.btn-cerrar-circular:hover {
+  background: #e0e7ef;
+}
+
+/* Botón cerrar rojo (formulario) */
+.btn-cerrar-rojo {
+  background: #e74c3c;
+  color: #fff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  float: right;
+  transition: background 0.2s;
+}
+.btn-cerrar-rojo:hover {
+  background: #c0392b;
+}

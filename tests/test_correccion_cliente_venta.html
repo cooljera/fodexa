@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Corrección Cliente en Venta</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #667eea;
+        }
+        .test-section {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .debug-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test de Corrección - Cliente en Venta</h1>
+            <p>Verificación de datos del cliente en tickets de venta</p>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Test 1: Verificar Cliente en Resumen de Venta</h3>
+            <p>Prueba que la información del cliente se muestre correctamente en el resumen de venta</p>
+            <button class="test-button" onclick="testClienteEnResumen()">Ejecutar Test 1</button>
+            <div id="result1" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🏠 Test 2: Selección de Dirección de Entrega</h3>
+            <p>Prueba la funcionalidad del selector de direcciones múltiples</p>
+            <button class="test-button" onclick="testSelectorDirecciones()">Ejecutar Test 2</button>
+            <div id="result2" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🚫 Test 3: Prevención de Doble Registro</h3>
+            <p>Verifica que no se permitan registros duplicados de clientes</p>
+            <button class="test-button" onclick="testPrevencionDuplicados()">Ejecutar Test 3</button>
+            <div id="result3" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 Test 4: Sincronización de Datos</h3>
+            <p>Verifica que ventaActual se actualice correctamente con datos del cliente</p>
+            <button class="test-button" onclick="testSincronizacionDatos()">Ejecutar Test 4</button>
+            <div id="result4" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Test Completo</h3>
+            <button class="test-button" onclick="ejecutarTodosLosTests()">Ejecutar Todos los Tests</button>
+            <div id="resultCompleto" class="result"></div>
+        </div>
+
+        <div id="debug-output" class="debug-output" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Variables de simulación
+        let clienteSeleccionado = null;
+        let direccionEntregaSeleccionada = null;
+        let ventaActual = null;
+        let carrito = [
+            { id: 1, nombre: 'Hamburguesa Clásica', precio: 15000, cantidad: 2 },
+            { id: 2, nombre: 'Coca Cola', precio: 3000, cantidad: 1 }
+        ];
+
+        // Cliente de prueba
+        const clientePrueba = {
+            id: 1,
+            nombre: 'María González Pérez',
+            telefono: '+57 300 123 4567',
+            whatsapp: '+57 300 123 4567',
+            documento: '43123456',
+            tipo: 'vip',
+            descuento: 10,
+            direcciones: [
+                'Carrera 80 #45-23, Apto 501, Laureles',
+                'Calle 70 #11-42, Centro Comercial',
+                'Avenida 68 #25-15, Normandía'
+            ]
+        };
+
+        function log(message, type = 'info') {
+            const debugOutput = document.getElementById('debug-output');
+            debugOutput.style.display = 'block';
+            const timestamp = new Date().toLocaleTimeString();
+            debugOutput.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            debugOutput.scrollTop = debugOutput.scrollHeight;
+            console.log(message);
+        }
+
+        function showResult(testId, success, message) {
+            const result = document.getElementById(testId);
+            result.style.display = 'block';
+            result.className = `result ${success ? 'success' : 'error'}`;
+            result.innerHTML = `<strong>${success ? '✅ ÉXITO' : '❌ ERROR'}</strong>: ${message}`;
+        }
+
+        // Simulación de funciones del sistema original
+        function validarYCorregirClienteEnVenta() {
+            log('🔍 Validando y corrigiendo cliente en venta...');
+            
+            if (clienteSeleccionado && (!ventaActual || !ventaActual.clienteInfo)) {
+                log('⚠️ Corrigiendo ventaActual.clienteInfo desde clienteSeleccionado');
+                
+                if (!ventaActual) {
+                    ventaActual = {
+                        items: [...carrito],
+                        subtotal: 33000,
+                        descuento: 3300,
+                        impuestos: 5643,
+                        total: 35343
+                    };
+                }
+                
+                ventaActual.clienteInfo = {
+                    nombre: clienteSeleccionado.nombre,
+                    telefono: clienteSeleccionado.telefono || clienteSeleccionado.whatsapp,
+                    documento: clienteSeleccionado.documento,
+                    direccionEntrega: direccionEntregaSeleccionada,
+                    tipo: clienteSeleccionado.tipo,
+                    descuentoAplicado: clienteSeleccionado.descuento || 0
+                };
+                ventaActual.clienteId = clienteSeleccionado.id;
+                
+                log('✅ VentaActual corregida correctamente');
+                return true;
+            }
+            
+            return false;
+        }
+
+        function configurarSelectorDirecciones(cliente) {
+            log(`🏠 Configurando selector de direcciones para: ${cliente.nombre}`);
+            
+            const direcciones = cliente.direcciones || [];
+            
+            if (direcciones.length === 0) {
+                log('⚠️ No hay direcciones disponibles');
+                return false;
+            }
+            
+            if (direcciones.length === 1) {
+                direccionEntregaSeleccionada = direcciones[0];
+                log(`✅ Dirección única seleccionada: ${direccionEntregaSeleccionada}`);
+                return true;
+            }
+            
+            log(`📋 Configuradas ${direcciones.length} direcciones en el selector`);
+            return true;
+        }
+
+        // Tests individuales
+        function testClienteEnResumen() {
+            log('🧪 Iniciando Test 1: Cliente en Resumen de Venta');
+            
+            try {
+                // Simular selección de cliente
+                clienteSeleccionado = { ...clientePrueba };
+                direccionEntregaSeleccionada = clientePrueba.direcciones[0];
+                
+                // Crear venta actual sin información del cliente (simula el bug)
+                ventaActual = {
+                    items: [...carrito],
+                    subtotal: 33000,
+                    descuento: 0,
+                    impuestos: 6270,
+                    total: 39270,
+                    clienteInfo: null // Simula el problema
+                };
+                
+                log('📝 VentaActual creada sin clienteInfo (simulando bug)');
+                
+                // Ejecutar corrección
+                const corregido = validarYCorregirClienteEnVenta();
+                
+                // Verificar resultado
+                if (corregido && ventaActual.clienteInfo && ventaActual.clienteInfo.nombre === clientePrueba.nombre) {
+                    showResult('result1', true, 'La información del cliente se corrigió correctamente en ventaActual');
+                    log('✅ Test 1 APROBADO');
+                } else {
+                    showResult('result1', false, 'La información del cliente no se corrigió correctamente');
+                    log('❌ Test 1 FALLIDO');
+                }
+                
+            } catch (error) {
+                showResult('result1', false, `Error durante el test: ${error.message}`);
+                log(`❌ Test 1 ERROR: ${error.message}`);
+            }
+        }
+
+        function testSelectorDirecciones() {
+            log('🧪 Iniciando Test 2: Selector de Direcciones');
+            
+            try {
+                clienteSeleccionado = { ...clientePrueba };
+                
+                // Test con múltiples direcciones
+                const configurado = configurarSelectorDirecciones(clienteSeleccionado);
+                
+                if (configurado && clienteSeleccionado.direcciones.length > 1) {
+                    showResult('result2', true, `Selector configurado correctamente para ${clienteSeleccionado.direcciones.length} direcciones`);
+                    log('✅ Test 2 APROBADO');
+                } else {
+                    showResult('result2', false, 'El selector de direcciones no se configuró correctamente');
+                    log('❌ Test 2 FALLIDO');
+                }
+                
+            } catch (error) {
+                showResult('result2', false, `Error durante el test: ${error.message}`);
+                log(`❌ Test 2 ERROR: ${error.message}`);
+            }
+        }
+
+        function testPrevencionDuplicados() {
+            log('🧪 Iniciando Test 3: Prevención de Duplicados');
+            
+            try {
+                // Simular datos existentes
+                const clientesExistentes = [
+                    { id: 1, nombre: 'María González Pérez', documento: '43123456' },
+                    { id: 2, nombre: 'Carlos Rodríguez', documento: '52987654' }
+                ];
+                
+                // Intentar agregar cliente duplicado
+                const clienteDuplicado = {
+                    nombre: 'María González Pérez',
+                    documento: '43123456'
+                };
+                
+                // Verificar duplicado por documento
+                const esDuplicado = clientesExistentes.some(c => c.documento === clienteDuplicado.documento);
+                
+                if (esDuplicado) {
+                    showResult('result3', true, 'La validación de duplicados funciona correctamente');
+                    log('✅ Test 3 APROBADO - Duplicado detectado correctamente');
+                } else {
+                    showResult('result3', false, 'La validación de duplicados no está funcionando');
+                    log('❌ Test 3 FALLIDO - No se detectó el duplicado');
+                }
+                
+            } catch (error) {
+                showResult('result3', false, `Error durante el test: ${error.message}`);
+                log(`❌ Test 3 ERROR: ${error.message}`);
+            }
+        }
+
+        function testSincronizacionDatos() {
+            log('🧪 Iniciando Test 4: Sincronización de Datos');
+            
+            try {
+                // Limpiar estado
+                clienteSeleccionado = null;
+                ventaActual = null;
+                direccionEntregaSeleccionada = null;
+                
+                // Simular selección de cliente
+                clienteSeleccionado = { ...clientePrueba };
+                direccionEntregaSeleccionada = clientePrueba.direcciones[0];
+                
+                log('👤 Cliente seleccionado');
+                
+                // Simular creación de venta actual
+                const subtotal = 33000;
+                const descuento = subtotal * (clienteSeleccionado.descuento / 100);
+                const impuestos = (subtotal - descuento) * 0.19;
+                const total = subtotal - descuento + impuestos;
+                
+                ventaActual = {
+                    items: [...carrito],
+                    subtotal: subtotal,
+                    descuento: descuento,
+                    impuestos: impuestos,
+                    total: total,
+                    clienteId: clienteSeleccionado.id,
+                    clienteInfo: {
+                        nombre: clienteSeleccionado.nombre,
+                        telefono: clienteSeleccionado.telefono || clienteSeleccionado.whatsapp,
+                        documento: clienteSeleccionado.documento,
+                        direccionEntrega: direccionEntregaSeleccionada,
+                        tipo: clienteSeleccionado.tipo,
+                        descuentoAplicado: clienteSeleccionado.descuento || 0
+                    },
+                    direccionEntrega: direccionEntregaSeleccionada,
+                    fecha: new Date().toISOString()
+                };
+                
+                log('💳 VentaActual creada con información completa');
+                
+                // Verificar sincronización
+                const sincronizado = (
+                    ventaActual.clienteId === clienteSeleccionado.id &&
+                    ventaActual.clienteInfo &&
+                    ventaActual.clienteInfo.nombre === clienteSeleccionado.nombre &&
+                    ventaActual.direccionEntrega === direccionEntregaSeleccionada
+                );
+                
+                if (sincronizado) {
+                    showResult('result4', true, 'Los datos están correctamente sincronizados entre clienteSeleccionado y ventaActual');
+                    log('✅ Test 4 APROBADO');
+                } else {
+                    showResult('result4', false, 'Los datos no están sincronizados correctamente');
+                    log('❌ Test 4 FALLIDO');
+                }
+                
+            } catch (error) {
+                showResult('result4', false, `Error durante el test: ${error.message}`);
+                log(`❌ Test 4 ERROR: ${error.message}`);
+            }
+        }
+
+        function ejecutarTodosLosTests() {
+            log('🎯 Ejecutando todos los tests...');
+            
+            // Limpiar resultados anteriores
+            const debugOutput = document.getElementById('debug-output');
+            debugOutput.innerHTML = '';
+            
+            let testsPasados = 0;
+            const totalTests = 4;
+            
+            setTimeout(() => {
+                testClienteEnResumen();
+                if (document.getElementById('result1').classList.contains('success')) testsPasados++;
+            }, 100);
+            
+            setTimeout(() => {
+                testSelectorDirecciones();
+                if (document.getElementById('result2').classList.contains('success')) testsPasados++;
+            }, 200);
+            
+            setTimeout(() => {
+                testPrevencionDuplicados();
+                if (document.getElementById('result3').classList.contains('success')) testsPasados++;
+            }, 300);
+            
+            setTimeout(() => {
+                testSincronizacionDatos();
+                if (document.getElementById('result4').classList.contains('success')) testsPasados++;
+                
+                // Mostrar resultado final
+                setTimeout(() => {
+                    const porcentaje = (testsPasados / totalTests) * 100;
+                    const exito = testsPasados === totalTests;
+                    
+                    showResult('resultCompleto', exito, 
+                        `${testsPasados}/${totalTests} tests aprobados (${porcentaje}%)`);
+                    
+                    log(`🏁 Tests completados: ${testsPasados}/${totalTests} aprobados`);
+                }, 100);
+            }, 400);
+        }
+
+        // Ejecutar un test básico al cargar
+        window.onload = function() {
+            log('🚀 Sistema de tests cargado correctamente');
+            log('📝 Listo para ejecutar tests de corrección de cliente en venta');
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,2205 @@
+<style>
+/* Calendario avanzado tipo Loyverse - Ajuste visual */
+#calendar-advanced {
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+#calendarDropdown {
+  background: #181c2a;
+  border: 1.5px solid #6366f1;
+  box-shadow: 0 6px 32px #6366f155;
+  border-radius: 14px;
+  padding: 20px 18px 14px 18px;
+  min-width: 270px;
+  color: #fff;
+}
+.btnQuickDate {
+  background: #23263a;
+  color: #a5b4fc;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 13px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  margin-bottom: 2px;
+}
+.btnQuickDate.active, .btnQuickDate:hover {
+  background: linear-gradient(90deg,#6366f1,#3b82f6);
+  color: #fff;
+}
+#calendarCustomRange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 8px 0;
+  justify-content: center;
+}
+#calendarCustomRange input[type="date"] {
+  background: #23263a;
+  color: #fff;
+  border: 1.5px solid #6366f1;
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 15px;
+  width: 120px;
+}
+#btnCalendarOk {
+  background: linear-gradient(90deg,#6366f1,#3b82f6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px #6366f155;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-top: 6px;
+}
+#btnCalendarDropdown {
+  background: #23263a;
+  color: #a5b4fc;
+  border: 1.5px solid #6366f1;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  min-width: 140px;
+  box-shadow: 0 2px 8px #6366f122;
+}
+#btnCalendarDropdown:hover {
+  background: #6366f1;
+  color: #fff;
+}
+#calendarDropdown::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 30px;
+  width: 0; height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #6366f1;
+}
+@media (max-width: 600px) {
+  #calendarDropdown { min-width: 98vw; left: -20vw; }
+  #calendarCustomRange input[type="date"] { width: 90px; }
+}
+</style>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="inventario.css">
+    <meta charset="UTF-8">
+    <title>Inventario | FODEXA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tipografía Inter -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,500,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome CDN oficial -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Estilos del módulo -->
+    <link rel="stylesheet" href="inventario.css">
+</head>
+<body>
+    <div class="bg-animated"></div>
+   <!-- MENÚ LATERAL DE FODEXA PARA INVENTARIO -->
+<div class="fodexa-wrapper">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>FODEXA</h2>
+      <span>Inventario</span>
+    </div>
+    <button id="btn-retroceder-menu" class="btn btn-retroceder-menu" type="button">
+      <i class="fas fa-arrow-left"></i> Retroceder
+    </button>
+    <nav class="sidebar-menu">
+      <ul>
+        <li><button class="menu-btn active" data-section="proveedores"><i class="fas fa-truck"></i> Proveedores</button></li>
+        <li><button class="menu-btn" data-section="ingredientes"><i class="fas fa-carrot"></i> Ingredientes</button></li>
+        <li><button class="menu-btn" data-section="inventario"><i class="fas fa-boxes"></i> Inventario</button></li>
+        <li><button class="menu-btn" data-section="compras"><i class="fas fa-shopping-cart"></i> Compras</button></li>
+        <li><button class="menu-btn" data-section="configuracion"><i class="fas fa-cogs"></i> Configuración</button></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="main-panel">
+    <section id="seccion-proveedores" class="seccion visible">
+      <h2 class="proveedores-titulo"><i class="fas fa-truck"></i> Gestor de Proveedores</h2>
+      <div class="proveedores-controles">
+        <input type="text" id="busqueda-input" class="buscador-proveedor" placeholder="Buscar proveedor..." autocomplete="off">
+        <button class="btn btn-primary" id="btn-abrir-modal-proveedor"><i class="fas fa-plus"></i> Agregar proveedor</button>
+      </div>
+      <div id="proveedores-container" class="proveedores-container"></div>
+      <!-- Modal único para proveedor -->
+      <div id="modal-proveedor" class="modal-overlay" style="display:none;">
+        <div class="modal" id="modal-proveedor-form">
+          <button class="close-btn" id="btn-cerrar-modal-proveedor" title="Cerrar"><i class="fas fa-times"></i></button>
+          <h3 style="margin-bottom:16px;"><i class="fas fa-truck"></i> Nuevo proveedor</h3>
+          <form id="proveedor-form" class="proveedor-form" autocomplete="off">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nombreProveedor"><i class="fas fa-building"></i> Nombre del proveedor</label>
+                <input type="text" id="nombreProveedor" name="nombreProveedor" required maxlength="60" placeholder="Ej: Distribuidora FODEXA">
+              </div>
+              <div class="form-group">
+                <label for="nombreContacto"><i class="fas fa-user"></i> Nombre del contacto</label>
+                <input type="text" id="nombreContacto" name="nombreContacto" maxlength="40" placeholder="Ej: Juan Pérez">
+              </div>
+              <div class="form-group">
+                <label for="telefonoProveedor"><i class="fas fa-phone"></i> Teléfono</label>
+                <input type="tel" id="telefonoProveedor" name="telefonoProveedor" maxlength="20" placeholder="Ej: 3001234567">
+              </div>
+              <div class="form-group">
+                <label for="whatsappProveedor"><i class="fab fa-whatsapp"></i> WhatsApp</label>
+                <input type="tel" id="whatsappProveedor" name="whatsappProveedor" maxlength="20" placeholder="Ej: 3140001122">
+              </div>
+              <div class="form-group">
+                <label for="emailProveedor"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="emailProveedor" name="emailProveedor" maxlength="60" placeholder="Ej: contacto@proveedor.com">
+              </div>
+              <div class="form-group">
+                <label for="direccionProveedor"><i class="fas fa-map-marker-alt"></i> Dirección</label>
+                <input type="text" id="direccionProveedor" name="direccionProveedor" maxlength="80" placeholder="Ej: Carrera 10 #20-30">
+              </div>
+              <div class="form-group">
+                <label for="ciudadProveedor"><i class="fas fa-city"></i> Ciudad</label>
+                <input type="text" id="ciudadProveedor" name="ciudadProveedor" maxlength="30" placeholder="Ej: Bogotá">
+              </div>
+              <div class="form-group">
+                <label for="webProveedor"><i class="fas fa-globe"></i> Página web</label>
+                <input type="url" id="webProveedor" name="webProveedor" maxlength="80" placeholder="Ej: https://proveedor.com">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar proveedor</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="seccion-ingredientes" class="seccion hidden">
+      <h2 class="ingredientes-titulo"><i class="fas fa-carrot"></i> Gestor de Ingredientes</h2>
+      <div class="ingredientes-controles">
+        <input type="text" id="busqueda-proveedor" class="buscador-ingrediente" placeholder="Buscar proveedor..." autocomplete="off">
+        <input type="text" id="busqueda-ingrediente" class="buscador-ingrediente" placeholder="Buscar ingrediente..." autocomplete="off">
+        <button class="btn btn-primary" id="btn-agregar-ingrediente"><i class="fas fa-plus"></i> Agregar ingrediente</button>
+        <!-- Modal para agregar ingrediente -->
+        <div id="modal-ingrediente" class="modal-overlay modal-ingrediente-hide">
+          <div class="modal" id="modal-ingrediente-form">
+            <button class="close-btn" id="btn-cerrar-modal-ingrediente" title="Cerrar"><i class="fas fa-times"></i></button>
+            <h3 class="modal-ingrediente-titulo"><i class="fas fa-carrot"></i> Nuevo ingrediente</h3>
+            <form id="form-ingrediente" class="ingrediente-form" autocomplete="off">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nombreIngrediente"><i class="fas fa-leaf"></i> Nombre del ingrediente</label>
+                  <input type="text" id="nombreIngrediente" name="nombreIngrediente" required maxlength="60" placeholder="Ej: Tomate">
+                </div>
+                <div class="form-group">
+                  <label for="proveedorIngrediente"><i class="fas fa-truck"></i> Proveedor</label>
+                  <select id="proveedorIngrediente" name="proveedorIngrediente" required>
+                    <option value="" disabled selected>Cargando proveedores...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="tipoMedida"><i class="fas fa-balance-scale"></i> Tipo de medida</label>
+                  <select id="tipoMedida" name="tipoMedida">
+                    <option value="Kilogramos">Kilogramos</option>
+                    <option value="Libras">Libras</option>
+                    <option value="Gramos">Gramos</option>
+                    <option value="Litros">Litros</option>
+                    <option value="Unidades">Unidades</option>
+                    <option value="Paquete">Paquete</option>
+                    <option value="Lata">Lata</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="cantidadEmpaque"><i class="fas fa-box"></i> Cantidad por empaque</label>
+                  <input type="number" id="cantidadEmpaque" name="cantidadEmpaque" min="0" step="any" required placeholder="Ej: 1000">
+                </div>
+                <div class="form-group">
+                  <label for="precioEmpaque"><i class="fas fa-dollar-sign"></i> Precio total del empaque</label>
+                  <input type="number" id="precioEmpaque" name="precioEmpaque" min="0" step="any" required placeholder="Ej: 15000">
+                </div>
+                <div class="form-group">
+                  <label for="merma"><i class="fas fa-percentage"></i> Porcentaje de merma (opcional)</label>
+                  <input type="number" id="merma" name="merma" min="0" max="100" step="any" placeholder="Ej: 5">
+                </div>
+              </div>
+              <div class="modal-ingrediente-actions">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btn-cancelar-ingrediente"><i class="fas fa-ban"></i> Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div id="ingredientes-container" class="ingredientes-container"></div>
+    </section>
+
+    <section id="seccion-inventario" class="seccion hidden">
+      <h2><i class="fas fa-boxes"></i> Control de Inventario</h2>
+      <div class="ingredientes-controles" style="display:flex;gap:12px;align-items:center;">
+        <select id="busqueda-inventario" class="buscador-ingrediente" style="min-width:180px;padding:10px 16px;border-radius:10px;border:1.5px solid #d1d5db;">
+          <option value="todos">Todos los proveedores</option>
+        </select>
+        <button id="btn-guardar-stock" class="btn btn-primary"><i class="fas fa-save"></i> Guardar stock</button>
+      </div>
+      <div id="inventario-listado" class="ingredientes-container"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:22px;">
+        <button id="btn-generar-pedido" class="btn btn-primary" style="display:none;padding:10px 22px;border-radius:10px;"><i class="fas fa-truck"></i> Generar Pedido</button>
+      </div>
+      <div id="modal-pedido" class="modal-overlay" style="display:none;z-index:2000;">
+        <div class="modal" id="modal-pedido-form" style="max-width:480px;width:95vw;background:rgba(30,30,40,0.95);color:#fff;padding:32px 24px 24px 24px;border-radius:22px;box-shadow:0 8px 32px 0 #4b0082cc;position:relative;">
+          <button class="close-btn" id="btn-cerrar-modal-pedido" title="Cerrar" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+          <h3 id="titulo-modal-pedido" style="margin-bottom:16px;"><i class="fas fa-truck"></i> Pedido a Proveedor</h3>
+          <div id="pedido-mensaje" style="white-space:pre-line;background:#fff;color:#222;border-radius:12px;padding:18px 14px 12px 14px;margin-bottom:18px;font-size:1.08em;box-shadow:0 2px 8px #4b008220;"></div>
+          <div class="pedido-entrega-row" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+            <label for="fecha-entrega" style="font-weight:500;min-width:120px;">📅 Fecha de entrega:</label>
+            <input type="date" id="fecha-entrega" style="padding:5px 10px;border-radius:8px;border:1.5px solid #d1d5db;outline:none;min-width:120px;max-width:150px;">
+            <span style="display:flex;align-items:center;gap:4px;">
+              <label for="hora-entrega" style="font-weight:500;min-width:60px;margin-bottom:0;">🕓 Hora:</label>
+              <input type="time" id="hora-entrega" style="padding:5px 10px;border-radius:8px;border:1.5px solid #d1d5db;outline:none;min-width:90px;max-width:110px;">
+            </span>
+          </div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;">
+            <button id="btn-copiar-mensaje" class="btn btn-secondary" type="button" style="padding:7px 10px;font-size:0.98em;border-radius:8px;"><i class="fas fa-copy"></i> Copiar</button>
+            <button id="btn-enviar-whatsapp" class="btn btn-primary" type="button" style="padding:7px 10px;font-size:0.98em;border-radius:8px;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+            <button id="btn-registrar-pedido" class="btn btn-success" type="button" style="padding:7px 10px;font-size:0.98em;border-radius:8px;"><i class="fas fa-check"></i> Registrar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="seccion-compras" class="seccion hidden">
+      <h2><i class="fas fa-shopping-cart"></i> Lista de Compras</h2>
+      <div id="contenedor-pedidos-compras"></div>
+      <hr style="margin:32px 0 18px 0;border:0;border-top:1.5px solid #6366f1;opacity:0.18;">
+      <h2 style="margin-bottom:10px;"><i class="fas fa-history"></i> Historial de Ventas</h2>
+      <div class="filtro-bar" style="display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;background:rgba(99,102,241,0.10);border-radius:14px;padding:14px 18px 10px 18px;margin-bottom:18px;box-shadow:0 2px 8px #6366f122;font-family:'Inter',sans-serif;">
+        <label style="font-weight:500;"><i class="fas fa-user"></i> Proveedor:</label>
+        <input type="text" id="filtroProveedor" style="padding:6px 10px;border-radius:8px;border:1.5px solid #a5b4fc;min-width:120px;">
+        <label style="font-weight:500;"><i class="fas fa-hamburger"></i> Producto:</label>
+        <input type="text" id="filtroProducto" style="padding:6px 10px;border-radius:8px;border:1.5px solid #a5b4fc;min-width:120px;">
+        <label style="font-weight:500;"><i class="fas fa-calendar"></i> Fecha:</label>
+        <div id="calendar-advanced" style="position:relative;display:inline-block;">
+          <button id="btnCalendarDropdown" type="button" style="padding:6px 14px;border-radius:8px;border:1.5px solid #a5b4fc;background:#fff;color:#222;min-width:120px;cursor:pointer;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-calendar"></i> <span id="calendarLabel">Hoy</span> <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="calendarDropdown" style="display:none;position:absolute;z-index:1000;left:0;top:38px;">
+            <div style="display:flex;flex-wrap:wrap;gap:8px 10px;margin-bottom:10px;justify-content:center;">
+              <button class="btnQuickDate" data-range="hoy" type="button">Hoy</button>
+              <button class="btnQuickDate" data-range="ayer" type="button">Ayer</button>
+              <button class="btnQuickDate" data-range="semana" type="button">Esta semana</button>
+              <button class="btnQuickDate" data-range="ult7" type="button">Últimos 7 días</button>
+              <button class="btnQuickDate" data-range="mes" type="button">Este mes</button>
+              <button class="btnQuickDate" data-range="ult30" type="button">Últimos 30 días</button>
+              <button class="btnQuickDate" data-range="personalizado" type="button">Personalizado</button>
+            </div>
+            <div id="calendarCustomRange" style="display:none;">
+              <input type="date" id="filtroFechaInicio"> a
+              <input type="date" id="filtroFechaFin">
+            </div>
+            <div style="text-align:right;">
+              <button id="btnCalendarOk" type="button">Aplicar</button>
+            </div>
+          </div>
+        </div>
+<script>
+// --- Calendario avanzado tipo Loyverse ---
+function getHoy() {
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+function getAyer() {
+  const d = new Date(); d.setDate(d.getDate()-1);
+  return d.toISOString().slice(0,10);
+}
+function getSemana() {
+  const d = new Date();
+  const day = d.getDay() || 7;
+  const inicio = new Date(d); inicio.setDate(d.getDate() - day + 1);
+  const fin = new Date(d); fin.setDate(inicio.getDate() + 6);
+  return [inicio.toISOString().slice(0,10), fin.toISOString().slice(0,10)];
+}
+function getUltimos7() {
+  const d = new Date();
+  const fin = d.toISOString().slice(0,10);
+  const inicio = new Date(d); inicio.setDate(d.getDate()-6);
+  return [inicio.toISOString().slice(0,10), fin];
+}
+function getMes() {
+  const d = new Date();
+  const inicio = new Date(d.getFullYear(), d.getMonth(), 1);
+  const fin = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  return [inicio.toISOString().slice(0,10), fin.toISOString().slice(0,10)];
+}
+function getUltimos30() {
+  const d = new Date();
+  const fin = d.toISOString().slice(0,10);
+  const inicio = new Date(d); inicio.setDate(d.getDate()-29);
+  return [inicio.toISOString().slice(0,10), fin];
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const btnDropdown = document.getElementById('btnCalendarDropdown');
+  const dropdown = document.getElementById('calendarDropdown');
+  const label = document.getElementById('calendarLabel');
+  const customRange = document.getElementById('calendarCustomRange');
+  const btnOk = document.getElementById('btnCalendarOk');
+  let selectedRange = 'hoy';
+  let fechaInicio = document.getElementById('filtroFechaInicio');
+  let fechaFin = document.getElementById('filtroFechaFin');
+  let quickBtns = document.querySelectorAll('.btnQuickDate');
+  // Mostrar/ocultar dropdown
+  btnDropdown.addEventListener('click', function(e) {
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    if (selectedRange === 'personalizado') {
+      customRange.style.display = 'block';
+      setTimeout(()=>{fechaInicio.focus();fechaInicio.showPicker&&fechaInicio.showPicker();},100);
+    }
+    e.stopPropagation();
+  });
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target) && e.target !== btnDropdown) dropdown.style.display = 'none';
+  });
+  // Opciones rápidas
+  quickBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      selectedRange = btn.dataset.range;
+      label.textContent = btn.textContent;
+      quickBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      if (selectedRange === 'hoy') {
+        fechaInicio.value = fechaFin.value = getHoy();
+        customRange.style.display = 'none';
+      } else if (selectedRange === 'ayer') {
+        fechaInicio.value = fechaFin.value = getAyer();
+        customRange.style.display = 'none';
+      } else if (selectedRange === 'semana') {
+        const [ini, fin] = getSemana();
+        fechaInicio.value = ini; fechaFin.value = fin;
+        customRange.style.display = 'none';
+      } else if (selectedRange === 'ult7') {
+        const [ini, fin] = getUltimos7();
+        fechaInicio.value = ini; fechaFin.value = fin;
+        customRange.style.display = 'none';
+      } else if (selectedRange === 'mes') {
+        const [ini, fin] = getMes();
+        fechaInicio.value = ini; fechaFin.value = fin;
+        customRange.style.display = 'none';
+      } else if (selectedRange === 'ult30') {
+        const [ini, fin] = getUltimos30();
+        fechaInicio.value = ini; fechaFin.value = fin;
+        customRange.style.display = 'none';
+      } else if (selectedRange === 'personalizado') {
+        customRange.style.display = 'block';
+        setTimeout(()=>{fechaInicio.focus();fechaInicio.showPicker&&fechaInicio.showPicker();},100);
+      }
+    });
+  });
+  btnOk.addEventListener('click', function() {
+    dropdown.style.display = 'none';
+    renderHistorialVentasFodexa();
+  });
+  // Si cambia el input personalizado, actualizar label
+  fechaInicio.addEventListener('change', function() { label.textContent = 'Personalizado'; selectedRange = 'personalizado'; });
+  fechaFin.addEventListener('change', function() { label.textContent = 'Personalizado'; selectedRange = 'personalizado'; });
+  // Eliminar botón limpiar si existe
+  const btnLimpiar = document.getElementById('btnCalendarClear');
+  if (btnLimpiar) btnLimpiar.remove();
+});
+</script>
+        <button id="btnBuscarHistorial" style="background:linear-gradient(90deg,#6366f1,#3b82f6);color:#fff;border:none;border-radius:8px;padding:7px 18px;font-weight:600;box-shadow:0 2px 8px #6366f155;cursor:pointer;transition:background 0.18s;"><i class="fas fa-search"></i> Buscar</button>
+        <!-- Botón Limpiar eliminado por solicitud -->
+      </div>
+<script>
+// --- Lógica avanzada de filtro de fechas y botón buscar ---
+function getFechaHoy() {
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+function getFechaSemana() {
+  const d = new Date();
+  const day = d.getDay() || 7;
+  const inicio = new Date(d); inicio.setDate(d.getDate() - day + 1);
+  const fin = new Date(d); fin.setDate(inicio.getDate() + 6);
+  return [inicio.toISOString().slice(0,10), fin.toISOString().slice(0,10)];
+}
+function getFechaMes() {
+  const d = new Date();
+  const inicio = new Date(d.getFullYear(), d.getMonth(), 1);
+  const fin = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  return [inicio.toISOString().slice(0,10), fin.toISOString().slice(0,10)];
+}
+function aplicarRangoFecha() {
+  const rango = document.getElementById('filtroRangoFecha').value;
+  const inicio = document.getElementById('filtroFechaInicio');
+  const fin = document.getElementById('filtroFechaFin');
+  if (rango === 'hoy') {
+    inicio.style.display = 'none'; fin.style.display = 'none';
+    inicio.value = fin.value = getFechaHoy();
+  } else if (rango === 'semana') {
+    inicio.style.display = 'none'; fin.style.display = 'none';
+    const [ini, f] = getFechaSemana();
+    inicio.value = ini; fin.value = f;
+  } else if (rango === 'mes') {
+    inicio.style.display = 'none'; fin.style.display = 'none';
+    const [ini, f] = getFechaMes();
+    inicio.value = ini; fin.value = f;
+  } else {
+    inicio.style.display = 'inline-block'; fin.style.display = 'inline-block';
+    inicio.value = ''; fin.value = '';
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const rango = document.getElementById('filtroRangoFecha');
+  const fechaInicio = document.getElementById('filtroFechaInicio');
+  const fechaFin = document.getElementById('filtroFechaFin');
+  if (rango) {
+    rango.addEventListener('change', function() {
+      aplicarRangoFecha();
+      if (rango.value === 'personalizado' && fechaInicio) {
+        fechaInicio.style.display = 'inline-block';
+        fechaFin.style.display = 'inline-block';
+        setTimeout(() => { fechaInicio.focus(); fechaInicio.showPicker && fechaInicio.showPicker(); }, 100);
+      }
+    });
+    aplicarRangoFecha();
+  }
+  const btnBuscar = document.getElementById('btnBuscarHistorial');
+  if (btnBuscar) btnBuscar.addEventListener('click', renderHistorialVentasFodexa);
+
+  // --- Botón retroceder del menú lateral: regresa siempre al menú principal (proveedores) ---
+  const btnRetro = document.getElementById('btn-retroceder-menu');
+  if (btnRetro) {
+    btnRetro.addEventListener('click', function() {
+      window.location.href = '../../index.html';
+    });
+  }
+});
+</script>
+      <div id="contenedor-historial-ventas"></div>
+    </section>
+<style>
+.historial-card {
+  background: #1f2937;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px #6366f133;
+  padding: 14px 18px 10px 18px;
+  margin-bottom: 14px;
+  transition: box-shadow 0.18s;
+  cursor: pointer;
+  position: relative;
+}
+.historial-card .historial-titulo {
+  font-size: 1.08em;
+  font-weight: 700;
+  color: #6366f1;
+  margin-bottom: 2px;
+}
+.historial-card .historial-fecha {
+  font-size: 0.97em;
+  color: #a5b4fc;
+  margin-bottom: 2px;
+}
+.historial-card .historial-productos {
+  background: #374151;
+  border-radius: 10px;
+  padding: 8px 12px 6px 12px;
+  margin-top: 6px;
+  margin-bottom: 2px;
+  display: none;
+}
+.historial-card.expanded .historial-productos {
+  display: block;
+}
+.historial-card .historial-productos ul {
+  margin: 0;
+  padding: 0 0 0 12px;
+}
+.historial-card .historial-productos li {
+  color: #e5e7eb;
+  font-size: 0.98em;
+  margin-bottom: 2px;
+}
+.historial-card .historial-hora {
+  font-size: 0.97em;
+  color: #60a5fa;
+  margin-bottom: 2px;
+}
+.historial-card .historial-direccion {
+  font-size: 0.97em;
+  color: #fbbf24;
+  margin-bottom: 2px;
+}
+.historial-card .fa-chevron-down, .historial-card .fa-chevron-up {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  color: #a5b4fc;
+  font-size: 1.1em;
+  transition: transform 0.18s;
+}
+.historial-card.expanded .fa-chevron-down {
+  display: none;
+}
+.historial-card:not(.expanded) .fa-chevron-up {
+  display: none;
+}
+@media (max-width: 700px) {
+  .historial-card {
+    padding: 10px 4vw 10px 4vw;
+  }
+  .filtro-bar {
+    flex-direction: column;
+    gap: 10px 0;
+  }
+}
+</style>
+<script>
+// --- HISTORIAL DE VENTAS: FILTROS Y VISUALIZACIÓN ---
+function renderHistorialVentasFodexa() {
+  const cont = document.getElementById('contenedor-historial-ventas');
+  if (!cont) return;
+  let historial = [];
+  try { historial = JSON.parse(localStorage.getItem('historialVentasFodexa') || '[]'); } catch(e) { historial = []; }
+  // Obtener filtros
+  const filtroProveedor = (document.getElementById('filtroProveedor')?.value || '').trim().toLowerCase();
+  const filtroProducto = (document.getElementById('filtroProducto')?.value || '').trim().toLowerCase();
+  const fechaInicio = document.getElementById('filtroFechaInicio')?.value;
+  const fechaFin = document.getElementById('filtroFechaFin')?.value;
+  // Filtrar
+  let filtrados = historial.filter(item => {
+    let ok = true;
+    // Proveedor
+    if (filtroProveedor) {
+      ok = ok && (item.proveedor || '').toLowerCase().includes(filtroProveedor);
+    }
+    // Producto
+    if (filtroProducto) {
+      ok = ok && (item.productos || []).some(p => (p.nombre || '').toLowerCase().includes(filtroProducto));
+    }
+    // Fechas
+    if (fechaInicio && fechaFin) {
+      let fechaItem = (item.fecha || '').split(' ')[0].split('/').reverse().join('-');
+      ok = ok && (fechaItem >= fechaInicio && fechaItem <= fechaFin);
+    }
+    return ok;
+  });
+  // Ordenar descendente por fecha (más reciente arriba)
+  filtrados.sort((a, b) => (b.id || '').localeCompare(a.id || ''));
+  cont.innerHTML = '';
+  if (!filtrados.length) {
+    cont.innerHTML = '<div style="color:#fff;opacity:0.7;padding:24px;text-align:center;">No se encontraron pedidos con esos criterios.</div>';
+    return;
+  }
+  filtrados.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'historial-card';
+    card.innerHTML = `
+      <div class="historial-titulo"><i class='fas fa-truck'></i> ${item.proveedor || 'Proveedor'}</div>
+      <div class="historial-fecha"><i class='fas fa-calendar'></i> ${item.fecha || ''}</div>
+      <div class="historial-hora"><i class='fas fa-clock'></i> ${item.horaEntrega || ''}</div>
+      <div class="historial-direccion"><i class='fas fa-map-marker-alt'></i> ${item.direccion || ''}</div>
+      <i class="fas fa-chevron-down"></i><i class="fas fa-chevron-up"></i>
+      <div class="historial-productos">
+        <b>Productos:</b>
+        <ul>
+          ${(item.productos||[]).map(p => `<li>${p.nombre} <span style='color:#60a5fa;'>(x${p.cantidad})</span></li>`).join('')}
+        </ul>
+      </div>
+    `;
+    card.addEventListener('click', function(e) {
+      if (e.target.classList.contains('fa-chevron-down') || e.target.classList.contains('fa-chevron-up') || e.target.classList.contains('historial-card')) {
+        card.classList.toggle('expanded');
+      }
+    });
+    cont.appendChild(card);
+  });
+}
+// Eventos de filtros
+document.addEventListener('DOMContentLoaded', function() {
+  const filtros = ['filtroProveedor','filtroProducto','filtroRangoFecha','filtroFechaInicio','filtroFechaFin'];
+  filtros.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && id !== 'filtroRangoFecha') el.addEventListener('input', function(e) {
+      // Solo buscar si es personalizado o si cambia texto
+      if (document.getElementById('filtroRangoFecha').value === 'personalizado' || id !== 'filtroFechaInicio' && id !== 'filtroFechaFin') {
+        renderHistorialVentasFodexa();
+      }
+    });
+    if (el && id === 'filtroRangoFecha') el.addEventListener('change', function() {
+      aplicarRangoFecha();
+      // Solo buscar si no es personalizado
+      if (el.value !== 'personalizado') renderHistorialVentasFodexa();
+    });
+  });
+  // Lógica del botón Limpiar eliminada por solicitud
+  // Render inicial
+  renderHistorialVentasFodexa();
+  // Si la sección historial se muestra, refrescar
+  const comprasSection = document.getElementById('seccion-compras');
+  if (comprasSection) {
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(m) {
+        if (m.attributeName === 'class') {
+          if (!comprasSection.classList.contains('hidden')) renderHistorialVentasFodexa();
+        }
+      });
+    });
+    observer.observe(comprasSection, { attributes: true });
+  }
+});
+</script>
+
+    <section id="seccion-configuracion" class="seccion hidden">
+      <h2><i class="fas fa-cogs"></i> Configuración del Módulo</h2>
+      <!-- Aquí va el contenido de configuración -->
+    </section>
+  </main>
+</div>
+
+<!-- SCRIPT PARA CAMBIAR SECCIONES -->
+<script>
+  const menuBtns = document.querySelectorAll('.menu-btn');
+  const secciones = document.querySelectorAll('.seccion');
+
+  menuBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const destino = btn.getAttribute('data-section');
+      menuBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      secciones.forEach(sec => {
+        if (sec.id === `seccion-${destino}`) {
+          sec.classList.remove('hidden');
+          sec.classList.add('visible');
+          // Si es la sección inventario, mostrar el gestor
+          if (destino === 'inventario' && typeof window.mostrarInventario === 'function') {
+            window.mostrarInventario();
+          }
+          // Si es la sección compras, refrescar pedidos
+          if (destino === 'compras' && typeof window.refrescarPedidosCompras === 'function') {
+            window.refrescarPedidosCompras();
+          }
+        } else {
+          sec.classList.remove('visible');
+          sec.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+
+<!-- MODAL PROVEEDOR: abrir/cerrar con vanilla JS -->
+<script>
+// MODAL PROVEEDOR: abrir/cerrar con vanilla JS
+(function() {
+  var btnAbrir = document.getElementById('btn-abrir-modal-proveedor');
+  var modal = document.getElementById('modal-proveedor');
+  var btnCerrar = document.getElementById('btn-cerrar-modal-proveedor');
+  if (btnAbrir && modal) {
+    btnAbrir.addEventListener('click', function() {
+      modal.style.display = 'flex';
+    });
+  }
+  if (btnCerrar && modal) {
+    btnCerrar.addEventListener('click', function(e) {
+      modal.style.display = 'none';
+    });
+  }
+  // Cerrar al hacer clic fuera del modal
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  }
+})();
+</script>
+
+<!-- --- Proveedores FODEXA --- -->
+<script>
+const LS_PROVEEDORES_KEY = 'fodexa_proveedores';
+
+function guardarProveedor() {
+  const form = document.getElementById('proveedor-form');
+  if (!form) return;
+  const nombre = form.nombreProveedor.value.trim();
+  const telefono = form.telefonoProveedor.value.trim();
+  const whatsapp = form.whatsappProveedor.value.trim();
+  // Validación: nombre obligatorio y al menos uno de teléfono o WhatsApp
+  if (!nombre) {
+    alert('El nombre del proveedor es obligatorio.');
+    return;
+  }
+  if (!telefono && !whatsapp) {
+    alert('Debes ingresar al menos un teléfono o WhatsApp.');
+    return;
+  }
+  const proveedor = {
+    id: 'prov_' + Date.now(),
+    nombre: nombre,
+    contacto: form.nombreContacto.value.trim(),
+    telefono: telefono,
+    whatsapp: whatsapp,
+    email: form.emailProveedor.value.trim(),
+    direccion: form.direccionProveedor.value.trim(),
+    ciudad: form.ciudadProveedor.value.trim(),
+    web: form.webProveedor.value.trim()
+  };
+  let proveedores = JSON.parse(localStorage.getItem(LS_PROVEEDORES_KEY) || '[]');
+  proveedores.push(proveedor);
+  localStorage.setItem(LS_PROVEEDORES_KEY, JSON.stringify(proveedores));
+  mostrarProveedores();
+}
+
+function mostrarProveedores(filtro = '') {
+  const contenedor = document.getElementById('proveedores-container');
+  if (!contenedor) return;
+  let proveedores = JSON.parse(localStorage.getItem(LS_PROVEEDORES_KEY) || '[]');
+  if (filtro) {
+    const f = filtro.toLowerCase();
+    proveedores = proveedores.filter(p =>
+      p.nombre.toLowerCase().includes(f) ||
+      p.ciudad.toLowerCase().includes(f)
+    );
+  }
+  contenedor.innerHTML = '';
+  if (proveedores.length === 0) {
+    contenedor.innerHTML = '<div style="color:#fff;opacity:0.7;padding:24px;">No hay proveedores registrados.</div>';
+    return;
+  }
+  proveedores.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'proveedor-card';
+    card.innerHTML = `
+      <div class="proveedor-card-header">
+        <span class="proveedor-nombre"><i class="fas fa-truck"></i> ${p.nombre}</span>
+        <button class="proveedor-toggle-btn" title="Ver más" tabindex="0"><i class="fas fa-chevron-down"></i></button>
+      </div>
+      <div class="proveedor-card-body" style="display:none;">
+        <div class="proveedor-info"><i class="fas fa-user"></i> ${p.contacto}</div>
+        <div class="proveedor-info"><i class="fas fa-phone"></i> ${p.telefono}</div>
+        <div class="proveedor-info"><i class="fab fa-whatsapp"></i> ${p.whatsapp}</div>
+        <div class="proveedor-info"><i class="fas fa-map-marker-alt"></i> ${p.direccion}</div>
+        <div class="proveedor-info"><i class="fas fa-envelope"></i> ${p.email}</div>
+        <div class="proveedor-info"><i class="fas fa-city"></i> ${p.ciudad}</div>
+        ${p.web ? `<div class="proveedor-info"><i class="fas fa-globe"></i> <a href="${p.web}" target="_blank" style="color:#fff;text-decoration:underline;">${p.web}</a></div>` : ''}
+      </div>
+    `;
+    // Toggle expand/collapse
+    const header = card.querySelector('.proveedor-card-header');
+    const toggleBtn = card.querySelector('.proveedor-toggle-btn');
+    const body = card.querySelector('.proveedor-card-body');
+    function toggleCard(e) {
+      e.stopPropagation();
+      const expanded = body.style.display === 'block';
+      body.style.display = expanded ? 'none' : 'block';
+      toggleBtn.querySelector('i').classList.toggle('fa-chevron-down', expanded);
+      toggleBtn.querySelector('i').classList.toggle('fa-chevron-up', !expanded);
+      card.classList.toggle('expanded', !expanded);
+    }
+    header.addEventListener('click', toggleCard);
+    toggleBtn.addEventListener('click', toggleCard);
+    contenedor.appendChild(card);
+  });
+}
+
+function filtrarProveedores() {
+  const input = document.getElementById('busqueda-input');
+  if (!input) return;
+  input.addEventListener('input', function() {
+    mostrarProveedores(input.value.trim());
+  });
+}
+
+// Inicialización al cargar la página
+window.addEventListener('DOMContentLoaded', function() {
+  mostrarProveedores();
+  filtrarProveedores();
+  const form = document.getElementById('proveedor-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      guardarProveedor();
+      form.reset();
+      document.getElementById('modal-proveedor').style.display = 'none';
+      // Notificar a inventario que hay nuevos proveedores
+      window.dispatchEvent(new CustomEvent('proveedoresActualizados'));
+    });
+  }
+});
+</script>
+
+<script>
+// MODAL INGREDIENTE: abrir/cerrar solo por acción del usuario
+// MODAL INGREDIENTE: abrir/cerrar solo por acción del usuario
+document.addEventListener('DOMContentLoaded', function() {
+  var btnAbrirIngrediente = document.getElementById('btn-agregar-ingrediente');
+  var modalIngrediente = document.getElementById('modal-ingrediente');
+  var btnCerrarIngrediente = document.getElementById('btn-cerrar-modal-ingrediente');
+  var btnCancelarIngrediente = document.getElementById('btn-cancelar-ingrediente');
+  var formIngrediente = document.getElementById('form-ingrediente');
+  var selectProveedor = document.getElementById('proveedorIngrediente');
+  var contenedorIngredientes = document.getElementById('ingredientes-container');
+
+  // --- FUNCIONES DE INGREDIENTES ---
+  function guardarIngrediente(datos) {
+    var ingredientes = [];
+    try {
+      ingredientes = JSON.parse(localStorage.getItem('ingredientesFodexa') || '[]');
+    } catch(e) { ingredientes = []; }
+    ingredientes.push(datos);
+    localStorage.setItem('ingredientesFodexa', JSON.stringify(ingredientes));
+  }
+
+  function obtenerProveedorNombre(id) {
+    var proveedores = [];
+    try {
+      proveedores = JSON.parse(localStorage.getItem('fodexa_proveedores') || '[]');
+    } catch(e) { proveedores = []; }
+    var proveedor = proveedores.find(function(p) { return p.id === id; });
+    return proveedor ? proveedor.nombre : 'Sin proveedor';
+  }
+
+  // --- Variables para edición ---
+  var indiceEditando = null;
+
+  function mostrarIngredientes() {
+    if (!contenedorIngredientes) return;
+    var ingredientes = [];
+    try {
+      ingredientes = JSON.parse(localStorage.getItem('ingredientesFodexa') || '[]');
+    } catch(e) { ingredientes = []; }
+    contenedorIngredientes.innerHTML = '';
+    if (!ingredientes.length) {
+      contenedorIngredientes.innerHTML = '<div style="color:#222;opacity:0.7;padding:18px;background:#fff;border-radius:12px;box-shadow:0 2px 8px #4b008220;">No hay ingredientes registrados.</div>';
+      return;
+    }
+
+    // Helper para formatear miles
+    function formatoMiles(num) {
+      return Number(num).toLocaleString('es-CO');
+    }
+
+    // Tabla FODEXA
+    var tabla = document.createElement('div');
+    tabla.className = 'ingredientes-table';
+    tabla.style.width = '100%';
+    tabla.style.overflowX = 'auto';
+    tabla.style.background = '#fff';
+    tabla.style.borderRadius = '14px';
+    tabla.style.boxShadow = '0 2px 8px #4b008220';
+    tabla.style.marginBottom = '2px';
+    tabla.style.fontSize = '0.98em';
+    tabla.style.padding = '0';
+
+    // Encabezado
+    var header = document.createElement('div');
+    header.className = 'ingredientes-table-header';
+    header.style.display = 'flex';
+    header.style.alignItems = 'center';
+    header.style.fontWeight = '600';
+    header.style.background = '#f3f4f6';
+    header.style.color = '#2563eb';
+    header.style.borderRadius = '14px 14px 0 0';
+    header.style.padding = '12px 8px';
+    header.style.gap = '10px';
+    header.innerHTML = `
+      <div style="flex:1;min-width:120px;">Nombre</div>
+      <div style="flex:1;min-width:120px;">Proveedor</div>
+      <div style="flex:0.8;min-width:90px;">Medida</div>
+      <div style="flex:0.8;min-width:90px;">Cantidad</div>
+      <div style="flex:1;min-width:100px;">Precio base</div>
+      <div style="flex:0.7;min-width:70px;">% Merma</div>
+      <div style="flex:1;min-width:110px;">Precio con merma</div>
+      <div style="flex:1;min-width:120px;">Precio por unidad/gramo</div>
+      <div style="flex:0.7;min-width:70px;text-align:center;">Editar</div>
+      <div style="flex:0.7;min-width:70px;text-align:center;">Eliminar</div>
+    `;
+    tabla.appendChild(header);
+
+    // Filas
+    ingredientes.forEach(function(ing, idx) {
+      var precioBase = Number(ing.precioEmpaque) || 0;
+      var merma = Number(ing.merma) || 0;
+      var cantidad = Number(ing.cantidadEmpaque) || 1;
+      var precioConMerma = Math.round(precioBase * (1 + merma / 100));
+      var precioUnidad = cantidad > 0 ? Math.round(precioConMerma / cantidad) : 0;
+      var medida = ing.tipoMedida;
+      var proveedor = obtenerProveedorNombre(ing.proveedorId);
+      var unidadLabel = (medida === 'Gramos' || medida === 'Litros') ? `por ${medida.toLowerCase()}` : 'por unidad';
+
+      var fila = document.createElement('div');
+      fila.className = 'ingredientes-table-row';
+      fila.style.display = 'flex';
+      fila.style.alignItems = 'center';
+      fila.style.borderBottom = '1px solid #e5e7eb';
+      fila.style.padding = '10px 8px';
+      fila.style.gap = '10px';
+      fila.style.color = '#222';
+      fila.innerHTML = `
+        <div style="flex:1;min-width:120px;font-weight:500;"><i class="fas fa-leaf"></i> ${ing.nombre}</div>
+        <div style="flex:1;min-width:120px;"><i class="fas fa-truck"></i> ${proveedor}</div>
+        <div style="flex:0.8;min-width:90px;">${medida}</div>
+        <div style="flex:0.8;min-width:90px;">${cantidad}</div>
+        <div style="flex:1;min-width:100px;">$${formatoMiles(precioBase)}</div>
+        <div style="flex:0.7;min-width:70px;">${merma}%</div>
+        <div style="flex:1;min-width:110px;">$${formatoMiles(precioConMerma)}</div>
+        <div style="flex:1;min-width:120px;">$${formatoMiles(precioUnidad)} ${unidadLabel}</div>
+        <div style="flex:0.7;min-width:70px;text-align:center;">
+          <button class="btn btn-editar" title="Editar" data-idx="${idx}" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;"><i class="fas fa-pen"></i></button>
+        </div>
+        <div style="flex:0.7;min-width:70px;text-align:center;">
+          <button class="btn btn-eliminar" title="Eliminar" data-idx="${idx}" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;"><i class="fas fa-trash"></i></button>
+        </div>
+      `;
+      tabla.appendChild(fila);
+    });
+
+    contenedorIngredientes.appendChild(tabla);
+
+    // Eventos para editar y eliminar
+    var btnsEditar = tabla.querySelectorAll('.btn-editar');
+    var btnsEliminar = tabla.querySelectorAll('.btn-eliminar');
+
+    btnsEliminar.forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        var idx = parseInt(btn.getAttribute('data-idx'));
+        if (!isNaN(idx)) {
+          ingredientes.splice(idx, 1);
+          localStorage.setItem('ingredientesFodexa', JSON.stringify(ingredientes));
+          mostrarIngredientes();
+        }
+      });
+    });
+
+    btnsEditar.forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        var idx = parseInt(btn.getAttribute('data-idx'));
+        if (!isNaN(idx)) {
+          var ing = ingredientes[idx];
+          // Abrir modal y llenar formulario
+          cargarProveedoresEnSelect();
+          modalIngrediente.style.display = 'flex';
+          formIngrediente.nombreIngrediente.value = ing.nombre;
+          formIngrediente.tipoMedida.value = ing.tipoMedida;
+          formIngrediente.cantidadEmpaque.value = ing.cantidadEmpaque;
+          formIngrediente.precioEmpaque.value = ing.precioEmpaque;
+          formIngrediente.merma.value = ing.merma;
+          // Proveedor
+          if (formIngrediente.proveedorIngrediente) {
+            formIngrediente.proveedorIngrediente.value = ing.proveedorId;
+          }
+          // Cambiar botón a "Actualizar"
+          var btnGuardar = formIngrediente.querySelector('.btn-primary');
+          if (btnGuardar) {
+            btnGuardar.textContent = 'Actualizar ingrediente';
+          }
+          indiceEditando = idx;
+        }
+      });
+    });
+  }
+
+  // Cargar proveedores en el select dinámicamente
+  function cargarProveedoresEnSelect() {
+    if (!selectProveedor) return;
+    selectProveedor.innerHTML = '';
+    var proveedores = [];
+    try {
+      proveedores = JSON.parse(localStorage.getItem('fodexa_proveedores') || '[]');
+    } catch(e) { proveedores = []; }
+    if (!proveedores || proveedores.length === 0) {
+      var opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'Sin proveedores registrados';
+      opt.disabled = true;
+      opt.selected = true;
+      selectProveedor.appendChild(opt);
+      selectProveedor.setAttribute('disabled', 'disabled');
+    } else {
+      proveedores.forEach(function(p, idx) {
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nombre;
+        selectProveedor.appendChild(opt);
+      });
+      selectProveedor.removeAttribute('disabled');
+    }
+  }
+
+  // Mostrar modal solo al hacer clic en el botón
+  if (btnAbrirIngrediente && modalIngrediente) {
+    btnAbrirIngrediente.addEventListener('click', function() {
+      var seccionIngredientes = document.getElementById('seccion-ingredientes');
+      if (seccionIngredientes && seccionIngredientes.classList.contains('visible')) {
+        cargarProveedoresEnSelect();
+        modalIngrediente.style.display = 'flex';
+      }
+    });
+  }
+
+  // Cerrar modal por botón cerrar
+  if (btnCerrarIngrediente && modalIngrediente) {
+    btnCerrarIngrediente.addEventListener('click', function(e) {
+      modalIngrediente.style.display = 'none';
+    });
+  }
+
+  // Cerrar modal por botón cancelar
+  if (btnCancelarIngrediente && modalIngrediente) {
+    btnCancelarIngrediente.addEventListener('click', function(e) {
+      modalIngrediente.style.display = 'none';
+    });
+  }
+
+  // Cerrar modal al hacer clic fuera del contenido del modal
+  if (modalIngrediente) {
+    modalIngrediente.addEventListener('click', function(e) {
+      if (e.target === modalIngrediente) {
+        modalIngrediente.style.display = 'none';
+      }
+    });
+  }
+
+  // Submit ingrediente
+  if (formIngrediente && modalIngrediente) {
+    formIngrediente.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const datos = {
+        nombre: formIngrediente.nombreIngrediente.value.trim(),
+        proveedorId: selectProveedor && !selectProveedor.disabled ? selectProveedor.value : '',
+        tipoMedida: formIngrediente.tipoMedida.value,
+        cantidadEmpaque: formIngrediente.cantidadEmpaque.value,
+        precioEmpaque: formIngrediente.precioEmpaque.value,
+        merma: formIngrediente.merma.value
+      };
+      var ingredientes = [];
+      try {
+        ingredientes = JSON.parse(localStorage.getItem('ingredientesFodexa') || '[]');
+      } catch(e) { ingredientes = []; }
+      if (indiceEditando !== null && !isNaN(indiceEditando) && ingredientes[indiceEditando]) {
+        // Actualizar ingrediente
+        ingredientes[indiceEditando] = datos;
+        localStorage.setItem('ingredientesFodexa', JSON.stringify(ingredientes));
+        indiceEditando = null;
+        // Restaurar texto del botón
+        var btnGuardar = formIngrediente.querySelector('.btn-primary');
+        if (btnGuardar) {
+          btnGuardar.textContent = 'Guardar ingrediente';
+        }
+      } else {
+        // Nuevo ingrediente
+        guardarIngrediente(datos);
+      }
+      mostrarIngredientes();
+      formIngrediente.reset();
+      modalIngrediente.style.display = 'none';
+    });
+  }
+
+  // Mostrar ingredientes al cargar la sección
+  mostrarIngredientes();
+
+  // Asegura que el modal de ingredientes esté oculto al cargar
+  if (modalIngrediente) {
+    modalIngrediente.style.display = 'none';
+  }
+});
+</script>
+
+<!-- --- PEDIDOS DE COMPRAS FODEXA ---
+(function() {
+  // Guardar pedido de compras al registrar
+  const btnRegistrarPedido = document.getElementById('btn-registrar-pedido');
+  const modalPedido = document.getElementById('modal-pedido');
+  const horaEntrega = document.getElementById('hora-entrega');
+  if (btnRegistrarPedido && modalPedido) {
+    btnRegistrarPedido.addEventListener('click', function() {
+      if (!window.pedidoActual || !window.pedidoActual.proveedor) return;
+      let pedidos = [];
+      try { pedidos = JSON.parse(localStorage.getItem('pedidosComprasFodexa') || '[]'); } catch(e) { pedidos = []; }
+      const fecha = new Date().toISOString().slice(0,10);
+      const hora = horaEntrega ? horaEntrega.value : '';
+      const pedidoObj = {
+        id: 'pedido_' + Date.now(),
+        proveedor: window.pedidoActual.proveedor.nombre || 'Sin proveedor',
+        productos: (window.pedidoActual.productos || []).map(p => ({ nombre: p.nombre, cantidad: p.cantidad, medida: p.medida })),
+        direccion: 'Roal Burger - Avenida Las Américas, calle 22 #29-59',
+        fecha: fecha,
+        horaEntrega: hora
+      };
+      pedidos.push(pedidoObj);
+      localStorage.setItem('pedidosComprasFodexa', JSON.stringify(pedidos));
+      // Aviso de registro exitoso
+      alert('¡Registro exitoso!');
+      modalPedido.style.display = 'none';
+      // Refrescar sección Compras si está visible
+      const comprasSection = document.getElementById('seccion-compras');
+      if (comprasSection && !comprasSection.classList.contains('hidden')) {
+        if (typeof window.refrescarPedidosCompras === 'function') {
+          window.refrescarPedidosCompras();
+        }
+      }
+    });
+  }
+
+  // Refrescar pedidos de compras al abrir sección Compras
+  document.addEventListener('DOMContentLoaded', function() {
+    const comprasSection = document.getElementById('seccion-compras');
+    if (!comprasSection) return;
+    const menuBtns = document.querySelectorAll('.menu-btn');
+    menuBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const destino = btn.getAttribute('data-section');
+        if (destino === 'compras') {
+          window.refrescarPedidosCompras();
+        }
+      });
+    });
+  });
+
+  // Función global para refrescar pedidos de compras
+  window.refrescarPedidosCompras = function() {
+    const cont = document.getElementById('contenedor-pedidos-compras');
+    if (!cont) return;
+    let pedidos = [];
+    try { pedidos = JSON.parse(localStorage.getItem('pedidosComprasFodexa') || '[]'); } catch(e) { pedidos = []; }
+    cont.innerHTML = '';
+    if (pedidos.length === 0) {
+      cont.innerHTML = '<div style="color:#222;opacity:0.7;padding:18px;background:#fff;border-radius:12px;box-shadow:0 2px 8px #4b008220;">No hay pedidos de compras registrados.</div>';
+      return;
+    }
+    pedidos.slice().reverse().forEach((pedido, idx) => {
+      const card = document.createElement('div');
+      card.className = 'pedido-compras-card';
+      card.style = 'background:#fff;border-radius:14px;box-shadow:0 2px 8px #4b0082a0;padding:18px 18px 12px 18px;margin-bottom:18px;';
+      card.innerHTML = `
+        <div style="font-weight:600;font-size:1.1em;color:#2563eb;margin-bottom:6px;"><i class='fas fa-truck'></i> Pedido a ${pedido.proveedor}</div>
+        <div style="color:#444;font-size:0.98em;margin-bottom:4px;">Fecha: <b>${pedido.fecha ? pedido.fecha.split('-').reverse().join('/') : ''}</b> ${pedido.horaEntrega ? `- Hora: <b>${pedido.horaEntrega}</b>` : ''}</div>
+        <div style="margin-bottom:8px;">
+          <b>Productos:</b>
+          <ul style='margin:6px 0 0 18px;padding:0;'>
+            ${(pedido.productos||[]).map(p => `<li>${p.nombre} <span style='color:#888;'>(x${p.cantidad}${p.medida ? ' ' + p.medida : ''})</span></li>`).join('')}
+          </ul>
+        </div>
+        <div style="color:#666;font-size:0.97em;">Dirección: Roal Burger - Avenida Las Américas, calle 22 #29-59</div>
+        <button class="btn btn-success marcar-recibido" data-idx="${pedidos.length-1-idx}" style="margin-top:10px;padding:7px 14px;border-radius:8px;font-size:0.98em;"><i class="fas fa-check"></i> Marcar como recibido</button>
+      `;
+      cont.appendChild(card);
+    });
+    // Botones "Marcar como recibido"
+    cont.querySelectorAll('.marcar-recibido').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const idx = parseInt(this.getAttribute('data-idx'));
+        if (!isNaN(idx)) {
+          pedidos.splice(idx, 1);
+          localStorage.setItem('pedidosComprasFodexa', JSON.stringify(pedidos));
+          window.refrescarPedidosCompras();
+        }
+      });
+    });
+  };
+
+  // Mostrar pedidos de compras al cargar la sección Compras
+  document.addEventListener('DOMContentLoaded', function() {
+    const comprasSection = document.getElementById('seccion-compras');
+    if (comprasSection) {
+      // Si la sección ya está visible al cargar, mostrar pedidos
+      if (!comprasSection.classList.contains('hidden') && typeof window.refrescarPedidosCompras === 'function') {
+        window.refrescarPedidosCompras();
+      }
+      // También refrescar cada vez que se muestre la sección
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          if (m.attributeName === 'class') {
+            if (!comprasSection.classList.contains('hidden') && typeof window.refrescarPedidosCompras === 'function') {
+              window.refrescarPedidosCompras();
+            }
+          }
+        });
+      });
+      observer.observe(comprasSection, { attributes: true });
+    }
+  });
+})();
+</script>
+
+<!-- ESTILOS BÁSICOS, INSPIRADOS EN FODEXA (puedes pasarlos a inventario.css) -->
+<style>
+  .btn-retroceder-menu {
+    width: 100%;
+    background: #e5e7eb;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 0;
+    margin-bottom: 18px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.18s;
+  }
+  .btn-retroceder-menu:hover {
+    background: #d1d5db;
+  }
+  /* Modal ingrediente: ocultar por defecto */
+  .modal-ingrediente-hide {
+    display: none;
+  }
+  /* Modal ingrediente: título */
+  .modal-ingrediente-titulo {
+    margin-bottom: 16px;
+    font-size: 1.3em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #fff;
+  }
+  /* Modal ingrediente: acciones */
+  .modal-ingrediente-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 18px;
+  }
+  .fodexa-wrapper { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px;
+    background: #111827;
+    color: white;
+    padding: 20px;
+  }
+  .sidebar-logo h2 { margin: 0; font-size: 22px; }
+  .sidebar-logo span { font-size: 12px; color: #9ca3af; }
+  .sidebar-menu ul { list-style: none; padding: 0; margin-top: 20px; }
+  .sidebar-menu li { margin-bottom: 10px; }
+  .menu-btn {
+    width: 100%;
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .menu-btn.active, .menu-btn:hover {
+    background: #2563eb;
+  }
+  .main-panel {
+    flex: 1;
+    padding: 30px;
+    background: #f3f4f6;
+  }
+  .seccion.hidden { display: none; }
+  .seccion.visible { display: block; }
+  .modal#modal-proveedor-form {
+    background: rgba(30,30,40,0.85);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 #4b0082cc;
+    padding: 38px 32px 28px 32px;
+    max-width: 700px;
+    width: 95vw;
+    color: #fff;
+    position: relative;
+    animation: modalIn 0.22s cubic-bezier(.4,2,.3,1) backwards;
+    overflow-y: auto;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .proveedor-form .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .proveedor-form .form-group {
+    flex: 1 1 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  /* Controles de ingredientes */
+  .ingredientes-controles {
+    display: flex;
+    gap: 18px;
+    margin-top: 18px;
+    margin-bottom: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .ingredientes-controles input[type="text"] {
+    background: #fff;
+    color: #222;
+    border-radius: 10px;
+    border: 1.5px solid #d1d5db;
+    box-shadow: 0 2px 8px 0 #4b008220;
+    padding: 10px 16px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.18s;
+    min-width: 180px;
+    flex: 1 1 220px;
+  }
+  .ingredientes-controles input[type="text"]:focus {
+    border-color: #2563eb;
+  }
+  .ingredientes-controles .btn {
+    flex: 0 0 auto;
+    font-size: 1rem;
+    padding: 10px 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px 0 #2563eb22;
+    margin-left: auto;
+  }
+  .ingredientes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-top: 18px;
+    min-height: 80px;
+  }
+  /* Modal de ingrediente */
+  #modal-ingrediente.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(30,30,40,0.55);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.18s;
+  }
+  .modal#modal-ingrediente-form {
+    background: rgba(30,30,40,0.88);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 #4b0082cc;
+    padding: 38px 32px 28px 32px;
+    max-width: 700px;
+    width: 95vw;
+    color: #fff;
+    position: relative;
+    animation: modalIn 0.22s cubic-bezier(.4,2,.3,1) backwards;
+    overflow-y: auto;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .merma-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .merma-input {
+    width: 100%;
+  }
+  .merma-symbol {
+    font-size: 1.1em;
+  }
+  .ingrediente-form .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .ingrediente-form .form-group {
+    flex: 1 1 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .ingrediente-form input,
+  .ingrediente-form select {
+    background: #fff;
+    color: #222;
+    border-radius: 10px;
+    border: 1.5px solid #d1d5db;
+    box-shadow: 0 2px 8px 0 #4b008220;
+    padding: 10px 14px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.18s;
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    line-height: 1.2;
+    resize: none;
+    display: block;
+  }
+  .ingrediente-form input:focus,
+  .ingrediente-form select:focus {
+    border-color: #2563eb;
+  }
+  .ingrediente-form .btn {
+    font-size: 1rem;
+    padding: 10px 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px 0 #2563eb22;
+    margin-top: 18px;
+    align-self: flex-end;
+  }
+  .modal#modal-ingrediente-form .close-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.18s;
+  }
+  .modal#modal-ingrediente-form .close-btn:hover {
+    color: #2563eb;
+  }
+  @media (max-width: 900px) {
+    .modal#modal-ingrediente-form {
+      padding: 18px 6px 10px 6px;
+      max-width: 98vw;
+    }
+    .ingrediente-form .form-group {
+      flex: 1 1 220px;
+    }
+  }
+  @media (max-width: 600px) {
+    .modal#modal-ingrediente-form {
+      padding: 12px 4px 10px 4px;
+      max-width: 98vw;
+    }
+    .ingrediente-form .form-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ingrediente-form .form-group {
+      flex: 1 1 100%;
+    }
+    .ingrediente-form .btn {
+      width: 100%;
+      align-self: stretch;
+    }
+  }
+  /* Tarjetas de proveedores modernas */
+  .proveedores-container {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-top: 24px;
+  }
+  .proveedor-card {
+    background: rgba(30,30,40,0.82);
+    border-radius: 18px;
+    box-shadow: 0 4px 18px 0 #4b0082a0;
+    color: #fff;
+    transition: box-shadow 0.22s, background 0.22s;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    border: 1.5px solid #2d2d3a;
+  }
+  .proveedor-card.expanded {
+    box-shadow: 0 8px 32px 0 #4b0082cc;
+    background: rgba(30,30,40,0.95);
+    border-color: #2563eb;
+  }
+  .proveedor-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px 22px 22px;
+    cursor: pointer;
+    font-size: 1.18rem;
+    font-weight: 500;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: background 0.18s;
+  }
+  .proveedor-card-header:hover {
+    background: rgba(37,99,235,0.08);
+  }
+  .proveedor-nombre {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.18rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .proveedor-toggle-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.22s;
+    outline: none;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+  }
+  .proveedor-card.expanded .proveedor-toggle-btn i {
+    transform: rotate(180deg);
+    transition: transform 0.22s;
+  }
+  .proveedor-card-body {
+    padding: 0 28px 18px 28px;
+    animation: fadeIn 0.22s;
+    font-size: 1.05rem;
+    display: block;
+    border-top: 1px solid #2d2d3a;
+  }
+  .proveedor-info {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+    word-break: break-word;
+  }
+  .proveedor-info a {
+    color: #60a5fa;
+    text-decoration: underline;
+    word-break: break-all;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 900px) {
+    .modal#modal-proveedor-form {
+      padding: 18px 6px 10px 6px;
+      max-width: 98vw;
+    }
+    .proveedor-form .form-group {
+      flex: 1 1 220px;
+    }
+  }
+  @media (max-width: 700px) {
+    .proveedor-card-header, .proveedor-card-body {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .proveedor-card-header {
+      font-size: 1rem;
+    }
+    .proveedor-card-body {
+      font-size: 0.98rem;
+    }
+  }
+  @media (max-width: 600px) {
+    .modal#modal-proveedor-form {
+      padding: 12px 4px 10px 4px;
+      max-width: 98vw;
+    }
+    .proveedor-form .form-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .proveedor-form .form-group {
+      flex: 1 1 100%;
+    }
+  }
+  @media (max-width: 500px) {
+    .proveedor-card {
+      border-radius: 12px;
+    }
+    .proveedor-card-header, .proveedor-card-body {
+      padding-left: 7px;
+      padding-right: 7px;
+    }
+    .proveedor-card-header {
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+    .proveedor-card-body {
+      padding-bottom: 10px;
+    }
+    .proveedor-info {
+      font-size: 0.95rem;
+    }
+  }
+</style>
+
+<script src="inventario.js"></script>
+<script>
+// Buscador de inventario: filtra por nombre y proveedor
+document.addEventListener('DOMContentLoaded', function() {
+  var inputBusqueda = document.getElementById('busqueda-inventario');
+  if (inputBusqueda && typeof window.mostrarInventario === 'function') {
+    inputBusqueda.addEventListener('input', function() {
+      var filtro = inputBusqueda.value.trim().toLowerCase();
+      // Guardar el filtro en una variable global temporal
+      window._filtroInventario = filtro;
+      window.mostrarInventario();
+    });
+    // Modificar mostrarInventario para filtrar si hay filtro activo
+    const originalMostrarInventario = window.mostrarInventario;
+    window.mostrarInventario = function() {
+      let filtro = window._filtroInventario || '';
+      originalMostrarInventario(filtro);
+    };
+    // Inicializar filtro vacío
+    window._filtroInventario = '';
+  }
+});
+</script>
+<script>
+// --- LÓGICA DE PEDIDOS FODEXA ---
+document.addEventListener('DOMContentLoaded', function() {
+  // 1. Agregar columna Stock Faltante y mostrar botón Generar Pedido si corresponde
+  if (typeof window.mostrarInventario === 'function') {
+    const originalMostrarInventario = window.mostrarInventario;
+    window.mostrarInventario = function() {
+      originalMostrarInventario();
+      // Agregar columna Stock Faltante
+      const tabla = document.querySelector('#inventario-listado .ingredientes-table');
+      if (!tabla) return;
+      // Encabezado
+      const header = tabla.querySelector('.ingredientes-table-header');
+      if (header && !header.querySelector('.col-stock-faltante')) {
+        const col = document.createElement('div');
+        col.className = 'col-stock-faltante';
+        col.style.flex = '0.9';
+        col.style.minWidth = '90px';
+        col.style.textAlign = 'center';
+        col.textContent = 'Stock Faltante';
+        header.appendChild(col);
+      }
+      // Filas
+      let hayFaltante = false;
+      const filas = tabla.querySelectorAll('.ingredientes-table-row');
+      filas.forEach(function(fila) {
+        if (fila.querySelector('.col-stock-faltante')) return;
+        const nombre = fila.querySelector('[data-nombre]') ? fila.querySelector('[data-nombre]').getAttribute('data-nombre') : null;
+        let stockActual = 0, stockMin = 0;
+        const inputStock = fila.querySelector('.input-stock-actual');
+        const inputMin = fila.querySelector('.input-stock-minimo');
+        if (inputStock) stockActual = parseFloat(inputStock.value) || 0;
+        if (inputMin) stockMin = parseFloat(inputMin.value) || 0;
+        const faltante = Math.max(stockMin - stockActual, 0);
+        const col = document.createElement('div');
+        col.className = 'col-stock-faltante';
+        col.style.flex = '0.9';
+        col.style.minWidth = '90px';
+        col.style.textAlign = 'center';
+        col.style.fontWeight = '600';
+        col.style.color = faltante > 0 ? '#ef4444' : '#222';
+        col.textContent = faltante > 0 ? faltante : '';
+        if (faltante > 0) hayFaltante = true;
+        fila.appendChild(col);
+      });
+      // Mostrar/ocultar botón Generar Pedido
+      const btnPedido = document.getElementById('btn-generar-pedido');
+      if (btnPedido) btnPedido.style.display = hayFaltante ? 'inline-block' : 'none';
+    };
+    // Refrescar tabla al cargar
+    window.mostrarInventario();
+  }
+
+  // 2. Lógica para Generar Pedido
+  const btnPedido = document.getElementById('btn-generar-pedido');
+  const modalPedido = document.getElementById('modal-pedido');
+  const btnCerrarModal = document.getElementById('btn-cerrar-modal-pedido');
+  const pedidoMensaje = document.getElementById('pedido-mensaje');
+  const horaEntrega = document.getElementById('hora-entrega');
+  const btnCopiar = document.getElementById('btn-copiar-mensaje');
+  const btnWhatsapp = document.getElementById('btn-enviar-whatsapp');
+  window.pedidoActual = null;
+  // Modal de aviso para selección de proveedor
+  let modalAviso = document.getElementById('modal-aviso-proveedor');
+  if (!modalAviso) {
+    modalAviso = document.createElement('div');
+    modalAviso.id = 'modal-aviso-proveedor';
+    modalAviso.style = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);display:none;z-index:3000;align-items:center;justify-content:center;';
+    modalAviso.innerHTML = `<div style='background:#fff;padding:32px 24px 18px 24px;border-radius:18px;box-shadow:0 4px 24px #0002;max-width:340px;width:90vw;text-align:center;'><div style='font-size:1.2em;margin-bottom:18px;color:#ef4444;'><i class='fas fa-exclamation-triangle'></i> Debes seleccionar primero el proveedor para el pedido.</div><button id='btn-aceptar-aviso-proveedor' class='btn btn-primary' style='padding:8px 22px;border-radius:8px;font-size:1em;margin-top:8px;'>Aceptar</button></div>`;
+    document.body.appendChild(modalAviso);
+    document.getElementById('btn-aceptar-aviso-proveedor').onclick = function() {
+      modalAviso.style.display = 'none';
+    };
+  }
+
+  function obtenerIngredientesFaltantes() {
+    // Lee ingredientes y proveedores
+    let ingredientes = [];
+    try { ingredientes = JSON.parse(localStorage.getItem('ingredientesFodexa') || '[]'); } catch(e) { ingredientes = []; }
+    let proveedores = [];
+    try { proveedores = JSON.parse(localStorage.getItem('fodexa_proveedores') || '[]'); } catch(e) { proveedores = []; }
+    const provMap = {};
+    proveedores.forEach(p => { provMap[p.id] = p; });
+    // Usar los valores actuales de los inputs visibles en la tabla
+    const filas = document.querySelectorAll('.ingredientes-table-row');
+    const faltantesPorProveedor = {};
+    filas.forEach(fila => {
+      const inputStock = fila.querySelector('.input-stock-actual');
+      const inputMin = fila.querySelector('.input-stock-minimo');
+      if (!inputStock || !inputMin) return;
+      const nombre = inputStock.getAttribute('data-nombre');
+      if (!nombre) return;
+      let ing = ingredientes.find(i => i.nombre === nombre);
+      if (!ing) return;
+      const actual = parseFloat(inputStock.value) || 0;
+      const minimo = parseFloat(inputMin.value) || 0;
+      const faltante = Math.max(minimo - actual, 0);
+      if (faltante > 0) {
+        const provId = ing.proveedorId || 'sin_proveedor';
+        if (!faltantesPorProveedor[provId]) faltantesPorProveedor[provId] = [];
+        faltantesPorProveedor[provId].push({
+          nombre: ing.nombre,
+          cantidad: faltante,
+          medida: ing.tipoMedida,
+          proveedor: provMap[provId] || null
+        });
+      }
+    });
+    return faltantesPorProveedor;
+  }
+
+  function construirMensajePedido(provObj, hora, fecha) {
+    let msg = `Hola, por favor preparar el siguiente pedido para Roal Burger:`;
+    provObj.productos.forEach(prod => {
+      msg += `\n📦 Producto: ${prod.nombre}\n🔢 Cantidad: ${prod.cantidad} ${prod.medida}`;
+    });
+    // Dirección fija de entrega
+    msg += `\n\n📍 Dirección: LAS AMERICAS, CALLE 22 #29-59`;
+    // Formatear hora a AM/PM si existe
+    let horaFormateada = '[__________]';
+    if (hora) {
+      const [h, m] = hora.split(':');
+      let hour = parseInt(h, 10);
+      const min = m;
+      let ampm = 'AM';
+      if (hour >= 12) {
+        ampm = 'PM';
+        if (hour > 12) hour -= 12;
+      }
+      if (hour === 0) hour = 12;
+      horaFormateada = `${hour}:${min} ${ampm}`;
+    }
+    let fechaEntrega = '[__________]';
+    if (fecha) {
+      const [yy, mm, dd] = fecha.split('-');
+      fechaEntrega = `${dd}/${mm}/${yy}`;
+    }
+    msg += `\n📅 Fecha de entrega: ${fechaEntrega}`;
+    msg += `\n🕓 Hora: ${horaFormateada}`;
+    return msg;
+  }
+
+  let pedidosPorProveedor = [];
+  let proveedorActualIdx = 0;
+
+  function mostrarModalPedido() {
+    const faltantes = obtenerIngredientesFaltantes();
+    pedidosPorProveedor = [];
+    Object.keys(faltantes).forEach(provId => {
+      const productos = faltantes[provId];
+      const proveedor = productos[0].proveedor || null;
+      pedidosPorProveedor.push({
+        proveedor: proveedor,
+        productos: productos
+      });
+    });
+    // Si hay más de un proveedor, mostrar aviso y no continuar
+    if (pedidosPorProveedor.length > 1) {
+      modalAviso.style.display = 'flex';
+      return;
+    }
+    if (pedidosPorProveedor.length === 0) return;
+    proveedorActualIdx = 0;
+    renderPedidoProveedor();
+    if (modalPedido) modalPedido.style.display = 'flex';
+  }
+
+  function renderPedidoProveedor() {
+    const pedido = pedidosPorProveedor[proveedorActualIdx];
+    if (!pedido) return;
+    const hora = horaEntrega ? horaEntrega.value : '';
+    const fecha = document.getElementById('fecha-entrega') ? document.getElementById('fecha-entrega').value : '';
+    pedidoActual = pedido;
+    // Mostrar el nombre del proveedor en el título del modal
+    const titulo = document.getElementById('titulo-modal-pedido');
+    if (titulo) {
+      let nombreProv = (pedido.proveedor && pedido.proveedor.nombre) ? pedido.proveedor.nombre : 'Sin proveedor';
+      titulo.innerHTML = `<i class='fas fa-truck'></i> Pedido a Proveedor: <span style='color:#22d3ee;'>${nombreProv}</span>`;
+    }
+    pedidoMensaje.textContent = construirMensajePedido(pedido, hora, fecha);
+  }
+
+  if (btnPedido) {
+    btnPedido.addEventListener('click', function() {
+      mostrarModalPedido();
+    });
+  }
+  if (btnCerrarModal && modalPedido) {
+    btnCerrarModal.addEventListener('click', function() {
+      modalPedido.style.display = 'none';
+    });
+    modalPedido.addEventListener('click', function(e) {
+      if (e.target === modalPedido) modalPedido.style.display = 'none';
+    });
+  }
+  if (horaEntrega) {
+    horaEntrega.addEventListener('input', function() {
+      renderPedidoProveedor();
+    });
+  }
+  if (btnCopiar) {
+    btnCopiar.addEventListener('click', function() {
+      if (pedidoMensaje && pedidoMensaje.textContent) {
+        navigator.clipboard.writeText(pedidoMensaje.textContent);
+        btnCopiar.textContent = '¡Copiado!';
+        setTimeout(()=>{btnCopiar.textContent = 'Copiar mensaje';}, 1200);
+      }
+    });
+  }
+  if (btnWhatsapp) {
+    btnWhatsapp.addEventListener('click', function() {
+      if (!pedidoActual || !pedidoActual.proveedor || !pedidoActual.proveedor.telefono) return;
+      let tel = pedidoActual.proveedor.telefono.replace(/[^\d]/g, '');
+      if (tel.length < 8) return;
+      let msg = encodeURIComponent(pedidoMensaje.textContent);
+      let url = `https://wa.me/57${tel}?text=${msg}`;
+      window.open(url, '_blank');
+    });
+  }
+
+  // Guardar pedido en localStorage al abrir modal
+  function guardarPedidoPendiente() {
+    if (!pedidoActual || !pedidoActual.proveedor) return;
+    let pedidos = {};
+    try { pedidos = JSON.parse(localStorage.getItem('pedidosPendientesFodexa') || '{}'); } catch(e) { pedidos = {}; }
+    const fecha = new Date().toISOString().slice(0,10);
+    const provId = pedidoActual.proveedor.id || 'sin_proveedor';
+    if (!pedidos[fecha]) pedidos[fecha] = {};
+    pedidos[fecha][provId] = {
+      proveedor: pedidoActual.proveedor,
+      productos: pedidoActual.productos,
+      horaEntrega: horaEntrega ? horaEntrega.value : ''
+    };
+    localStorage.setItem('pedidosPendientesFodexa', JSON.stringify(pedidos));
+  }
+  if (modalPedido) {
+    modalPedido.addEventListener('transitionend', function() {
+      if (modalPedido.style.display === 'flex') guardarPedidoPendiente();
+    });
+    // fallback: guardar al mostrar
+    if (btnPedido) btnPedido.addEventListener('click', guardarPedidoPendiente);
+    // Botón Registrar: guardar pedido y cerrar modal
+    const btnRegistrarPedido = document.getElementById('btn-registrar-pedido');
+    if (btnRegistrarPedido) {
+      btnRegistrarPedido.addEventListener('click', function() {
+        if (!pedidoActual || !pedidoActual.proveedor) return;
+        let pedidos = {};
+        try { pedidos = JSON.parse(localStorage.getItem('pedidosPendientesFodexa') || '{}'); } catch(e) { pedidos = {}; }
+        const fecha = new Date().toISOString().slice(0,10);
+        const provId = pedidoActual.proveedor.id || 'sin_proveedor';
+        if (!pedidos[fecha]) pedidos[fecha] = {};
+        pedidos[fecha][provId] = {
+          proveedor: pedidoActual.proveedor,
+          productos: pedidoActual.productos,
+          horaEntrega: horaEntrega ? horaEntrega.value : ''
+        };
+        localStorage.setItem('pedidosPendientesFodexa', JSON.stringify(pedidos));
+        // Cerrar el modal
+        modalPedido.style.display = 'none';
+        // Aviso de registro exitoso
+        alert('¡Registro exitoso!');
+        // Opcional: refrescar sección Compras si está visible
+        const comprasSection = document.getElementById('seccion-compras');
+        if (comprasSection && !comprasSection.classList.contains('hidden')) {
+          if (typeof window.refrescarPedidosCompras === 'function') {
+            window.refrescarPedidosCompras();
+          }
+        }
+      });
+    }
+  }
+});
+</script>
+<script>
+// --- PEDIDOS DE COMPRAS FODEXA ---
+(function() {
+  // Guardar pedido de compras al registrar
+  const btnRegistrarPedido = document.getElementById('btn-registrar-pedido');
+  const modalPedido = document.getElementById('modal-pedido');
+  const horaEntrega = document.getElementById('hora-entrega');
+  if (btnRegistrarPedido && modalPedido) {
+    btnRegistrarPedido.addEventListener('click', function() {
+      if (!window.pedidoActual || !window.pedidoActual.proveedor) return;
+      let pedidos = [];
+      try { pedidos = JSON.parse(localStorage.getItem('pedidosComprasFodexa') || '[]'); } catch(e) { pedidos = []; }
+      const fecha = new Date().toISOString().slice(0,10);
+      const hora = horaEntrega ? horaEntrega.value : '';
+      const pedidoObj = {
+        id: 'pedido_' + Date.now(),
+        proveedor: window.pedidoActual.proveedor.nombre || 'Sin proveedor',
+        productos: (window.pedidoActual.productos || []).map(p => ({ nombre: p.nombre, cantidad: p.cantidad, medida: p.medida })),
+        direccion: 'Roal Burger - Avenida Las Américas, calle 22 #29-59',
+        fecha: fecha,
+        horaEntrega: hora
+      };
+      pedidos.push(pedidoObj);
+      localStorage.setItem('pedidosComprasFodexa', JSON.stringify(pedidos));
+      // Aviso de registro exitoso
+      alert('¡Registro exitoso!');
+      modalPedido.style.display = 'none';
+      // Refrescar sección Compras si está visible
+      const comprasSection = document.getElementById('seccion-compras');
+      if (comprasSection && !comprasSection.classList.contains('hidden')) {
+        if (typeof window.refrescarPedidosCompras === 'function') {
+          window.refrescarPedidosCompras();
+        }
+      }
+    });
+  }
+
+  // Refrescar pedidos de compras al abrir sección Compras
+  document.addEventListener('DOMContentLoaded', function() {
+    const comprasSection = document.getElementById('seccion-compras');
+    if (!comprasSection) return;
+    const menuBtns = document.querySelectorAll('.menu-btn');
+    menuBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const destino = btn.getAttribute('data-section');
+        if (destino === 'compras') {
+          window.refrescarPedidosCompras();
+        }
+      });
+    });
+  });
+
+  // Función global para refrescar pedidos de compras
+  window.refrescarPedidosCompras = function() {
+    const cont = document.getElementById('contenedor-pedidos-compras');
+    if (!cont) return;
+    let pedidos = [];
+    try { pedidos = JSON.parse(localStorage.getItem('pedidosComprasFodexa') || '[]'); } catch(e) { pedidos = []; }
+    cont.innerHTML = '';
+    if (pedidos.length === 0) {
+      cont.innerHTML = '<div style="color:#fff;opacity:0.7;padding:24px;text-align:center;">No hay pedidos registrados.</div>';
+      return;
+    }
+    // --- CSS visual moderno para tarjetas de compras ---
+    if (!document.getElementById('compras-tarjeta-css')) {
+      const style = document.createElement('style');
+      style.id = 'compras-tarjeta-css';
+      style.textContent = `
+        #contenedor-pedidos-compras {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 20px;
+          align-items: flex-start;
+          margin-top: 18px;
+        }
+        .compra-card {
+          background: #1f2937;
+          color: #fff;
+          font-family: 'Inter', sans-serif;
+          border-radius: 16px;
+          box-shadow: 0 4px 18px #0003;
+          padding: 18px 20px 16px 20px;
+          min-width: 270px;
+          max-width: 340px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          position: relative;
+          transition: box-shadow 0.18s, border 0.18s;
+        }
+        .compra-card .compra-titulo {
+          font-size: 1.13em;
+          font-weight: 700;
+          margin-bottom: 2px;
+          color: #3b82f6;
+          letter-spacing: 0.5px;
+        }
+        .compra-card .compra-productos-box {
+          background: #374151;
+          border-radius: 10px;
+          padding: 10px 12px 8px 12px;
+          margin-bottom: 4px;
+        }
+        .compra-card .compra-productos-box ul {
+          margin: 0;
+          padding: 0 0 0 12px;
+        }
+        .compra-card .compra-productos-box li {
+          color: #e5e7eb;
+          font-size: 0.98em;
+          margin-bottom: 2px;
+        }
+        .compra-card .compra-info {
+          font-size: 0.97em;
+          color: #cbd5e1;
+          margin-bottom: 2px;
+        }
+        .compra-card .compra-hora {
+          font-size: 0.97em;
+          color: #60a5fa;
+          margin-bottom: 2px;
+        }
+        .compra-card .compra-direccion {
+          font-size: 0.97em;
+          color: #fbbf24;
+          margin-bottom: 2px;
+        }
+        .compra-card .btn-recibido {
+          background: #3b82f6;
+          color: #fff;
+          border: none;
+          border-radius: 8px;
+          padding: 8px 18px;
+          font-size: 1em;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          margin-top: 8px;
+          cursor: pointer;
+          transition: background 0.18s;
+          box-shadow: 0 2px 8px #3b82f655;
+        }
+        .compra-card .btn-recibido:hover {
+          background: #2563eb;
+        }
+        @media (max-width: 700px) {
+          #contenedor-pedidos-compras {
+            flex-direction: column;
+            gap: 14px;
+          }
+          .compra-card {
+            min-width: 0;
+            max-width: 98vw;
+            padding: 12px 4vw 12px 4vw;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    pedidos.forEach((pedido, idx) => {
+      const card = document.createElement('div');
+      card.className = 'compra-card';
+      card.innerHTML = `
+        <div class="compra-titulo"><i class='fas fa-truck'></i> ${pedido.proveedor || 'Proveedor'}</div>
+        <div class="compra-productos-box">
+          <b>Productos:</b>
+          <ul>
+            ${(pedido.productos||[]).map(p => `<li>${p.nombre} <span style='color:#60a5fa;'>(x${p.cantidad})</span></li>`).join('')}
+          </ul>
+        </div>
+        <div class="compra-hora"><i class='fas fa-clock'></i> ${(pedido.hora || pedido.horaEntrega || '')}</div>
+        <button class="btn-recibido" data-idx="${idx}"><i class="fas fa-check"></i> Pedido Recibido</button>
+      `;
+      cont.appendChild(card);
+    });
+    // Botones funcionales
+    cont.querySelectorAll('.btn-recibido').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const idx = parseInt(this.getAttribute('data-idx'));
+        if (isNaN(idx)) return;
+        // 1. Obtener el pedido y eliminarlo del array
+        const pedido = pedidos[idx];
+
+        // Guardar en historialVentasFodexa
+        let historial = [];
+        try { historial = JSON.parse(localStorage.getItem('historialVentasFodexa') || '[]'); } catch(e) { historial = []; }
+        const now = new Date();
+        const fechaHora = now.toLocaleDateString('es-CO', {year:'numeric',month:'2-digit',day:'2-digit'}) + ' ' + now.toLocaleTimeString('es-CO', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        historial.push({
+          id: 'venta_' + now.getTime(),
+          fecha: fechaHora,
+          proveedor: pedido.proveedor,
+          direccion: pedido.direccion,
+          horaEntrega: pedido.hora || pedido.horaEntrega || '',
+          productos: (pedido.productos || []).map(p => ({ nombre: p.nombre, cantidad: p.cantidad }))
+        });
+        localStorage.setItem('historialVentasFodexa', JSON.stringify(historial));
+
+        pedidos.splice(idx, 1);
+        localStorage.setItem('pedidosComprasFodexa', JSON.stringify(pedidos));
+
+        // 2. Sumar cantidades de productos al stock actual
+        let stockMap = {};
+        try { stockMap = JSON.parse(localStorage.getItem('stockInventarioFodexa') || '{}'); } catch(e) { stockMap = {}; }
+        (pedido.productos || []).forEach(prod => {
+          // Extraer cantidad numérica (ej: "5 kg" o "2 unidades")
+          let cantidad = 0;
+          if (typeof prod.cantidad === 'number') {
+            cantidad = prod.cantidad;
+          } else if (typeof prod.cantidad === 'string') {
+            // Buscar primer número en la cadena
+            const match = prod.cantidad.match(/([\d,.]+)/);
+            if (match) cantidad = parseFloat(match[1].replace(',', '.'));
+          }
+          if (!cantidad || isNaN(cantidad)) return;
+          // Sumar al stock existente
+          const nombre = prod.nombre;
+          stockMap[nombre] = (parseFloat(stockMap[nombre]) || 0) + cantidad;
+        });
+        localStorage.setItem('stockInventarioFodexa', JSON.stringify(stockMap));
+
+        // 3. Mostrar mensaje breve de confirmación
+        const alerta = document.createElement('div');
+        alerta.textContent = 'Stock actualizado correctamente';
+        alerta.style.position = 'fixed';
+        alerta.style.top = '24px';
+        alerta.style.left = '50%';
+        alerta.style.transform = 'translateX(-50%)';
+        alerta.style.background = '#22c55e';
+        alerta.style.color = '#fff';
+        alerta.style.padding = '12px 28px';
+        alerta.style.borderRadius = '10px';
+        alerta.style.fontSize = '1.08em';
+        alerta.style.boxShadow = '0 2px 12px #0003';
+        alerta.style.zIndex = 9999;
+        document.body.appendChild(alerta);
+        setTimeout(() => { alerta.remove(); }, 1600);
+
+        // 4. Refrescar la vista de compras
+        window.refrescarPedidosCompras();
+
+        // 5. Si el usuario está en la sección inventario, refrescar inventario en pantalla
+        const inventarioSection = document.getElementById('seccion-inventario');
+        if (inventarioSection && !inventarioSection.classList.contains('hidden') && typeof window.mostrarInventario === 'function') {
+          window.mostrarInventario('todos');
+        }
+      });
+    });
+  };
+
+  // Mostrar pedidos de compras al cargar la sección Compras
+  document.addEventListener('DOMContentLoaded', function() {
+    const comprasSection = document.getElementById('seccion-compras');
+    if (comprasSection) {
+      // Si la sección ya está visible al cargar, mostrar pedidos
+      if (!comprasSection.classList.contains('hidden') && typeof window.refrescarPedidosCompras === 'function') {
+        window.refrescarPedidosCompras();
+      }
+      // También refrescar cada vez que se muestre la sección
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          if (m.attributeName === 'class') {
+            if (!comprasSection.classList.contains('hidden') && typeof window.refrescarPedidosCompras === 'function') {
+              window.refrescarPedidosCompras();
+            }
+          }
+        });
+      });
+      observer.observe(comprasSection, { attributes: true });
+    }
+  });
+})();
+</script>

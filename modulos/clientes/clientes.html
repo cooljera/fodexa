@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FODEXA - Gestión de Clientes</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="clientes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <script>
+    // Control de modo desarrollo para mostrar el botón de migración
+    const modoDev = true;
+    </script>
+    <!-- Fondo animado -->
+    <div class="bg-animated"></div>
+    <div class="fodexa-layout">
+        <aside class="fodexa-sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo">FODEXA</h1>
+            </div>
+            <nav class="sidebar-menu">
+                <ul>
+                    <li><a href="../../index.html" class="sidebar-link"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#" class="sidebar-link active"><i class="fas fa-users"></i> Clientes</a></li>
+                    <li><a href="../inventario/inventario.html" class="sidebar-link"><i class="fas fa-carrot"></i> Ingredientes</a></li>
+                    <li><a href="../ventas/ventas.html" class="sidebar-link"><i class="fas fa-cash-register"></i> Ventas</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <div class="fodexa-main">
+            <!-- Header/Navegación -->
+            <header class="header">
+                <div class="container">
+                    <div class="nav-brand">
+                        <button id="back-btn" class="btn btn-ghost">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div>
+                            <h1 class="logo">FODEXA</h1>
+                            <span class="tagline">Gestión de Clientes</span>
+                        </div>
+                    </div>
+                    <nav class="nav-menu">
+                        <button id="export-btn" class="btn btn-outline">
+                            <i class="fas fa-download"></i>
+                            Exportar
+                        </button>
+                        <button id="logout-btn" class="btn btn-outline">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Salir
+                        <!-- Botón de Importar Excel -->
+                        <button id="import-btn" class="btn btn-outline">
+                            <i class="fas fa-file-import"></i> Importar Excel
+                        </button>
+                        <input type="file" id="inputImportExcel" accept=".xlsx, .csv" style="display: none;">
+                        <script>
+                            document.getElementById('import-btn').addEventListener('click', function() {
+                                document.getElementById('inputImportExcel').click();
+                            });
+
+                            document.getElementById('inputImportExcel').addEventListener('change', function(event) {
+                                var file = event.target.files[0];
+                                if (file) {
+                                    // Aquí va la lógica para procesar el archivo Excel/CSV
+                                    alert('Archivo seleccionado: ' + file.name);
+                                }
+                            });
+                        </script>
+                        </button>
+                    </nav>
+                </div>
+            </header>
+            <!-- Contenido Principal -->
+            <main class="main-content">
+                <div class="container">
+            <!-- Panel de Control -->
+            <section class="control-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <i class="fas fa-users"></i>
+                        Base de Datos de Clientes
+                    </h2>
+                    <div class="panel-actions">
+                        
+                        <button id="importar-btn" class="btn btn-secondary">
+                            <i class="fas fa-upload"></i>
+                            Importar
+                        </button>
+                        <div class="migrar-clientes-wrapper">
+                            <button id="btn-migrar-clientes" class="btn btn-primary btn-migrar-clientes">
+                                <i class="fas fa-sync"></i>
+                                Migrar clientes locales a Supabase
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros y Búsqueda -->
+                <div class="filters-section">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="buscar-cliente" placeholder="Buscar por nombre, teléfono, email..." class="search-input">
+                    </div>
+                    
+                    <div class="filters-group">
+                        <select id="filtro-tipo" class="form-select">
+                            <option value="">Todos los tipos</option>
+                            <option value="regular">Regular</option>
+                            <option value="frecuente">Frecuente</option>
+                            <option value="vip">VIP</option>
+                            <option value="nuevo">Nuevo</option>
+                        </select>
+                        
+                        <select id="filtro-estado" class="form-select">
+                            <option value="">Todos los estados</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                        
+                        <button id="limpiar-filtros" class="btn btn-ghost">
+                            <i class="fas fa-times"></i>
+                            Limpiar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estadísticas Rápidas -->
+                <div class="stats-quick">
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span id="total-clientes">0</span>
+                        <label>Total</label>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-star"></i>
+                        <span id="clientes-vip">0</span>
+                        <label>VIP</label>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-user-plus"></i>
+                        <span id="clientes-nuevos">0</span>
+                        <label>Nuevos</label>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span id="clientes-activos">0</span>
+                        <label>Activos</label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lista de Clientes -->
+            <section class="clientes-section">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Lista de Clientes</h3>
+                        <div class="table-actions">
+                            <button id="vista-tarjetas" class="btn btn-ghost active">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button id="vista-lista" class="btn btn-ghost">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Vista de Tarjetas -->
+                    <div id="clientes-grid" class="clientes-grid">
+                        <!-- Las tarjetas se generan dinámicamente -->
+                    </div>
+
+                    <!-- Vista de Lista/Tabla -->
+                    <div id="clientes-table" class="table-responsive" style="display: none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all">
+                                    </th>
+                                    <th data-sort="nombre">Nombre <i class="fas fa-sort"></i></th>
+                                    <th data-sort="telefono">Teléfono</th>
+                                    <th data-sort="email">Email</th>
+                                    <th data-sort="tipo">Tipo</th>
+                                    <th data-sort="totalPedidos">Pedidos</th>
+                                    <th data-sort="totalGastado">Total Gastado</th>
+                                    <th data-sort="ultimaVisita">Última Visita</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientes-tbody">
+                                <!-- Las filas se generan dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            Mostrando <span id="showing-from">0</span> - <span id="showing-to">0</span> de <span id="total-items">0</span> clientes
+                        </div>
+                        <div class="pagination" id="pagination">
+                            <!-- Los botones de paginación se generan dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Nuevo/Editar Cliente -->
+    <div id="modal-cliente" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="modal-title">Nuevo Cliente</h3>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-cliente">
+                    <div class="form-grid">
+                        <!-- Información Personal -->
+                        <div class="form-section">
+                            <h4 class="section-title">Información Personal</h4>
+                            
+                            <div class="form-group">
+                                <label for="cliente-nombre">Nombre Completo *</label>
+                                <input type="text" id="cliente-nombre" name="nombre" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cliente-telefono">Teléfono *</label>
+                                    <input type="tel" id="cliente-telefono" name="telefono" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cliente-email">Email</label>
+                                    <input type="email" id="cliente-email" name="email">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cliente-documento">Documento</label>
+                                    <input type="text" id="cliente-documento" name="documento">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cliente-fechaNacimiento">Fecha de Nacimiento</label>
+                                    <input type="date" id="cliente-fechaNacimiento" name="fechaNacimiento">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de Contacto -->
+                        <div class="form-section">
+                            <h4 class="section-title">Dirección</h4>
+                            
+                            <div class="form-group">
+                                <label for="cliente-direccion">Dirección Principal</label>
+                                <textarea id="cliente-direccion" name="direccion" rows="2"></textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cliente-barrio">Barrio</label>
+                                    <input type="text" id="cliente-barrio" name="barrio">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cliente-ciudad">Ciudad</label>
+                                    <input type="text" id="cliente-ciudad" name="ciudad" value="Medellín">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Configuración de Cliente -->
+                        <div class="form-section">
+                            <h4 class="section-title">Configuración</h4>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cliente-tipo">Tipo de Cliente</label>
+                                    <select id="cliente-tipo" name="tipo">
+                                        <option value="nuevo">Nuevo</option>
+                                        <option value="regular">Regular</option>
+                                        <option value="frecuente">Frecuente</option>
+                                        <option value="vip">VIP</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cliente-descuento">Descuento (%)</label>
+                                    <input type="number" id="cliente-descuento" name="descuento" min="0" max="100" value="0">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cliente-notas">Notas/Observaciones</label>
+                                <textarea id="cliente-notas" name="notas" rows="3" placeholder="Preferencias, alergias, comentarios especiales..."></textarea>
+                            </div>
+                            
+                            <div class="form-group checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="cliente-notificaciones" name="notificaciones" checked>
+                                    <span class="checkmark"></span>
+                                    Permitir notificaciones por WhatsApp/SMS
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="cliente-marketing" name="marketing">
+                                    <span class="checkmark"></span>
+                                    Recibir ofertas y promociones
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="modal-cancelar">Cancelar</button>
+                <button type="submit" form="form-cliente" class="btn btn-primary" id="modal-guardar">
+                    <i class="fas fa-save"></i>
+                    Guardar Cliente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalles Cliente -->
+    <div id="modal-detalles" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="detalles-title">Detalles del Cliente</h3>
+                <button class="modal-close" id="detalles-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="client-profile">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="profile-nombre">Nombre del Cliente</h2>
+                            <div class="profile-tags">
+                                <span id="profile-tipo" class="tag tag-primary">Regular</span>
+                                <span id="profile-estado" class="tag tag-success">Activo</span>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-primary" id="editar-cliente-btn">
+                                <i class="fas fa-edit"></i>
+                                Editar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-content">
+                        <!-- Información Personal -->
+                        <div class="info-section">
+                            <h4>Información Personal</h4>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Teléfono:</label>
+                                    <span id="profile-telefono">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Email:</label>
+                                    <span id="profile-email">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Documento:</label>
+                                    <span id="profile-documento">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Fecha de Nacimiento:</label>
+                                    <span id="profile-fechaNacimiento">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="info-section">
+                            <h4>Dirección</h4>
+                            <div class="info-grid">
+                                <div class="info-item full-width">
+                                    <label>Dirección:</label>
+                                    <span id="profile-direccion">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Barrio:</label>
+                                    <span id="profile-barrio">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Ciudad:</label>
+                                    <span id="profile-ciudad">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estadísticas -->
+                        <div class="info-section">
+                            <h4>Estadísticas</h4>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span id="profile-totalPedidos" class="stat-number">0</span>
+                                    <label>Pedidos Realizados</label>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span id="profile-totalGastado" class="stat-number">$0</span>
+                                    <label>Total Gastado</label>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-calendar"></i>
+                                    <span id="profile-ultimaVisita" class="stat-number">-</span>
+                                    <label>Última Visita</label>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-gift"></i>
+                                    <span id="profile-descuento" class="stat-number">0%</span>
+                                    <label>Descuento</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Historial de Pedidos -->
+                        <div class="info-section">
+                            <h4>Historial de Pedidos Recientes</h4>
+                            <div id="historial-pedidos" class="historial-container">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmación -->
+    <div id="modal-confirmar" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 id="confirmar-title">Confirmar Acción</h3>
+                <button class="modal-close" id="confirmar-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmar-mensaje">¿Estás seguro de realizar esta acción?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirmar-cancelar">Cancelar</button>
+                <button class="btn btn-danger" id="confirmar-aceptar">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Procesando...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/rutas.js"></script>
+    <script src="clientes.js"></script>
+    <script src="historial.js"></script>
+    <script src="../../services/supabase.js"></script>
+    <script src="../../utils/migrarClientesLocalesASupabase.js"></script>
+    <script src="../../utils/integrarBotonMigrarClientes.js"></script>
+    <script src="../../utils/migracionAuto.js"></script>
+    <script>
+    var btn = document.getElementById('btn-migrar-clientes');
+    if (btn) {
+        if (typeof modoDev !== 'undefined' && modoDev === true) {
+            btn.style.display = 'inline-block';
+            btn.onclick = function() {
+                migrarClientesLocalesASupabase().then(function(){
+                    alert('✅ Clientes migrados exitosamente a Supabase.');
+                });
+            };
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+    </script>
+<script>
+  // Abrir el explorador de archivos al hacer clic en el botón
+  document.getElementById('import-btn').addEventListener('click', () => {
+    document.getElementById('inputImportExcel').click();
+  });
+
+  // Captura del archivo seleccionado
+  document.getElementById('inputImportExcel').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    alert("📂 Archivo seleccionado: " + file.name + "\n(En el siguiente paso cargaremos sus datos)");
+    // Aquí se podrá agregar la lógica para leer y cargar el Excel
+  });
+
+  function migrarClientesLocalesASupabase() {
+    // Obtiene los clientes del localStorage
+    const clientesLocal = JSON.parse(localStorage.getItem('clientes') || '[]');
+    if (!Array.isArray(clientesLocal) || clientesLocal.length === 0) {
+        alert('No hay clientes en localStorage para migrar.');
+        return Promise.resolve();
+    }
+    // Verifica que Supabase esté disponible
+    if (typeof window.supabase === 'undefined') {
+        alert('Supabase no está disponible. Verifica la conexión.');
+        return Promise.reject('Supabase no disponible');
+    }
+    // Subir cada cliente a la tabla "clientes" de Supabase
+    const promesas = clientesLocal.map(cliente => {
+        // Ajusta los campos según tu estructura real
+        const registro = {
+            nombre: cliente.nombre || '',
+            apellido: cliente.apellido || '',
+            telefono: cliente.telefono || '',
+            direccion: cliente.direccion || '',
+            email: cliente.email || '',
+            tipo: cliente.tipo || '',
+            notas: cliente.notas || '',
+            documento: cliente.documento || '',
+            ciudad: cliente.ciudad || '',
+            barrio: cliente.barrio || '',
+            fechaNacimiento: cliente.fechaNacimiento || '',
+            // Agrega otros campos si es necesario
+        };
+        return window.supabase.from('clientes').insert([registro]);
+    });
+    return Promise.all(promesas)
+        .then(results => {
+            alert('✅ Migración completada: ' + promesas.length + ' clientes subidos a Supabase.');
+            return results;
+        })
+        .catch(err => {
+            alert('❌ Error al migrar clientes: ' + err);
+        });
+}
+window.migrarClientesLocalesASupabase = migrarClientesLocalesASupabase;
+// Funciones asincrónicas para clientes usando Supabase
+async function obtenerClientesSupabase() {
+    if (typeof window.supabase === 'undefined') {
+        alert('Supabase no está disponible.');
+        return [];
+    }
+    const { data, error } = await window.supabase.from('clientes').select('*');
+    if (error) {
+        alert('Error al obtener clientes: ' + error.message);
+        return [];
+    }
+    return data || [];
+}
+
+async function guardarClienteSupabase(cliente) {
+    if (typeof window.supabase === 'undefined') {
+        alert('Supabase no está disponible.');
+        return null;
+    }
+    const { data, error } = await window.supabase.from('clientes').insert([cliente]);
+    if (error) {
+        alert('Error al guardar cliente: ' + error.message);
+        return null;
+    }
+    return data && data[0] ? data[0] : null;
+}
+
+async function actualizarClienteSupabase(id, cliente) {
+    if (typeof window.supabase === 'undefined') {
+        alert('Supabase no está disponible.');
+        return null;
+    }
+    const { data, error } = await window.supabase.from('clientes').update(cliente).eq('id', id);
+    if (error) {
+        alert('Error al actualizar cliente: ' + error.message);
+        return null;
+    }
+    return data && data[0] ? data[0] : null;
+}
+
+async function eliminarClienteSupabase(id) {
+    if (typeof window.supabase === 'undefined') {
+        alert('Supabase no está disponible.');
+        return false;
+    }
+    const { error } = await window.supabase.from('clientes').delete().eq('id', id);
+    if (error) {
+        alert('Error al eliminar cliente: ' + error.message);
+        return false;
+    }
+    return true;
+}
+
+window.obtenerClientesSupabase = obtenerClientesSupabase;
+window.guardarClienteSupabase = guardarClienteSupabase;
+window.actualizarClienteSupabase = actualizarClienteSupabase;
+window.eliminarClienteSupabase = eliminarClienteSupabase;
+</script>
+</body>
+</html>

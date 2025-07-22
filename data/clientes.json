@@ -1,0 +1,242 @@
+{
+  "clientes": [
+    {
+      "id": "cli_001",
+      "nombre": "María González Pérez",
+      "telefono": "+57 300 123 4567",
+      "email": "maria.gonzalez@email.com",
+      "documento": "43123456",
+      "fechaNacimiento": "1985-03-15",
+      "direccion": "Carrera 80 #45-23, Apto 501",
+      "barrio": "Laureles",
+      "ciudad": "Medellín",
+      "tipo": "vip",
+      "descuento": 10,
+      "notas": "Cliente frecuente, prefiere pizza margherita sin cebolla",
+      "notificaciones": true,
+      "marketing": true,
+      "fechaRegistro": "2024-01-15T10:30:00Z",
+      "ultimaVisita": "2024-07-08T19:45:00Z",
+      "totalPedidos": 45,
+      "totalGastado": 850000,
+      "activo": true,
+      "historialPedidos": [
+        {
+          "id": "ped_145",
+          "fecha": "2024-07-08T19:45:00Z",
+          "total": 32000,
+          "productos": [
+            {"nombre": "Pizza Margherita", "cantidad": 1, "precio": 28000},
+            {"nombre": "Smoothie Tropical", "cantidad": 2, "precio": 8500}
+          ],
+          "estado": "completado",
+          "metodoPago": "tarjeta",
+          "tipoEntrega": "domicilio",
+          "calificacion": 5
+        }
+      ],
+      "preferencias": {
+        "metodoPagoFavorito": "tarjeta",
+        "productosFrequentes": ["Pizza Margherita", "Ensalada César"],
+        "horarioPreferido": "19:00-21:00",
+        "tipoEntrega": "domicilio"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 43,
+        "pedidosCancelados": 2,
+        "ticketPromedio": 18600,
+        "frecuenciaVisitas": 8.5,
+        "calificacionPromedio": 4.8,
+        "productos": {
+          "Pizza Margherita": 15,
+          "Ensalada César": 8,
+          "Pasta Carbonara": 6
+        }
+      }
+    },
+    {
+      "id": "cli_002",
+      "nombre": "Carlos Andrés Ruiz",
+      "telefono": "+57 301 987 6543",
+      "email": "carlos.ruiz@empresa.com",
+      "documento": "1023456789",
+      "fechaNacimiento": "1990-08-22",
+      "direccion": "Calle 70 #52-18",
+      "barrio": "La Candelaria",
+      "ciudad": "Medellín",
+      "tipo": "frecuente",
+      "descuento": 5,
+      "notas": "Ejecutivo, pide frecuentemente al almuerzo",
+      "notificaciones": true,
+      "marketing": false,
+      "fechaRegistro": "2024-02-20T14:15:00Z",
+      "ultimaVisita": "2024-07-09T12:30:00Z",
+      "totalPedidos": 28,
+      "totalGastado": 420000,
+      "activo": true,
+      "historialPedidos": [
+        {
+          "id": "ped_146",
+          "fecha": "2024-07-09T12:30:00Z",
+          "total": 22000,
+          "productos": [
+            {"nombre": "Pasta Carbonara", "cantidad": 1, "precio": 22000}
+          ],
+          "estado": "completado",
+          "metodoPago": "efectivo",
+          "tipoEntrega": "recogida",
+          "calificacion": 4
+        }
+      ],
+      "preferencias": {
+        "metodoPagoFavorito": "efectivo",
+        "productosFrequentes": ["Pasta Carbonara", "Salmón Teriyaki"],
+        "horarioPreferido": "12:00-14:00",
+        "tipoEntrega": "recogida"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 27,
+        "pedidosCancelados": 1,
+        "ticketPromedio": 15500,
+        "frecuenciaVisitas": 5.2,
+        "calificacionPromedio": 4.5,
+        "productos": {
+          "Pasta Carbonara": 12,
+          "Salmón Teriyaki": 8,
+          "Ensalada César": 4
+        }
+      }
+    },
+    {
+      "id": "cli_003",
+      "nombre": "Ana Sofía Martínez",
+      "telefono": "+57 302 555 1234",
+      "email": "ana.martinez@gmail.com",
+      "documento": "",
+      "fechaNacimiento": "1995-11-10",
+      "direccion": "Transversal 25 #38-45",
+      "barrio": "El Poblado",
+      "ciudad": "Medellín",
+      "tipo": "regular",
+      "descuento": 0,
+      "notas": "Estudiante universitaria, prefiere comida saludable",
+      "notificaciones": true,
+      "marketing": true,
+      "fechaRegistro": "2024-03-10T16:20:00Z",
+      "ultimaVisita": "2024-07-07T20:15:00Z",
+      "totalPedidos": 12,
+      "totalGastado": 156000,
+      "activo": true,
+      "historialPedidos": [],
+      "preferencias": {
+        "metodoPagoFavorito": "transferencia",
+        "productosFrequentes": ["Ensalada César", "Wrap de Pollo"],
+        "horarioPreferido": "19:00-22:00",
+        "tipoEntrega": "domicilio"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 11,
+        "pedidosCancelados": 1,
+        "ticketPromedio": 14200,
+        "frecuenciaVisitas": 12.0,
+        "calificacionPromedio": 4.7,
+        "productos": {
+          "Ensalada César": 6,
+          "Wrap de Pollo": 3,
+          "Smoothie Tropical": 4
+        }
+      }
+    },
+    {
+      "id": "cli_004",
+      "nombre": "Roberto Silva Castañeda",
+      "telefono": "+57 304 777 8888",
+      "email": "",
+      "documento": "98765432",
+      "fechaNacimiento": "1978-05-30",
+      "direccion": "Carrera 65 #48-92",
+      "barrio": "Robledo",
+      "ciudad": "Medellín",
+      "tipo": "nuevo",
+      "descuento": 0,
+      "notas": "",
+      "notificaciones": false,
+      "marketing": false,
+      "fechaRegistro": "2024-07-05T11:45:00Z",
+      "ultimaVisita": "2024-07-05T11:45:00Z",
+      "totalPedidos": 1,
+      "totalGastado": 32000,
+      "activo": true,
+      "historialPedidos": [
+        {
+          "id": "ped_140",
+          "fecha": "2024-07-05T11:45:00Z",
+          "total": 32000,
+          "productos": [
+            {"nombre": "Bandeja Paisa", "cantidad": 1, "precio": 32000}
+          ],
+          "estado": "completado",
+          "metodoPago": "efectivo",
+          "tipoEntrega": "domicilio",
+          "calificacion": 5
+        }
+      ],
+      "preferencias": {
+        "metodoPagoFavorito": "efectivo",
+        "productosFrequentes": ["Bandeja Paisa"],
+        "horarioPreferido": null,
+        "tipoEntrega": "domicilio"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 1,
+        "pedidosCancelados": 0,
+        "ticketPromedio": 32000,
+        "frecuenciaVisitas": 0,
+        "calificacionPromedio": 5.0,
+        "productos": {
+          "Bandeja Paisa": 1
+        }
+      }
+    },
+    {
+      "id": "cli_005",
+      "nombre": "Valentina Torres López",
+      "telefono": "+57 305 444 5555",
+      "email": "valentina.torres@outlook.com",
+      "documento": "1098765432",
+      "fechaNacimiento": "1992-12-25",
+      "direccion": "Calle 33 #70-15, Casa 12",
+      "barrio": "Belén",
+      "ciudad": "Medellín",
+      "tipo": "frecuente",
+      "descuento": 8,
+      "notas": "Celebró cumpleaños aquí, le gusta la comida japonesa",
+      "notificaciones": true,
+      "marketing": true,
+      "fechaRegistro": "2024-01-28T15:30:00Z",
+      "ultimaVisita": "2024-07-06T21:00:00Z",
+      "totalPedidos": 18,
+      "totalGastado": 380000,
+      "activo": true,
+      "historialPedidos": [],
+      "preferencias": {
+        "metodoPagoFavorito": "tarjeta",
+        "productosFrequentes": ["Sushi Variado", "Salmón Teriyaki"],
+        "horarioPreferido": "20:00-22:00",
+        "tipoEntrega": "domicilio"
+      },
+      "estadisticas": {
+        "pedidosCompletados": 17,
+        "pedidosCancelados": 1,
+        "ticketPromedio": 22400,
+        "frecuenciaVisitas": 9.8,
+        "calificacionPromedio": 4.9,
+        "productos": {
+          "Sushi Variado": 8,
+          "Salmón Teriyaki": 5,
+          "Smoothie Tropical": 3
+        }
+      }
+    }
+  ]
+}
