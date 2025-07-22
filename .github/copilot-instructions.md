@@ -2,6 +2,7 @@
 
 ## Project Overview
 FODEXA is a modular, pure frontend restaurant management system. It is organized by business domains (ventas, productos, clientes, reportes, domicilios, etc.) with each module having its own HTML, JS, and CSS. The system is designed for local/offline use but supports running via a local server for full functionality (e.g., fetch for JSON data).
+The project does not include a Python backend and the former 'app/' folder has been removed.
 
 ## Architecture & Patterns
 - **Modules:** Each business area (e.g., ventas, productos) is a folder under `modulos/` with its own HTML, JS, and CSS. Example: `modulos/ventas/ventas.html`, `ventas.js`, `ventas.css`.
